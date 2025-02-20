@@ -1,0 +1,11 @@
+Invoice-no,Student,Class,Invoice-Title,Total-Amount,Paid-Amount,Creation-Date,Payment-Date,Status
+00000001,B003,Scrum,"Wayo Academy - Scrum",$150,$150,07-Nov-2024,21-Nov-2024,Paid
+00000002,DSDCF,Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000003,Said,Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000004,dfsf,Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000005,fgjdghjgd,Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000006,"test image",Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000007,"Lola pekare ",Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000008,aymen,Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000009,"tech Aym dev",Scrum,"Promotion 414",$541,$251,21-Nov-2024,21-Nov-2024,Unpaid
+00000010,"said Souad",Scrum,"Wayo Academy - Scrum",$150,$150,22-Nov-2024,22-Nov-2024,Paid

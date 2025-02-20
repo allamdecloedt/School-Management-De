@@ -1,3 +1,2 @@
-StudentName,Email,Password,Phone,ParentID,Gender
-Ahmed,ahmed@example.com,1234,1234,56,Male
-Ahmed2,ahmed2@example.com,1234,1234,56,Male
+StudentName,Email,Password,Phone,Gender
+Mohamed Bouhouti,mohamedbou@msn.com,merci,+32489002282,Male
