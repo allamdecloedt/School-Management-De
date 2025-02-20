@@ -44,6 +44,7 @@ class BigBlueButtonLibrary {
      */
     public function createMeeting($meetingID, $meetingName, $moderatorPW, $attendeePW) {
      
+        // return $meetingID ;
         // $createParams = new CreateMeetingParameters($meetingID, $meetingName);
         // $createParams->setModeratorPassword($moderatorPW);
         // $createParams->setAttendeePassword($attendeePW);
@@ -62,13 +63,14 @@ class BigBlueButtonLibrary {
         $createParams->setGuestPolicy('ALWAYS_ACCEPT');
  
         $createParams->setWebcamsOnlyForModerator(true); // Désactive la restriction des webcams aux modérateurs
-        // $createParams->setMuteOnStart(false); // Ne pas désactiver les micros au début
+         $createParams->setMuteOnStart(false); // Ne pas désactiver les micros au début
         $createParams->setAllowRequestsWithoutSession(true);
 
      
         $createParams->setWelcomeMessage('Bienvenue à tous !');
 
         $response = $this->bbb->createMeeting($createParams);
+        // return $response;
         if ($response->getReturnCode() === 'FAILED') {
             echo "Error: " . $response->getMessage();
             return;
@@ -87,6 +89,14 @@ class BigBlueButtonLibrary {
         //  die('ffffff : '.$meetingName);
         return $this->bbb->createMeeting($createParams);
     }
+    // public function createMeeting($meetingID, $meetingName, $moderatorPW, $attendeePW) {
+    //     $createMeetingParams = new CreateMeetingParameters($meetingID, $meetingName);
+    //     $createMeetingParams->setModeratorPassword($moderatorPW);
+    //     $createMeetingParams->setAttendeePassword($attendeePW);
+    //     $createMeetingParams->setDuration(60); // Durée de 60 minutes
+
+    //     return $this->bbb->createMeeting($createMeetingParams);
+    // }
 
     /**
      * Générer l'URL pour rejoindre une réunion.

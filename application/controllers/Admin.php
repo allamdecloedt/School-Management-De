@@ -57,6 +57,19 @@ class Admin extends CI_Controller
 		redirect(route('dashboard'), 'refresh');
 	}
 
+	   //START TEACHER Create_Join bigbleubutton 
+	   public function Create_Join($param1 = '', $param2 = '', $param3 = '')
+	   {
+	 
+   
+	 
+		 if (empty($param1)) {
+		   $page_data['folder_name'] = 'bigbleubutton';
+		   $page_data['page_title'] = 'Démarrer Réunion';
+		   $this->load->view('backend/index', $page_data);
+		 }
+	   }
+	   //END TEACHER Create_Join bigbleubutton 
 	public function dashboard()
 	{
 
