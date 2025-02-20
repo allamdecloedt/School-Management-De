@@ -339,7 +339,6 @@
     "provide_subject_name": "Provide subject name",
     "create_class": "Create class",
     "add_class": "Add class",
-    "sctions": "Sctions",
     "sections": "Sections",
     "update_class": "Update class",
     "create_class_room": "Create class room",
@@ -1414,6 +1413,7 @@
     "no_course_or_school": "No course or school found for your account. Join a course or register with a school to proceed.",
     "click_here": "Click here to join",
     "back_to_student_list": "Back to student list",
+
     "video_conf": "Video conf",
     "démarrer_réunion": "Démarrer réunion",
     "démarrer": "Démarrer",
@@ -1426,4 +1426,8 @@
     "content_sharing": "Content sharing",
     "chat_&_discussions": "Chat & discussions",
     "join_session": "Join session"
+
+    "starting": "Starting",
+    "ending": "Ending"
+
 }
