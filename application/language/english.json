@@ -1413,6 +1413,21 @@
     "no_course_or_school": "No course or school found for your account. Join a course or register with a school to proceed.",
     "click_here": "Click here to join",
     "back_to_student_list": "Back to student list",
+
+    "video_conf": "Video conf",
+    "démarrer_réunion": "Démarrer réunion",
+    "démarrer": "Démarrer",
+    "réunions": "Réunions",
+    "wayo_live_classes_/_virtual_room": "Wayo live classes / virtual room",
+    "live_classes_/_virtual_room": "Live classes / virtual room",
+    "create_&_join_session": "Create & join session",
+    "session_schedule_(consulter)": "Session schedule (consulter)",
+    "recordings": "Recordings",
+    "content_sharing": "Content sharing",
+    "chat_&_discussions": "Chat & discussions",
+    "join_session": "Join session"
+
     "starting": "Starting",
     "ending": "Ending"
+
 }
