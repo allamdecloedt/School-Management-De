@@ -224,7 +224,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = 4;
  
 /*
 |--------------------------------------------------------------------------
@@ -457,6 +457,17 @@ $config['csrf_regenerate'] = TRUE;
 $config['csrf_exclude_uris'] = array(
     'api/login',
     'addons/courses/manage_multiple_choices_options',
+    'bigbluebutton/create',
+    'bigbluebutton/create_breakout_room',
+    'bigbluebutton/create_room',
+    'BigBlueButton/get_meetings',
+    'BigBlueButton/is_meeting_running',
+     'BigBlueButton/start_meeting',
+     'BigBlueButton/check_active_meetings',
+     'BigBlueButton/get_active_meetings',
+     'BigBlueButton/join_meeting',
+     'bigbluebutton/delete_room',
+    'BigBlueButton/*',
 );
  
 /*

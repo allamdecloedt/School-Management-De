@@ -603,3 +603,34 @@ $route['api/GetLessonVideoType'] = 'api/Admin/lesson_video_type';
 $route['api/UpdateLessonDevice'] = 'api/Admin/update_lesson_device';
 $route['api/AddOthersLessons'] = 'api/Admin/add_lesson_with_attachment';
 $route['api/UpdateOthersLessons'] = 'api/Admin/update_lesson_with_attachment';
+
+
+$route['meeting/create'] = 'meeting/create';
+$route['meeting/join'] = 'meeting/join';
+
+
+$route['test-meeting/start'] = 'TestMeeting/start';
+$route['test-meeting/join'] = 'TestMeeting/joinAsAttendee';
+
+
+$route['bigbluebutton'] = 'bigbluebutton/index';
+
+// $route['bigbluebutton/create'] = 'BigBlueButtonController/create';
+$route['bigbluebutton/join/(:any)/(:any)/(:any)'] = 'BigBlueButtonController/join/$1/$2/$3';
+
+// $route['bigbluebutton/create'] = 'BigBlueButton/create_meeting';
+$route['bigbluebutton/create/(:num)'] = 'bigbluebutton/create_meeting/$1';
+$route['bigbluebutton/start_meeting/(:num)'] = 'bigbluebutton/start_meeting/$1';
+
+$route['bigbluebutton/start'] = 'BigBlueButton/join_meeting';
+$route['bigbluebutton/get_active_meetings'] = 'BigBlueButton/get_active_meetings';
+$route['bigbluebutton/check_active_meetings'] = 'BigBlueButton/check_active_meetings';
+
+$route['bigbluebutton/get_meetings'] = 'BigBlueButton/get_meetings';
+$route['bigbluebutton/is_meeting_running/(:any)'] = 'BigBlueButton/is_meeting_running/$1';
+
+
+$route['bigbluebutton/join_room/(:any)'] = 'BigBlueButtonController/join_room/$1';
+
+$route['bigbluebutton/create_room'] = 'BigBlueButton/create_room';
+$route['bigbluebutton/delete_room'] = 'BigBlueButton/delete_room';
