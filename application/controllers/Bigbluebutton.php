@@ -95,39 +95,64 @@ class Bigbluebutton extends CI_Controller {
         }
     }
 
-    public function create_room()
-    {
-        $data = json_decode(file_get_contents("php://input"), true);
-        $roomName = $data['room_name'];
-        $description = $data['description'];
-        $classID = $data['class_id'];
-        $schoolID = school_id();
-        $userID = $this->session->userdata('user_id');
+    // public function create_room()
+    // {
+    //     try {
+    //         // die('room_name');
+    //         // die($this->input->post('classSelect'));
+    //         // Récupération et décodage des données JSON envoyées
+    //         $roomName = html_escape($this->input->post('roomName'));
+    //         $classID = html_escape($this->input->post('classSelect'));
+    //         $description = !empty($this->input->post('description')) ? htmlspecialchars($this->input->post('description')) : null;
 
-        if (!$roomName) {
-            echo json_encode(["status" => "error", "message" => "Nom de la salle requis"]);
-            return;
-        }
+    
+    //         // Vérification des champs obligatoires
+    //         if (empty($roomName) || empty($classID) || empty($description) ) {
+    //             echo json_encode(["status" => "error", "message" => "Tous les champs obligatoires doivent être remplis."]);
+    //             return;
+    //         }
+    
 
-        // Vérifier si la salle existe déjà
-        $exists = $this->db->get_where('rooms', ['name' => $roomName, 'school_id' => $schoolID])->row();
-        if ($exists) {
-            echo json_encode(["status" => "error", "message" => "Cette salle existe déjà."]);
-            return;
-        }
 
-        // Insérer la nouvelle salle
-        $data = [
-            'name' => $roomName,
-            'description' => $description,
-            'school_id' => $schoolID,
-            'user_id' => $userID,
-            'class_id' => $classID
-        ];
-        $this->db->insert('rooms', $data);
+    //         $schoolID = school_id(); // Fonction pour récupérer l'ID de l'école
+    //         $userID = $this->session->userdata('user_id');
+    
 
-        echo json_encode(["status" => "success", "message" => "Salle créée avec succès"]);
-    }
+    
+    //         // Vérifier si la salle existe déjà pour cette école
+    //         $exists = $this->db->get_where('rooms', ['name' => $roomName, 'school_id' => $schoolID])->row();
+    //         if ($exists) {
+    //             echo json_encode(["status" => "error", "message" => "Cette salle existe déjà."]);
+    //             return;
+    //         }
+    
+    //         // Préparation des données pour l'insertion
+    //         $roomData = [
+    //             'name' => $roomName,
+    //             'description' => $description,
+    //             'school_id' => $schoolID,
+    //             'user_id' => $userID,
+    //             'class_id' => $classID
+    //         ];
+    
+    //         // Insertion dans la base de données
+    //         $this->db->insert('rooms', $roomData);
+    
+    //         // Vérification de l'insertion
+    //         if ($this->db->affected_rows() > 0) {
+    //             echo json_encode(["status" => "success", "message" => "Salle créée avec succès"]);
+
+    //             // if ($param1 == 'list') {
+    //             $this->load->view('backend/superadmin/bigbleubutton/list');
+    //             // }
+    //         } else {
+    //             echo json_encode(["status" => "error", "message" => "Erreur lors de la création de la salle."]);
+    //         }
+    //     } catch (Exception $e) {
+    //         echo json_encode(["status" => "error", "message" => "Erreur serveur : " . $e->getMessage()]);
+    //     }
+    // }
+    
 
  
     // Créer une nouvelle session BigBlueButton

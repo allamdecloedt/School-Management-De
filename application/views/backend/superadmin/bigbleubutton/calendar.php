@@ -1,137 +1,35 @@
-<?php
-$school_id = school_id();
-// $meetings = $this->db->get_where('sessions_meetings', array('school_id' => $school_id ))->result_array();
 
-$classes = $this->db->get_where('classes', array('school_id' => $school_id))->result_array();
-$rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' => 1))->result_array();
-
-?>
-
- <!-- FullCalendar CSS -->
- <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-     <!-- SweetAlert2 (popup moderne) -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <!-- SweetAlert2 (popup moderne) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<style>
-        .meeting-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: 0.3s;
-        }
-        .meeting-card:hover {
-            box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
-        }
-        .meeting-btn {
-            width: 100%;
-        }
-        .meeting-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .meeting-time {
-            color: #777;
-            font-size: 14px;
-        }
-        .delete-room-btn {
-            border-radius: 50%;
-            padding: 3px 8px;
-            font-size: 14px;
-            opacity: 0.8;
-            transition: opacity 0.2s ease-in-out;
-        }
 
-        .delete-room-btn:hover {
-            opacity: 1;
-        }
-        .multi-select {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .multi-select label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- jQuery et FullCalendar JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+    <style>
         #calendar {
             max-width: 900px;
             margin: auto;
         }
-</style>
-
-
-
-
-
-
-<div class="row mt-4">
-    <?php foreach ($rooms as $room):
-        $className = $this->db->get_where('classes', array('id' => $room['class_id']))->row('name');
-        $status = '<span class="badge bg-danger">Non Démarrée</span>'; // Par défaut, réunion non démarrée
-    ?>
-        <div class="col-md-4">
-            <div class="meeting-card position-relative">
-                  <!-- Bouton de suppression en haut à droite -->
-                <button class="btn btn-sm delete-room-btn position-absolute top-0 end-0 m-2"
-                        data-room-id="<?php echo htmlspecialchars($room['id']); ?>"
-                        title="Supprimer la Room"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#confirmDeleteModal">
-                    ✖️
-                </button>
-
-                <div class="meeting-title"><?php echo $room['name']; ?></div>
-                <div class="meeting-time">Classe : <?php echo $className; ?></div>
-                <div class="meeting-status" id="status-<?php echo $room['id']; ?>"><?php echo $status; ?></div>
-
-                <!-- Nombre de participants -->
-                <div class="meeting-participants" id="participants-<?php echo $room['id']; ?>">👥 0 participants</div>
-                <a href="<?php echo route('Calendar/').$room['class_id'].'/'.$room['id']; ?>"><i class="mdi mdi-calendar">Calendar</i></a>
-
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                    <a href="<?php echo base_url('bigbluebutton/start_meeting/' . $room['id']); ?>"
-                    target="_blank" 
-                    class="btn btn-success meeting-btn join-btn"
-                    id="start-btn-<?php echo $room['id']; ?>"
-                    data-meeting-id="<?php echo $room['id']; ?>">
-                        Start
-                    </a>
-
-                    <!-- Bouton de copie du lien -->
-                    <button onclick="rightModal('<?php echo site_url('modal/popup/bigbleubutton/edit/'.$room['id']); ?>', '<?php echo get_phrase('update_room'); ?>')" class="btn btn-outline-secondary " 
-                           id="copy-btn-<?php echo $room['id']; ?>"
-                            title="Copier le lien">
-                      
-                         <i class="dripicons-pencil"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
-
-
+    </style>
 
 
     <div id="calendar"></div>
 
-
-
-</div>
-
-
-
+    <!-- Bootstrap Modal -->
+<!-- Bootstrap Modal -->
+<!-- Bootstrap Modal -->
 <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="appointmentForm">
@@ -156,8 +54,6 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                         <select class="form-control" name="section" id="section">
                             <?php 
                             $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
-                            var_dump($classe_id);
-                            var_dump($sections);
                             foreach ($sections as $section): ?>
                                 <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
                             <?php endforeach; ?>
@@ -174,24 +70,32 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 </div>
 
 
-<div class="modal fade" id="appointmentModal_NonID" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="appointmentModalLabel">Add new appointment directly from room calendar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
 
+
+
+
+
+<!-- Notification dynamique -->
+<div id="DynamicNotification" class="toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 p-2 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+            Action effectuée avec succès.
         </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
 </div>
 
 
+
+
+<!-- Ajoute Bootstrap -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-   $(document).ready(function () {
+
+
+<script>
+  
+    $(document).ready(function () {
         var calendar = $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -202,15 +106,15 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             selectHelper: true,
             editable: true,
             eventLimit: true,
-            events: "<?= base_url('admin/get_appointments'); ?>", // Charge les rendez-vous
+            events: "<?= base_url('superadmin/get_appointments'); ?>", // Charge les rendez-vous
 
             // 👉 Ouvrir la popup quand on clique sur une date
             select: function (start, end, allDay) {
-           
-
-                $('#appointmentModal_NonID').modal('show');
+                $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
+                $('#appointmentId').val(""); // Vide l'ID
+                $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
+                $('#appointmentModal').modal('show');
             },
-            
 
             // 👉 Modifier un rendez-vous quand on clique dessus
             eventClick: function (event) {
@@ -218,29 +122,10 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                // $('#section').val(event.section);
+                $('#section').val(event.section);
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
-                // console.log(event);
-                    // $('#section').val(event.section).change();
-                    // Charger les sections dynamiquement
-                    $.ajax({
-                        url: "<?= base_url('admin/get_sections'); ?>",
-                        type: "POST",
-                        data: { classe_id: event.classe_id },
-                        success: function (response) {
-                            var sections = JSON.parse(response);
-                            $('#section').empty();
-                            $.each(sections, function (key, value) {
-                                $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                            });
 
-                            $('#section').val(event.section).change();
-                        },
-                        error: function () {
-                            console.error("Erreur lors du chargement des sections.");
-                        }
-                    });
                 $('#appointmentModal').modal('show');
 
                 // Supprimer l'événement
@@ -261,7 +146,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: "<?= base_url('admin/delete_appointment'); ?>",
+                                url: "<?= base_url('superadmin/delete_appointment'); ?>",
                                 type: "POST",
                                 data: { id: id },
                                 success: function () {
@@ -292,8 +177,8 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             var section = $('#section').val();
             var room_id = $('#room_id').val();
 
-            var url = "<?= base_url('admin/update_appointment'); ?>" ;
-            var successMessage =  "Rendez-vous mis à jour !";
+            var url = id ? "<?= base_url('superadmin/update_appointment'); ?>" : "<?= base_url('superadmin/add_appointment'); ?>";
+            var successMessage = id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté avec succès !";
 
 
             $.ajax({
@@ -313,4 +198,41 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             });
         });
     });
+
+
+
+     // Fonction pour afficher la notification
+     function showCopyNotification($param) {
+                let toastEl = document.getElementById($param);
+                let toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+            // Fonction pour afficher une notification dynamique avec un message personnalisé
+    function showNotification(message, type = "success") {
+        let toastEl = document.getElementById("DynamicNotification");
+
+        // Modifier le texte et la classe de la notification
+        let toastBody = toastEl.querySelector(".toast-body");
+        toastBody.innerHTML = message;
+
+        // Modifier la couleur selon le type (success, danger, warning, info)
+        toastEl.className = "toast align-items-center text-white border-0 position-fixed bottom-0 end-0 p-2 m-3";
+        if (type === "success") {
+            toastEl.classList.add("bg-success");
+        } else if (type === "error") {
+            toastEl.classList.add("bg-danger");
+        } else if (type === "warning") {
+            toastEl.classList.add("bg-warning text-dark");
+        } else {
+            toastEl.classList.add("bg-info");
+        }
+
+        let toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+
 </script>
+
+
+
+

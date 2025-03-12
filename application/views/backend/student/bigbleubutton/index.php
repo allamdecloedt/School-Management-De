@@ -61,7 +61,7 @@
     }
 
     // document.addEventListener("DOMContentLoaded", function() {
-    //     fetch("<?php echo base_url('bigbluebutton/get_meetings'); ?>")
+    //     fetch("<?php // echo base_url('bigbluebutton/get_meetings'); ?>")
     //     .then(response => response.json())
     //     .then(data => {
     //         if (data.returncode === "SUCCESS" && data.meetings && data.meetings.meeting) {
@@ -114,7 +114,7 @@
 
 //     document.addEventListener("DOMContentLoaded", function() {
 //     function updateMeetingStatus() {
-//         fetch("<?php echo base_url('bigbluebutton/get_meetings'); ?>")
+//         fetch("<?php //echo base_url('bigbluebutton/get_meetings'); ?>")
 //         .then(response => response.json())
 //         .then(data => {
 //             if (data.returncode === "SUCCESS" && data.meetings && data.meetings.meeting) {
@@ -220,11 +220,11 @@
 //                         if (isRunning) {
 //                             statusElement.innerHTML = `<span class="badge bg-success">En Cours</span>`;
 //                             startButton.innerText = "Join";
-//                             startButton.href = "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meeting.meeting_id;
+//                             startButton.href = "<?php //echo base_url('bigbluebutton/join_meeting/'); ?>" + meeting.meeting_id;
 //                         } else {
 //                             statusElement.innerHTML = `<span class="badge bg-danger">Non Démarrée</span>`;
 //                             startButton.innerText = "Start";
-//                             startButton.href = "<?php echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
+//                             startButton.href = "<?php //echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
 //                         }
 //                     }
 //                       // Mise à jour du nombre de participants
@@ -233,7 +233,7 @@
 //                         }
 //                         // Mise à jour du bouton de copie
 //                         if (copyButton) {
-//                             copyButton.setAttribute("data-url", "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID);
+//                             copyButton.setAttribute("data-url", "<?php //echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID);
 //                         }
 //                 });
 //             })
@@ -279,73 +279,73 @@
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    function checkActiveMeetings() {
-        fetch("<?php echo base_url('bigbluebutton/get_active_meetings'); ?>")
-            .then(response => response.json())
-            .then(data => {
-                console.log("Données reçues :", data);
+    // function checkActiveMeetings() {
+    //     fetch("<?php // echo base_url('bigbluebutton/get_active_meetings'); ?>")
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             console.log("Données reçues :", data);
                 
-                if (!data.active_meetings || !Array.isArray(data.active_meetings)) {
-                    console.error("Format de données incorrect :", data);
-                    return;
-                }
+    //             if (!data.active_meetings || !Array.isArray(data.active_meetings)) {
+    //                 console.error("Format de données incorrect :", data);
+    //                 return;
+    //             }
 
-                data.active_meetings.forEach(meeting => {
-                    let roomID = meeting.room_id;
-                    let isRunning = meeting.running === "true";
-                    let participantCount = meeting.participant_count || 0;
-                    let meetingID = meeting.meeting_id;
+    //             data.active_meetings.forEach(meeting => {
+    //                 let roomID = meeting.room_id;
+    //                 let isRunning = meeting.running === "true";
+    //                 let participantCount = meeting.participant_count || 0;
+    //                 let meetingID = meeting.meeting_id;
 
-                    let statusElement = document.getElementById(`status-${roomID}`);
-                    let joinButton = document.getElementById(`join-btn-${roomID}`);
-                    let participantElement = document.getElementById(`participants-${roomID}`);
-                    let copyButton = document.getElementById(`copy-btn-${roomID}`);
+    //                 let statusElement = document.getElementById(`status-${roomID}`);
+    //                 let joinButton = document.getElementById(`join-btn-${roomID}`);
+    //                 let participantElement = document.getElementById(`participants-${roomID}`);
+    //                 let copyButton = document.getElementById(`copy-btn-${roomID}`);
 
-                    // Mise à jour de l'état de la réunion
-                    if (statusElement) {
-                        statusElement.innerHTML = isRunning 
-                            ? `<span class="badge bg-success">En Cours</span>` 
-                            : `<span class="badge bg-danger">Non Démarrée</span>`;
-                    }
+    //                 // Mise à jour de l'état de la réunion
+    //                 if (statusElement) {
+    //                     statusElement.innerHTML = isRunning 
+    //                         ? `<span class="badge bg-success">En Cours</span>` 
+    //                         : `<span class="badge bg-danger">Non Démarrée</span>`;
+    //                 }
 
-                    // Mise à jour du bouton "Join"
-                    if (joinButton) {
-                        if (isRunning) {
-                            joinButton.innerText = "Join";
-                            joinButton.href = "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
-                            joinButton.classList.remove("btn-secondary", "disabled");
-                            joinButton.classList.add("btn-success");
-                        } else {
-                            joinButton.innerText = "Join";
-                            joinButton.href = "#";
-                            joinButton.classList.remove("btn-success");
-                            joinButton.classList.add("btn-secondary", "disabled");
-                        }
-                    }
+    //                 // Mise à jour du bouton "Join"
+    //                 if (joinButton) {
+    //                     if (isRunning) {
+    //                         joinButton.innerText = "Join";
+    //                         joinButton.href = "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
+    //                         joinButton.classList.remove("btn-secondary", "disabled");
+    //                         joinButton.classList.add("btn-success");
+    //                     } else {
+    //                         joinButton.innerText = "Join";
+    //                         joinButton.href = "#";
+    //                         joinButton.classList.remove("btn-success");
+    //                         joinButton.classList.add("btn-secondary", "disabled");
+    //                     }
+    //                 }
 
-                    // Mise à jour du nombre de participants
-                    if (participantElement) {
-                        participantElement.innerHTML = `👥 ${participantCount} participants`;
-                    }
+    //                 // Mise à jour du nombre de participants
+    //                 if (participantElement) {
+    //                     participantElement.innerHTML = `👥 ${participantCount} participants`;
+    //                 }
 
-                    // Mise à jour du bouton de copie du lien
-                    if (copyButton) {
-                        if (isRunning) {
-                            let meetingLink = "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
-                            copyButton.setAttribute("data-url", meetingLink);
-                            copyButton.classList.remove("d-none"); // Afficher le bouton de copie
-                        } else {
-                            copyButton.classList.add("d-none"); // Masquer si la réunion n'est pas active
-                        }
-                    }
-                });
-            })
-            .catch(error => console.error("Erreur lors de la récupération des réunions :", error));
-    }
+    //                 // Mise à jour du bouton de copie du lien
+    //                 if (copyButton) {
+    //                     if (isRunning) {
+    //                         let meetingLink = "<?php echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
+    //                         copyButton.setAttribute("data-url", meetingLink);
+    //                         copyButton.classList.remove("d-none"); // Afficher le bouton de copie
+    //                     } else {
+    //                         copyButton.classList.add("d-none"); // Masquer si la réunion n'est pas active
+    //                     }
+    //                 }
+    //             });
+    //         })
+    //         .catch(error => console.error("Erreur lors de la récupération des réunions :", error));
+    // }
 
-    // Vérification toutes les 5 secondes
-    setInterval(checkActiveMeetings, 5000);
-    checkActiveMeetings();
+    // // Vérification toutes les 5 secondes
+    // setInterval(checkActiveMeetings, 5000);
+    // checkActiveMeetings();
 
     // Gestion du bouton de copie du lien
     document.querySelectorAll(".copy-btn").forEach(button => {
@@ -376,71 +376,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction pour afficher une notification personnalisée
     function showCopyNotification(message) {
-        let notification = document.createElement("div");
-        notification.className = "alert alert-danger position-fixed bottom-0 end-0 m-3 p-3 shadow";
-        notification.style.zIndex = "1050";
-        notification.innerHTML = `<strong>⚠️</strong> ${message}`;
+            let notification = document.createElement("div");
+            notification.className = "alert alert-danger position-fixed bottom-0 end-0 m-3 p-3 shadow";
+            notification.style.zIndex = "1050";
+            notification.innerHTML = `<strong>⚠️</strong> ${message}`;
 
-        document.body.appendChild(notification);
+            document.body.appendChild(notification);
 
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    document.getElementById("createRoomForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Empêcher le rechargement de la page
-    
-    // let meetingName = document.getElementById("meetingName").value;
-    let roomName = document.getElementById("roomName").value;
-    let description = document.getElementById("description").value;
-    let classID = document.getElementById("classSelect").value;
-    
-    if (!roomName || !classID) {
-        alert("Veuillez remplir tous les champs !");
-        return;
-    }
-
-    fetch("<?php echo base_url('bigbluebutton/create_room'); ?>", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName, description: description , class_id: classID })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Salle créée avec succès !");
-            window.location.reload(); // Recharger la page après création
-        } else {
-          console.log("Erreur lors de la création de la salle !");
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
-    })
-    .catch(error => console.error("Erreur AJAX :", error));
-});
+    });
 
-// Fonction pour afficher la notification
-function showCopyNotification() {
-    let toastEl = document.getElementById("copyNotification");
-    let toast = new bootstrap.Toast(toastEl);
-    toast.show();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Fonction pour afficher la notification
+        function showCopyNotification() {
+            let toastEl = document.getElementById("copyNotification");
+            let toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+ 
 
 </script>
 

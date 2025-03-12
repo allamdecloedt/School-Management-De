@@ -26,6 +26,7 @@ class Teacher extends CI_Controller {
 		$this->load->model('Email_model',    'email_model');
 		$this->load->model('Addon_model',    'addon_model');
 		$this->load->model('Frontend_model', 'frontend_model');
+		$this->load->model('Room_model','room_model');
 
 		/*cache control*/
 		$this->output->set_header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
@@ -65,7 +66,68 @@ class Teacher extends CI_Controller {
 		 }
 	   }
 	   //END TEACHER Create_Join bigbleubutton 
+		//START TEACHER Create_Join bigbleubutton 
+		public function Liveclasse($param1 = '', $param2 = '', $param3 = '')
+		{
+		
+			if ($param1 == 'create') {
+			$response = $this->room_model->create_room();
+			// echo $response;
+			// Préparer la réponse avec un nouveau jeton CSRF
+			$csrf = array(
+				'csrfName' => $this->security->get_csrf_token_name(),
+				'csrfHash' => $this->security->get_csrf_hash(),
+			);
+		
+			// Renvoyer la réponse avec un nouveau jeton CSRF
+			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			}
 
+			if ($param1 == 'update') {
+			$response = $this->room_model->update_room($param2);
+			// echo $response;
+			// Préparer la réponse avec un nouveau jeton CSRF
+			$csrf = array(
+				'csrfName' => $this->security->get_csrf_token_name(),
+				'csrfHash' => $this->security->get_csrf_hash(),
+			);
+		
+			// Renvoyer la réponse avec un nouveau jeton CSRF
+			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			}
+			if ($param1 == 'list') {
+				$this->load->view('backend/teacher/bigbleubutton/list');
+			}
+		
+			if (empty($param1)) {
+			$page_data['folder_name'] = 'bigbleubutton';
+			$page_data['page_title'] = 'Démarrer Réunion';
+			$this->load->view('backend/index', $page_data);
+			}
+		}
+		//END TEACHER Create_Join bigbleubutton 
+		
+	
+
+		public function get_appointments() {
+			$appointments = $this->room_model->get_all_appointments();
+			echo json_encode($appointments);
+		}
+			
+
+
+
+		public function get_sections() {
+			$classe_id = $this->input->post('classe_id');
+		
+			if (!empty($classe_id)) {
+				$sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
+			} else {
+				$sections = [];
+			}
+		
+			echo json_encode($sections);
+		}
 	//START STUDENT ADN ADMISSION section
 	public function student($param1 = '', $param2 = '', $param3 = '', $param4 = '', $param5 = ''){
 
