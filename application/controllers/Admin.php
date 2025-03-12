@@ -33,6 +33,7 @@ class Admin extends CI_Controller
 		$this->load->model('Addon_model', 'addon_model');
 		$this->load->model('Frontend_model', 'frontend_model');
 		$this->load->model('Driver_model', 'driver_model');
+		$this->load->model('Room_model','room_model');
 
 		/*cache control*/
 		$this->output->set_header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
@@ -69,7 +70,121 @@ class Admin extends CI_Controller
 		   $this->load->view('backend/index', $page_data);
 		 }
 	   }
+
+	   //START TEACHER Create_Join bigbleubutton 
+	   public function Liveclasse($param1 = '', $param2 = '', $param3 = '')
+	   {
+	 
+		 if ($param1 == 'create') {
+		   $response = $this->room_model->create_room();
+		   // echo $response;
+		   // Préparer la réponse avec un nouveau jeton CSRF
+		   $csrf = array(
+			 'csrfName' => $this->security->get_csrf_token_name(),
+			 'csrfHash' => $this->security->get_csrf_hash(),
+		 );
+	 
+		 // Renvoyer la réponse avec un nouveau jeton CSRF
+		 echo json_encode(array('status' => $response, 'csrf' => $csrf));
+		 }
+   
+		 if ($param1 == 'update') {
+		   $response = $this->room_model->update_room($param2);
+		   // echo $response;
+		   // Préparer la réponse avec un nouveau jeton CSRF
+		   $csrf = array(
+			 'csrfName' => $this->security->get_csrf_token_name(),
+			 'csrfHash' => $this->security->get_csrf_hash(),
+		 );
+	 
+		 // Renvoyer la réponse avec un nouveau jeton CSRF
+		 echo json_encode(array('status' => $response, 'csrf' => $csrf));
+		 }
+		  if ($param1 == 'list') {
+			 $this->load->view('backend/admin/bigbleubutton/list');
+		   }
+	 
+		 if (empty($param1)) {
+		   $page_data['folder_name'] = 'bigbleubutton';
+		   $page_data['page_title'] = 'Démarrer Réunion';
+		   $this->load->view('backend/index', $page_data);
+		 }
+	   }
 	   //END TEACHER Create_Join bigbleubutton 
+	 
+	   public function Calendar($class_id = null , $room_id = null){
+		 if ($class_id === null || $room_id === null ) {
+		   show_404(); // Erreur 404 si aucun ID n'est fourni
+		  }
+		   $page_data['page_name'] = 'bigbleubutton/calendar';
+		   $page_data['page_title'] = 'Calendar';
+		   $page_data['classe_id'] = $class_id;
+		   $page_data['room_id'] = $room_id;
+		   $this->load->view('backend/index', $page_data);
+   
+	   }
+   
+	   public function get_appointments() {
+		 $appointments = $this->room_model->get_all_appointments();
+		 echo json_encode($appointments);
+		 }
+		 
+		 public function add_appointment() {
+			 $data = array(
+				 'title' => $this->input->post('title'),
+				 'start_date' => $this->input->post('start'),
+				 'description' => $this->input->post('description'),
+				 'classe_id' => $this->input->post('classe_id'),
+				 'section_id' => $this->input->post('section'),
+				 'room_id' => $this->input->post('room_id')
+			 );
+		 
+			 $this->db->insert('appointments', $data);
+			 echo json_encode(["status" => "success"]);
+		 }
+		 public function update_appointment() {
+		   $id = $this->input->post('id');
+		   // die( $id);
+	   
+		   $data = array(
+			   'title' => $this->input->post('title'),
+			   'start_date' => $this->input->post('start'),
+			   'description' => $this->input->post('description'),
+			   'classe_id' => $this->input->post('classe_id'),
+			   'section_id' => $this->input->post('section'),
+			   'room_id' => $this->input->post('room_id')
+		   );
+	   
+		   $this->db->where('id', $id);
+		   $this->db->update('appointments', $data);
+		   echo json_encode(["status" => "updated"]);
+	   }
+	   
+	   public function delete_appointment() {
+		   $id = $this->input->post('id');
+   
+		   $appointments ['Etat'] = 0;
+   
+		   $this->db->where('id', $id);
+			$this->db->update('appointments', $appointments);
+	   
+	   
+		   // $this->db->where('id', $id);
+		   // $this->db->delete('appointments');
+		   echo json_encode(["status" => "deleted"]);
+	   }
+	   //END TEACHER Create_Join bigbleubutton 
+	   public function get_sections() {
+		$classe_id = $this->input->post('classe_id');
+	
+		if (!empty($classe_id)) {
+			$sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
+		} else {
+			$sections = [];
+		}
+	
+		echo json_encode($sections);
+	}
 	public function dashboard()
 	{
 
