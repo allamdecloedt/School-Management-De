@@ -170,6 +170,7 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ selectedRoomID: selectedRoomID })
                     });
+                    console.log('response : '+response);
                     if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
 
                     let data = await response.json();
