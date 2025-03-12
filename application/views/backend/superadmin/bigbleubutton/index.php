@@ -165,7 +165,7 @@
                 }
                 console.log('rrrrrrrrrrrrr'+selectedRoomID);
                 try {
-                    let response = await fetch("<?= base_url('bigbluebutton/delete_room/'); ?>", {
+                    let response = await fetch("<?= base_url('bigbluebutton/delete_room'); ?>", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ selectedRoomID: selectedRoomID })

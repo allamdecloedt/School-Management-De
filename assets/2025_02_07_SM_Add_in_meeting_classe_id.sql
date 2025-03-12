@@ -59,7 +59,8 @@ ADD COLUMN Etat int(11) NULL DEFAULT '1';
                
 
                 
-
+ALTER TABLE rooms
+ADD COLUMN class_id int(11) NULL;
         
 
               

@@ -15,8 +15,7 @@ ADD COLUMN classe_id int(11) NULL;
 ALTER TABLE appointments
 ADD COLUMN section_id int(11) NULL;
 
-ALTER TABLE appointments
-ADD COLUMN Etat int(11) NULL;
+
 
 ALTER TABLE appointments
 ADD COLUMN Etat int(11) NULL DEFAULT '1';
