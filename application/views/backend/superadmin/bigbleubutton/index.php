@@ -146,48 +146,109 @@
         
         // });
 
-        document.addEventListener("DOMContentLoaded", function () { 
-            let selectedRoomID = null;
+        // document.addEventListener("DOMContentLoaded", function () { 
+        //     let selectedRoomID = null;
         
 
-            // 🎯 Utilisation de l'event delegation pour éviter d'ajouter trop d'écouteurs
+        //     // 🎯 Utilisation de l'event delegation pour éviter d'ajouter trop d'écouteurs
+        //     document.body.addEventListener("click", function (event) {
+        //         if (event.target.classList.contains("delete-room-btn")) {
+        //             selectedRoomID = event.target.dataset.roomId;
+        //         }
+        //     });
+        
+        //     // 🎯 Lorsqu'on clique sur "Supprimer" dans le modal
+        //     document.getElementById("confirmDeleteBtn_room").addEventListener("click", async function () {
+        //         if (!selectedRoomID) {
+        //             console.error("❌ Erreur : Aucun ID de room sélectionné !");
+        //             return;
+        //         }
+       
+        //         try {
+        //             let response = await fetch("<?= base_url('bigbluebutton/delete_room'); ?>", {
+        //                 method: "POST",
+        //                 headers: { "Content-Type": "application/json" },
+        //                 body: JSON.stringify({ selectedRoomID: selectedRoomID })
+        //             });
+        //             console.log('response : '+response);
+        //             if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+
+        //             let data = await response.json();
+
+        //             if (data.status === "success") {
+        //                 // ✅ Succès : On met à jour l'interface
+        //                 document.getElementById('confirmDeleteModal').classList.remove('show');
+        //                 document.getElementById('confirmDeleteModal').setAttribute('aria-hidden', 'true');
+        //                 document.body.classList.remove('modal-open'); // Empêche le fond noir de rester bloqué
+
+
+
+        //             // Fermer le pop-up
+        //                 showAllRooms(); // 🔥 Recharge la liste des rooms
+        //                 Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
+        //                 // $('#confirmDeleteModal').hide(); 
+                        
+        //             } else {
+        //                 Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
+        //             }
+        //         } catch (error) {
+        //             console.error("❌ Erreur lors de la suppression :", error);
+        //             Swal.fire("Erreur", "❌ Une erreur inattendue est survenue.", "error");
+        //         }
+        //     });
+        // });
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let selectedRoomID = null;
+
+            // 🎯 Event delegation pour gérer le clic sur les boutons de suppression
             document.body.addEventListener("click", function (event) {
                 if (event.target.classList.contains("delete-room-btn")) {
                     selectedRoomID = event.target.dataset.roomId;
                 }
             });
-        
-            // 🎯 Lorsqu'on clique sur "Supprimer" dans le modal
-            document.getElementById("confirmDeleteBtn_room").addEventListener("click", async function () {
+
+            // 🎯 Confirmation de la suppression
+            document.getElementById("confirmDeleteBtn_room").addEventListener("click", async function (event) {
+                event.preventDefault();
+
                 if (!selectedRoomID) {
                     console.error("❌ Erreur : Aucun ID de room sélectionné !");
+                    Swal.fire("Erreur", "❌ Aucun ID de room sélectionné.", "error");
                     return;
                 }
-                console.log('rrrrrrrrrrrrr'+selectedRoomID);
+
                 try {
                     let response = await fetch("<?= base_url('bigbluebutton/delete_room'); ?>", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ selectedRoomID: selectedRoomID })
+                        body: JSON.stringify({ selectedRoomID })
                     });
-                    console.log('response : '+response);
+
                     if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
 
                     let data = await response.json();
 
                     if (data.status === "success") {
-                        // ✅ Succès : On met à jour l'interface
-                        document.getElementById('confirmDeleteModal').classList.remove('show');
-                        document.getElementById('confirmDeleteModal').setAttribute('aria-hidden', 'true');
-                        document.body.classList.remove('modal-open'); // Empêche le fond noir de rester bloqué
+                        // ✅ Fermeture correcte du modal
+                        let modal = document.getElementById('confirmDeleteModal');
+                        modal.classList.remove('show');
+                        modal.setAttribute('aria-hidden', 'true');
+                        document.body.classList.remove('modal-open');
 
+                        // Supprimer le backdrop si nécessaire (si Bootstrap ne le gère pas)
+                        let backdrop = document.querySelector(".modal-backdrop");
+                        if (backdrop) backdrop.remove();
 
-
-                    // Fermer le pop-up
-                        showAllRooms(); // 🔥 Recharge la liste des rooms
-                        Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
-                        // $('#confirmDeleteModal').hide(); 
+                        // ✅ Rafraîchir la liste des rooms
+                        showAllRooms();
                         
+                        // ✅ Notification de succès
+                        Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
+
                     } else {
                         Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
                     }
@@ -197,10 +258,6 @@
                 }
             });
         });
-
-
-
-
 
                 
 
