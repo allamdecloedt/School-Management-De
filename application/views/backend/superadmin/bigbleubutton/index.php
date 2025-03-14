@@ -221,7 +221,7 @@
                     return;
                 }
 
-                try {
+                // try {
                     let response = await fetch("<?= base_url('bigbluebutton/delete_room'); ?>", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -253,10 +253,10 @@
                     } else {
                         Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
                     }
-                } catch (error) {
-                    console.error("❌ Erreur lors de la suppression :", error);
-                    Swal.fire("Erreur", "❌ Une erreur inattendue est survenue.", "error");
-                }
+                // } catch (error) {
+                //     console.error("❌ Erreur lors de la suppression :", error);
+                //     Swal.fire("Erreur", "❌ Une erreur inattendue est survenue.", "error");
+                // }
             });
         });
 
