@@ -669,7 +669,14 @@ class Superadmin extends CI_Controller
   
       echo json_encode($sections);
   }
-  
+  public function delete_room()
+  {
+      $data = json_decode(file_get_contents("php://input"), true);
+      $roomID = $data['selectedRoomID'];
+      // $this->db->delete("rooms", ["id" => $roomID]);
+      $this->room_model->update_room_by_id($roomID);
+      echo json_encode(["status" => "success", "message" => "Room supprimée avec succès !"]);
+  }
 
   //START ACCOUNTANT section
   public function accountant($param1 = '', $param2 = '')

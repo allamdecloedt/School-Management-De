@@ -414,14 +414,6 @@ class Bigbluebutton extends CI_Controller {
     }
 
 
-    public function delete_room()
-    {
-        $data = json_decode(file_get_contents("php://input"), true);
-        $roomID = $data['selectedRoomID'];
-        // $this->db->delete("rooms", ["id" => $roomID]);
-        $this->room_model->update_room_by_id($roomID);
-        echo json_encode(["status" => "success", "message" => "Room supprimée avec succès !"]);
-    }
 
 
 

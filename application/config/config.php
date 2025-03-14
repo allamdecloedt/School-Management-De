@@ -480,7 +480,7 @@ $config['csrf_exclude_uris'] = array(
      'BigBlueButton/check_active_meetings',
      'BigBlueButton/get_active_meetings',
      'BigBlueButton/join_meeting',
-     'bigbluebutton/delete_room',
+     'superadmin/delete_room',
     'BigBlueButton/*',
 );
  

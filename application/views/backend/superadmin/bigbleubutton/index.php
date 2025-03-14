@@ -222,39 +222,64 @@
                 }
 
                 try {
-                    console.log("🔍 API URL utilisée :", "<?= base_url('bigbluebutton/delete_room'); ?>");
+                    console.log("🔍 API URL utilisée :", "<?= base_url('superadmin/delete_room'); ?>");
 
-                    let response = await fetch("<?= base_url('bigbluebutton/delete_room'); ?>", {
+                    $.ajax({
+                                url: "<?= base_url('superadmin/delete_room'); ?>",
+                                type: "POST",
+                                data: { selectedRoomID: selectedRoomID },
+                                success: function () {                       // ✅ Fermeture correcte du modal
+                                    let modal = document.getElementById('confirmDeleteModal');
+                                    modal.classList.remove('show');
+                                    modal.setAttribute('aria-hidden', 'true');
+                                    document.body.classList.remove('modal-open');
+
+                                    // Supprimer le backdrop si nécessaire (si Bootstrap ne le gère pas)
+                                    let backdrop = document.querySelector(".modal-backdrop");
+                                    if (backdrop) backdrop.remove();
+
+                                    // ✅ Rafraîchir la liste des rooms
+                                    showAllRooms();
+                                    
+                                    // ✅ Notification de succès
+                                    Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
+                                },
+                                error: function () {
+                                    Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
+                                }
+                            });
+
+                    let response = await fetch("<?= base_url('superadmin/delete_room'); ?>", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ selectedRoomID })
                     });
                     // console.log(response.json());
                     
-                    if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+                    // if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
 
-                    let data = await response.json();
+                    // let data = await response.json();
 
-                    if (data.status === "success") {
-                        // ✅ Fermeture correcte du modal
-                        let modal = document.getElementById('confirmDeleteModal');
-                        modal.classList.remove('show');
-                        modal.setAttribute('aria-hidden', 'true');
-                        document.body.classList.remove('modal-open');
+                    // if (data.status === "success") {
+                    //     // ✅ Fermeture correcte du modal
+                    //     let modal = document.getElementById('confirmDeleteModal');
+                    //     modal.classList.remove('show');
+                    //     modal.setAttribute('aria-hidden', 'true');
+                    //     document.body.classList.remove('modal-open');
 
-                        // Supprimer le backdrop si nécessaire (si Bootstrap ne le gère pas)
-                        let backdrop = document.querySelector(".modal-backdrop");
-                        if (backdrop) backdrop.remove();
+                    //     // Supprimer le backdrop si nécessaire (si Bootstrap ne le gère pas)
+                    //     let backdrop = document.querySelector(".modal-backdrop");
+                    //     if (backdrop) backdrop.remove();
 
-                        // ✅ Rafraîchir la liste des rooms
-                        showAllRooms();
+                    //     // ✅ Rafraîchir la liste des rooms
+                    //     showAllRooms();
                         
-                        // ✅ Notification de succès
-                        Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
+                    //     // ✅ Notification de succès
+                    //     Swal.fire("Supprimé !", "La room a été supprimée avec succès.", "success");
 
-                    } else {
-                        Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
-                    }
+                    // } else {
+                    //     Swal.fire("Erreur", `❌ Impossible de supprimer la room : ${data.message}`, "error");
+                    // }
                 } catch (error) {
                     console.error("❌ Erreur lors de la suppression :", error);
                     Swal.fire("Erreur", "❌ Une erreur inattendue est survenue.", "error");
