@@ -131,7 +131,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" onclick="closeModal()" class="btn-close" ></button>
             </div>
             <div class="modal-body">
                 <form id="appointmentForm">
@@ -192,6 +192,11 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
    $(document).ready(function () {
+
+    function closeModal() {
+     $("#appointmentModal").modal("hide");
+    }
+
         var calendar = $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
