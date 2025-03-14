@@ -31,7 +31,7 @@ class Bigbluebutton extends CI_Controller {
             $this->load->model('Frontend_model', 'frontend_model');
             $this->load->model('Meeting_model');
             $this->load->model('Participant_model');
-            $this->load->model('Room_model');
+            $this->load->model('Room_model','room_model');
         
 
         // if (!$this->session->userdata('logged_in')) {
@@ -419,7 +419,7 @@ class Bigbluebutton extends CI_Controller {
         $data = json_decode(file_get_contents("php://input"), true);
         $roomID = $data['selectedRoomID'];
         // $this->db->delete("rooms", ["id" => $roomID]);
-        $this->Room_model->update_room_by_id($roomID);
+        $this->room_model->update_room_by_id($roomID);
         echo json_encode(["status" => "success", "message" => "Room supprimée avec succès !"]);
     }
 
