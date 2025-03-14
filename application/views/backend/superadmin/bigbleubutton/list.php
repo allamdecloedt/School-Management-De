@@ -180,9 +180,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Add new appointment directly from room calendar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
         </div>
