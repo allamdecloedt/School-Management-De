@@ -151,6 +151,7 @@ class Room_model extends CI_Model {
         // 🔹 Extraire les IDs des classes
         $class_ids = array_column($enrolled_classes, 'class_id');
         $school_ids = array_column($enrolled_classes, 'school_id');
+        $section_ids = array_column($enrolled_classes, 'section_id');
         // var_dump($class_ids)  ;
       
     
@@ -174,6 +175,7 @@ class Room_model extends CI_Model {
                 $this->db->where('rooms.Etat', 1);
                 $this->db->where('appointments.Etat', 1);
                 $this->db->where_in('appointments.classe_id', $class_ids);
+                $this->db->where_in('appointments.section_id', $section_ids);
                 $this->db->where_in('rooms.school_id', $school_ids);
                 // $this->db->where('rooms.school_id', $schoolID );
 
