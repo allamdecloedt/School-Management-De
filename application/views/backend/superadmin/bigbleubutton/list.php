@@ -7,8 +7,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 
 ?>
 
- <!-- FullCalendar CSS -->
- <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+
      <!-- SweetAlert2 (popup moderne) -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -61,6 +60,10 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
         #calendar {
             max-width: 900px;
             margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 </style>
 
@@ -213,6 +216,12 @@ function closeModal() {
            
 
                 $('#appointmentModal_NonID').modal('show');
+            },
+            eventRender: function(event, element) {
+                let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
+                let title = event.title.replace(/(\d{2})a/, '$1:00 -'); // Nettoyer le titre
+                
+                element.html(`<strong>${time}</strong> - ${title}`);
             },
             
 

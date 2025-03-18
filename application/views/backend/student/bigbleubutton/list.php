@@ -6,8 +6,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
 
 ?>
- <!-- FullCalendar CSS -->
- <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+
 
 <style>
         .meeting-card {
@@ -33,6 +32,14 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
         .meeting-time {
             color: #777;
             font-size: 14px;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 
@@ -179,6 +186,12 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
            
 
                 $('#appointmentModal_NonID').modal('show');
+            },
+            eventRender: function(event, element) {
+                let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
+                let title = event.title.replace(/(\d{2})a/, '$1:00 -'); // Nettoyer le titre
+                
+                element.html(`<strong>${time}</strong> - ${title}`);
             },
             
 
