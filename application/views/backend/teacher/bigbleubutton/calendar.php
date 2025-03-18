@@ -1,18 +1,18 @@
 
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <!-- SweetAlert2 (popup moderne) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
-    <!-- jQuery et FullCalendar JS -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
 
     <style>
-        #calendar {
-            max-width: 900px;
+         #calendar {
+            max-width: 100%;
             margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 
@@ -113,6 +113,12 @@
                 $('#appointmentId').val(""); // Vide l'ID
                 $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentModal').modal('show');
+            },
+            eventRender: function(event, element) {
+                let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
+                let title = event.title.replace(/(\d{2})a/, '$1:00 -'); // Nettoyer le titre
+                
+                element.html(`<strong>${time}</strong> - ${title}`);
             },
 
             // 👉 Modifier un rendez-vous quand on clique dessus
