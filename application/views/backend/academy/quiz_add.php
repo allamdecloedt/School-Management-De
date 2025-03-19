@@ -24,6 +24,22 @@
 </form>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.select2').select2({dropdownParent: $('#scrollable-modal')});
+    //$('.select2').select2({dropdownParent: $('#scrollable-modal')});
+    initDefaultSelect2();
 });
+function initDefaultSelect2() {
+    if ($.fn.select2) {
+        $('.form-select').select2({
+            width: '100%'
+        }).on('select2:open', function() {
+            // Apply specific background color when dropdown opens
+            $('.select2-dropdown').css('background-color', '#f5f5dc');
+            $('.select2-search__field').css('background-color', '#f5f5dc');
+            $('.select2-results').css('background-color', '#f5f5dc');
+        });
+        
+        // Apply background color to the selection container
+        $('.select2-selection').css('background-color', '#f5f5dc');
+    }
+}
 </script>

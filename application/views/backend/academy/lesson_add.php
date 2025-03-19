@@ -47,7 +47,7 @@
         </div>
 
 
-
+        
         <div class="dv_none" id = "youtube_vimeo">
             <div class="form-group mb-2">
                 <label><?php echo get_phrase('video_url'); ?>( <?php echo get_phrase('for_web_application'); ?> )</label>
@@ -96,7 +96,8 @@
             <div class="input-group">
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="attachment" name="attachment" onchange="changeTitleOfImageUploader(this)">
-                    <label class="custom-file-label" for="attachment"><?php echo get_phrase('attachment'); ?></label>
+                   <!-- Removed attachment label per UX review  -->
+                    <!-- <label class="custom-file-label" for="attachment"><?php echo get_phrase('attachment'); ?></label> -->
                 </div>
             </div>
         </div>
@@ -115,12 +116,24 @@
 <script type="text/javascript">
     $(document).ready(function() {
         //$('select.select2:not(.normal)').each(function () { $(this).select2(); });
-        $('.select2').select2({
-            dropdownParent: $('#scrollable-modal')
-        });
+        initDefaultSelect2();
         initTimepicker();
     });
-
+    function initDefaultSelect2() {
+    if ($.fn.select2) {
+        $('.form-select').select2({
+            width: '100%'
+        }).on('select2:open', function() {
+            // Apply specific background color when dropdown opens
+            $('.select2-dropdown').css('background-color', '#f5f5dc');
+            $('.select2-search__field').css('background-color', '#f5f5dc');
+            $('.select2-results').css('background-color', '#f5f5dc');
+        });
+        
+        // Apply background color to the selection container
+        $('.select2-selection').css('background-color', '#f5f5dc');
+    }
+}
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             var type_lesson = document.getElementById('lesson_type').value;
             if(type_lesson == "s3-video"){
