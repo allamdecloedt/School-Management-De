@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/backend/css/manageQuizQuestions.css">
+
 <?php
 // $param1 is Quiz id
 $quiz_details = $this->lms_model->get_lessons('lesson', $param1)->row_array();
@@ -13,11 +15,20 @@ $questions = $this->lms_model->get_quiz_questions($param1)->result_array();
                     <div class="row" data-plugin="dragula" data-containers='["question-list"]'>
                         <div class="col-md-12">
                             <div class="bg-dragula p-2 p-lg-4">
-                                <h5 class="mt-0"><?php echo get_phrase('questions_of').': '.$quiz_details['title']; ?>
-                                    <button type="button" class="btn btn-outline-primary btn-sm btn-rounded alignToTitle ms-1" id = "question-sort-btn" onclick="sort()" name="button"><?php echo get_phrase('update_sorting'); ?></button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm btn-rounded alignToTitle" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/question_add/'.$param1) ?>', '<?php echo get_phrase('add_new_question'); ?>')" name="button" data-dismiss="modal"><?php echo get_phrase('add_new_question'); ?></button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm btn-rounded alignToTitle" onclick=" largeModal('<?php echo site_url('modal/popup/academy/quiz_questions/'.$param1); ?>', '<?php echo get_phrase('manage_quiz_questions'); ?>')" name="button" data-dismiss="modal"><?php echo get_phrase('refresh'); ?></button>
-                                </h5>
+                            <h5 class="mt-0">
+                                <?php echo get_phrase('questions_of').': '.$quiz_details['title']; ?>
+                                <div class="d-inline-flex quiz-action-buttons ms-2">
+                                    <button type="button" class="btn btn-outline-primary btn-rounded btn-sm" id="question-sort-btn" onclick="sort()" name="button">
+                                        <i class="mdi mdi-sort-variant"></i> <?php echo get_phrase('update_sorting'); ?>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-rounded btn-sm ms-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/question_add/'.$param1) ?>', '<?php echo get_phrase('add_new_question'); ?>')" name="button" data-dismiss="modal">
+                                        <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_new_question'); ?>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-rounded btn-sm ms-1" onclick="largeModal('<?php echo site_url('modal/popup/academy/quiz_questions/'.$param1); ?>', '<?php echo get_phrase('manage_quiz_questions'); ?>')" name="button" data-dismiss="modal">
+                                        <i class="mdi mdi-refresh"></i> <?php echo get_phrase('refresh'); ?>
+                                    </button>
+                                </div>
+                            </h5>
                                 <div id="question-list" class="py-2">
                                     <?php foreach ($questions as $question): ?>
                                         <!-- Item -->

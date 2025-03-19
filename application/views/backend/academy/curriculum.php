@@ -1,10 +1,21 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/backend/css/curriculum.css">
+
+
 <div class="row justify-content-center">
-    <div class="col-xl-12 mb-4 text-center mt-3">
-        <a href="javascript::void(0)" class="btn btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/section_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_section'); ?>')"><i class="mdi mdi-plus"></i> <?php echo get_phrase('add_section'); ?></a>
-        <a href="javascript::void(0)" class="btn btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/lesson_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_lesson'); ?>')"><i class="mdi mdi-plus"></i> <?php echo get_phrase('add_lesson'); ?></a>
-        <a href="javascript::void(0)" class="btn btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/quiz_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_quiz'); ?>')"><i class="mdi mdi-plus"></i> <?php echo get_phrase('add_quiz'); ?></a>
-        <a href="javascript::void(0)" class="btn btn-outline-primary btn-rounded btn-sm ml-1" onclick="largeModal('<?php echo site_url('modal/popup/academy/sort_section/'.$course['id']); ?>', '<?php echo get_phrase('sort_sections'); ?>')"><i class="mdi mdi-sort-variant"></i> <?php echo get_phrase('sort_sections'); ?></a>
-    </div>
+<div class="col-xl-12 mb-4 text-center mt-3 custom-curriculum-buttons">
+    <a href="javascript::void(0)" class="btn curriculum-btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/section_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_section'); ?>')">
+        <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_section'); ?>
+    </a>
+    <a href="javascript::void(0)" class="btn curriculum-btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/lesson_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_lesson'); ?>')">
+        <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_lesson'); ?>
+    </a>
+    <a href="javascript::void(0)" class="btn curriculum-btn-outline-primary btn-rounded btn-sm ml-1" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/quiz_add/'.$course['id']); ?>', '<?php echo get_phrase('add_new_quiz'); ?>')">
+        <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_quiz'); ?>
+    </a>
+    <a href="javascript::void(0)" class="btn curriculum-btn-outline-primary btn-rounded btn-sm ml-1" onclick="largeModal('<?php echo site_url('modal/popup/academy/sort_section/'.$course['id']); ?>', '<?php echo get_phrase('sort_sections'); ?>')">
+        <i class="mdi mdi-sort-variant"></i> <?php echo get_phrase('sort_sections'); ?>
+    </a>
+</div>
 
     <div class="col-xl-8">
         <div class="row">
@@ -15,14 +26,22 @@
             <div class="col-xl-12">
                 <div class="card bg-light text-seconday on-hover-action mb-3" id = "section-<?php echo $section['id']; ?>">
                     <div class="card-body">
-                        <div class="w-100 display-none text-center mb-2" id = "widgets-of-section-<?php echo $section['id']; ?>">
-                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm" name="button" onclick="largeModal('<?php echo site_url('modal/popup/academy/sort_lesson/'.$section['id']); ?>', '<?php echo get_phrase('sort_lessons'); ?>')" ><i class="mdi mdi-sort-variant"></i> <?php echo get_phrase('sort_lesson'); ?></button>
-                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm ml-1" name="button" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/section_edit/'.$section['id'].'/'.$course['id']); ?>', '<?php echo get_phrase('update_section'); ?>')" ><i class="mdi mdi-pencil-outline"></i> <?php echo get_phrase('edit_section'); ?></button>
-
-                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm ml-1" name="button" onclick="confirmModal('<?php echo site_url('addons/courses/course_sections/'.$course['id'].'/delete'.'/'.$section['id']); ?>', reloadEditCoursePage )"><i class="mdi mdi-window-close"></i> <?php echo get_phrase('delete_section'); ?></button>
-                            
+                    <div class="w-100 display-none text-center mb-2" id="widgets-of-section-<?php echo $section['id']; ?>">
+                        <div id="widgets-of-section-buttons">
+                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm" name="button" onclick="largeModal('<?php echo site_url('modal/popup/academy/sort_lesson/'.$section['id']); ?>', '<?php echo get_phrase('sort_lessons'); ?>')">
+                                <i class="mdi mdi-sort-variant"></i> <?php echo get_phrase('sort_lesson'); ?>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm ml-1" name="button" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/section_edit/'.$section['id'].'/'.$course['id']); ?>', '<?php echo get_phrase('update_section'); ?>')">
+                                <i class="mdi mdi-pencil-outline"></i> <?php echo get_phrase('edit_section'); ?>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-sm ml-1" name="button" onclick="confirmModal('<?php echo site_url('addons/courses/course_sections/'.$course['id'].'/delete'.'/'.$section['id']); ?>', reloadEditCoursePage)">
+                                <i class="mdi mdi-window-close"></i> <?php echo get_phrase('delete_section'); ?>
+                            </button>
                         </div>
-                        <h5 class="card-title" class="m-0 py-1"><span class="font-weight-light"><?php echo get_phrase('section').' '.++$key; ?></span>: <?php echo $section['title']; ?>
+                    </div>
+                        <h5 class="card-title m-0 py-1 form-label fw-medium">
+                            <span class="fw-light"><?php echo get_phrase('section').' '.++$key; ?></span>: 
+                            <?php echo $section['title']; ?>
                         </h5>
 
                         <div class="clearfix"></div>

@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/backend/css/editCourse.css">
+
 <div class="row ">
     <div class="col-xl-12">
         <div class="card">
@@ -7,231 +9,290 @@
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
 
-                <h4 class="header-title mb-3"><?php echo get_phrase('course_editing_form'); ?>
-                  <a href="<?php echo site_url('addons/lessons/play/'.slugify($course['title']).'/'.$course['id'].'/'.$first_lesson_id['id']); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm ms-1" target="_blank"><?php echo get_phrase('play_lesson'); ?> <i class="mdi mdi-arrow-right"></i> </a>
-
-                  <a href="<?php echo site_url('addons/courses'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_course_list'); ?></a>
-                </h4>
-
+            <div class="header-title-wrapper mb-4">
+        <div class="header-title-content">
+            <h4 class="header-title"><?= get_phrase('course_editing_form') ?></h4>
+        </div>
+        <div class="header-container d-flex justify-content-between align-items-center mb-2">
+            <a href="<?= site_url('addons/lessons/play/' . slugify($course['title']) . '/' . $course['id'] . '/' . $first_lesson_id['id']) ?>" 
+            class="btn btn-header btn-play" 
+            target="_blank">
+                <i class="mdi mdi-play-circle-outline"></i>
+                <?= get_phrase('play_lesson') ?>
+            </a>
+            <a href="<?= site_url('addons/courses') ?>" 
+            class="btn btn-header btn-back">
+                <i class="mdi mdi-arrow-left-circle"></i>
+                <?= get_phrase('back_to_course_list') ?>
+            </a>
+        </div>
+    </div>
                 <div class="row">
                     <div class="col-xl-12">
+                        <div class="form-wrapper">
                         <form class="required-form" action="<?php echo site_url('addons/courses/index/update/'.$course['id']); ?>" method="post" enctype="multipart/form-data">
                          <!-- Champ caché pour le jeton CSRF -->
                          <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
                             <div id="basicwizard">
 
-                                <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
+                                  <!-- Top Navigation -->
+                            <div class="course-steps-nav">
+                                <ul class="nav nav-tabs nav-fill border-0">
                                   <li class="nav-item">
-                                     <a href="#curriculum" data-bs-toggle="tab" class="nav-link active show rounded-0 pt-2 pb-2">
+                                     <a href="#curriculum" data-bs-toggle="tab" class="nav-link py-3 rounded-0 active">
                                          <i class="mdi mdi-account-circle"></i>
                                          <span class="d-none d-sm-inline"><?php echo get_phrase('curriculum'); ?></span>
                                      </a>
                                   </li>
                                   <li class="nav-item">
-                                      <a href="#basic" data-bs-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                          <i class="mdi mdi-fountain-pen-tip"></i>
+                                      <a href="#basic" data-bs-toggle="tab" class="nav-link py-3 rounded-0">
+                                          <i class="mdi mdi-file-document-outline"></i>
                                           <span class="d-none d-sm-inline"><?php echo get_phrase('basic'); ?></span>
                                       </a>
                                   </li>
                                   <li class="nav-item">
-                                      <a href="#academy" data-bs-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                          <i class=" mdi mdi-ballot-outline"></i>
+                                      <a href="#academy" data-bs-toggle="tab" class="nav-link py-3 rounded-0">
+                                          <i class=" mdi mdi-school-outline"></i>
                                           <span class="d-none d-sm-inline"><?php echo get_phrase('academic'); ?></span>
                                       </a>
                                   </li>
                                   <li class="nav-item">
-                                      <a href="#outcomes" data-bs-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                      <a href="#outcomes" data-bs-toggle="tab" class="nav-link py-3 rounded-0">
                                           <i class="mdi mdi-camera-control"></i>
                                           <span class="d-none d-sm-inline"><?php echo get_phrase('outcomes'); ?></span>
                                       </a>
                                   </li>
                                   <li class="nav-item">
-                                      <a href="#media" data-bs-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                          <i class="mdi mdi-library-video"></i>
+                                      <a href="#media" data-bs-toggle="tab" class="nav-link py-3 rounded-0">
+                                      <i class="mdi mdi-video-outline"></i>
                                           <span class="d-none d-sm-inline"><?php echo get_phrase('media'); ?></span>
                                       </a>
                                   </li>
                                   <li class="nav-item">
-                                      <a href="#finish" data-bs-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                          <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                                      <a href="#finish" data-bs-toggle="tab" class="nav-link py-3 rounded-0">
+                                          <i class="mdi mdi-check-circle-outline"></i>
                                           <span class="d-none d-sm-inline"><?php echo get_phrase('finish'); ?></span>
                                       </a>
                                   </li>
                                 </ul>
-
+                            </div>
                                 <div class="tab-content b-0 mb-0">
                                   <div class="tab-pane active show" id="curriculum">
                                       <?php include 'curriculum.php'; ?>
                                   </div>
                                   <div class="tab-pane" id="basic">
-                                      <div class="row justify-content-center">
-                                          <div class="col-xl-8">
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="course_title"><?php echo get_phrase('course_title'); ?> <span class="required"> * </span> </label>
-                                                  <div class="col-md-10">
-                                                      <input type="text" value="<?php echo $course['title']; ?>" class="form-control" id="course_title" name = "title" placeholder="<?php echo get_phrase('enter_course_title'); ?>" required>
-                                                  </div>
+                                      <div class="p-4 p-lg-5">
+                                          <h4 class="mb-4 text-slate-800 fw-normal"><?php echo get_phrase('Course details'); ?></h4>
+
+                                          <div class="mb-4">
+                                              <label class="form-label fw-medium" for="course_title">
+                                                  <?php echo get_phrase('Course title'); ?> <span class="text-danger">*</span>
+                                              </label>
+                                              <input type="text" value="<?php echo $course['title']; ?>" class="form-control form-control-lg border-0 bg-light" id="course_title" name = "title" placeholder="<?php echo get_phrase('Enter an engaging course title'); ?>" required>
+                                              <div class="form-text text-secondary small mt-2">
+                                                  <?php echo get_phrase('A compelling title helps attract more students'); ?>
+                                              </div>
+                                          </div>
+
+                                          <div class="mb-4">
+                                              <label class="form-label fw-medium" for="basic_description">
+                                                  <?php echo get_phrase('Description'); ?>
+                                              </label>
+                                              <div class="text-editor-container border rounded">
+                                                  <textarea name="description" id="basic_description" class="form-control bg-white" rows="8"><?php echo $course['description']; ?></textarea>
                                               </div>
 
-                                              
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="basic_description"><?php echo get_phrase('description'); ?></label>
-                                                  <div class="col-md-10">
-                                                      <textarea name="description" rows="5" id="basic_description" class="form-control" ><?php echo $course['description']; ?></textarea>
-                                                  </div>
-                                              </div>
-                                          </div> <!-- end col -->
-                                      </div> <!-- end row -->
+                                              <!-- Description after textarea -->
+                                              <?php /*
+                                                    <div class="form-text text-secondary small mt-2">
+                                                        <?php echo get_phrase('Describe what students will learn in this course'); ?>
+                                                    </div>
+                                                    */ ?>
+                                          </div>
+
+                                          <!-- Navigation Buttons -->
+                                          <div class="d-flex justify-content-end mt-5 custom-navigation-buttons">
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToNext()">
+                                                  <?php echo get_phrase('Next'); ?> <i class="mdi mdi-arrow-right ms-1"></i>
+                                              </button>
+                                          </div>
+                                      </div>
                                   </div> <!-- end tab pane -->
 
                                   <div class="tab-pane" id="academy">
-                                      <div class="row justify-content-center">
-                                          <div class="col-xl-8">
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="class_id"><?php echo get_phrase('class'); ?><span class="required"> * </span></label>
-                                                  <div class="col-md-10">
-                                                      <select class="form-control select2" data-toggle="select2"  name="class_id" id="class_id_add_cours" required>
-                                                          <option value=""><?php echo get_phrase('select_a_class'); ?></option>
-                                                          <?php foreach ($classes->result_array() as $class): ?>
-                                                              <option value="<?php echo $class['id']; ?>" <?php if($class['id'] == $course['class_id']) echo 'selected'; ?>><?php echo $class['name']; ?></option>
-                                                          <?php endforeach; ?>
-                                                      </select>
-                                                  </div>
-                                              </div>
+                                      <div class="p-4 p-lg-5">
+                                          <h4 class="mb-4 text-slate-800 fw-normal"><?php echo get_phrase('Academic information'); ?></h4>
 
-                                              <!-- <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="subject_id"><?php echo get_phrase('subject'); ?><span class="required">*</span></label>
-                                                  <div class="col-md-10">
-                                                      <select class="form-control select2" data-toggle="select2" name="subject_id" id="subject_id" required>
-                                                          <option value=""><?php echo get_phrase('select_a_class'); ?></option>
-                                                          <?php foreach ($subjects as $subject): ?>
-                                                              <option value="<?php echo $subject['id']; ?>" <?php if($subject['id'] == $course['subject_id']) echo 'selected'; ?>><?php echo $subject['name']; ?></option>
-                                                          <?php endforeach; ?>
-                                                      </select>
-                                                  </div>
-                                              </div> -->
+                                          <div class="mb-4">
+                                              <label class="form-label fw-medium" for="class_id">
+                                                  <?php echo get_phrase('Class'); ?> <span class="text-danger">*</span>
+                                              </label>
+                                              <select class="form-select form-select-lg border-0 bg-light" name="class_id" id="class_id_add_cours" required>
+                                                  <option value=""><?php echo get_phrase('Select a class'); ?></option>
+                                                  <?php foreach ($classes->result_array() as $class): ?>
+                                                      <option value="<?php echo $class['id']; ?>" <?php if($class['id'] == $course['class_id']) echo 'selected'; ?>><?php echo $class['name']; ?></option>
+                                                  <?php endforeach; ?>
+                                              </select>
+                                          </div>
 
-                                              <?php if($this->session->userdata('teacher_login') == 1): ?>
-                                                <input type="hidden" name="user_id" value="<?php echo $this->session->userdata('user_id'); ?>">
-                                              <?php else: ?>
-                                                <div class="form-group row mb-3">
-                                                    <label class="col-md-2 col-form-label" for="user_id"><?php echo get_phrase('instructor'); ?><span class="required"> * </span></label>
-                                                    <div class="col-md-10">
-                                                        <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id" required>
-                                                            <option value=""><?php echo get_phrase('select_a_teacher'); ?></option>
-                                                            <?php foreach ($all_teachers->result_array() as $teacher): ?>
-                                                                <option value="<?php echo $teacher['id']; ?>" <?php if($teacher['id'] == $course['user_id']) echo 'selected'; ?>><?php echo $teacher['name']; ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                              <?php endif; ?>
+                                          <?php if($this->session->userdata('teacher_login') == 1): ?>
+                                            <input type="hidden" name="user_id" value="<?php echo $this->session->userdata('user_id'); ?>">
+                                          <?php else: ?>
+                                            <div class="mb-4">
+                                                <label class="form-label fw-medium" for="user_id">
+                                                    <?php echo get_phrase('Instructor'); ?> <span class="text-danger">*</span>
+                                                </label>
+                                                <select class="form-select form-select-lg border-0 bg-light" name="user_id" id="user_id" required>
+                                                    <option value=""><?php echo get_phrase('Select a teacher'); ?></option>
+                                                    <?php foreach ($all_teachers->result_array() as $teacher): ?>
+                                                        <option value="<?php echo $teacher['id']; ?>" <?php if($teacher['id'] == $course['user_id']) echo 'selected'; ?>><?php echo $teacher['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                          <?php endif; ?>
 
+                                          <!-- Navigation Buttons -->
+                                          <div class="d-flex justify-content-between mt-5 custom-navigation-buttons">
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToPrevious()">
+                                                  <i class="mdi mdi-arrow-left me-1"></i> <?php echo get_phrase('Previous'); ?>
+                                              </button>
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToNext()">
+                                                  <?php echo get_phrase('Next'); ?> <i class="mdi mdi-arrow-right ms-1"></i>
+                                              </button>
                                           </div>
                                       </div>
                                   </div>
 
                                   <div class="tab-pane" id="outcomes">
-                                      <div class="row justify-content-center">
-                                          <div class="col-xl-8">
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="outcomes_desc"><?php echo get_phrase('outcomes'); ?></label>
-                                                  <div class="col-md-10">
-                                                      <textarea name="outcomes" rows="5" id="outcomes_desc" class="form-control"><?php echo $course['outcomes']; ?></textarea>
-                                                  </div>
+                                      <div class="p-4 p-lg-5">
+                                          <h4 class="mb-4 text-slate-800 fw-normal"><?php echo get_phrase('Learning outcomes'); ?></h4>
+
+                                          <div class="mb-4">
+                                              <label class="form-label fw-medium" for="outcomes_desc">
+                                                  <?php echo get_phrase('What will students achieve?'); ?>
+                                              </label>
+                                              <div class="text-editor-container border rounded">
+                                                  <textarea name="outcomes" id="outcomes_desc" class="form-control bg-white" rows="8"><?php echo $course['outcomes']; ?></textarea>
                                               </div>
+
+                                              <!-- Description after textarea -->
+                                              <?php /*
+                                              <div class="form-text text-secondary small mt-2">
+                                                  <?php echo get_phrase('List specific skills and knowledge students will gain'); ?>
+                                              </div>*/ ?>
+
+                                          </div>
+
+                                          <!-- Navigation Buttons -->
+                                          <div class="d-flex justify-content-between mt-5 custom-navigation-buttons">
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToPrevious()">
+                                                  <i class="mdi mdi-arrow-left me-1"></i> <?php echo get_phrase('Previous'); ?>
+                                              </button>
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToNext()">
+                                                  <?php echo get_phrase('Next'); ?> <i class="mdi mdi-arrow-right ms-1"></i>
+                                              </button>
                                           </div>
                                       </div>
                                   </div>
 
-                                  
+
                                   <div class="tab-pane" id="media">
-                                      <div class="row justify-content-center">
+                                      <div class="p-4 p-lg-5">
+                                          <h4 class="mb-4 text-slate-800 fw-normal"><?php echo get_phrase('Course media'); ?></h4>
 
-                                          <div class="col-xl-8">
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="course_overview_provider"><?php echo get_phrase('course_overview_provider'); ?></label>
-                                                  <div class="col-md-10">
-                                                      <select class="form-control select2" data-toggle="select2" name="course_overview_provider" id="course_overview_provider">
-                                                          <option value="youtube" <?php if($course['course_overview_provider'] == 'youtube') echo 'selected'; ?>><?php echo get_phrase('youtube'); ?></option>
-                                                          <option value="vimeo" <?php if($course['course_overview_provider'] == 'vimeo') echo 'selected'; ?>><?php echo get_phrase('vimeo'); ?></option>
-                                                          <option value="html5" <?php if($course['course_overview_provider'] == 'html5') echo 'selected'; ?>><?php echo get_phrase('HTML5'); ?></option>
-                                                      </select>
-                                                  </div>
+                                          <div class="row">
+                                              <div class="col-md-6 mb-4">
+                                                  <label class="form-label fw-medium" for="course_overview_provider">
+                                                      <?php echo get_phrase('Video provider'); ?> <span class="text-danger">*</span>
+                                                  </label>
+                                                  <select class="form-select border-0 bg-light" name="course_overview_provider" id="course_overview_provider">
+                                                      <option value="youtube" <?php if($course['course_overview_provider'] == 'youtube') echo 'selected'; ?>><?php echo get_phrase('YouTube'); ?></option>
+                                                      <option value="vimeo" <?php if($course['course_overview_provider'] == 'vimeo') echo 'selected'; ?>><?php echo get_phrase('Vimeo'); ?></option>
+                                                      <option value="html5" <?php if($course['course_overview_provider'] == 'html5') echo 'selected'; ?>><?php echo get_phrase('HTML5'); ?></option>
+                                                  </select>
                                               </div>
-                                          </div> <!-- end col -->
 
-                                          <div class="col-xl-8">
-                                              <div class="form-group row mb-3">
-                                                  <label class="col-md-2 col-form-label" for="course_overview_url"><?php echo get_phrase('course_overview_url'); ?></label>
-                                                  <div class="col-md-10">
-                                                      <input type="text" class="form-control" value="<?php echo $course['course_overview_url']; ?>" name="course_overview_url" id="course_overview_url" placeholder="E.g: https://www.youtube.com/watch?v=oBtf8Yglw2w" required>
-                                                  </div>
+                                              <div class="col-md-6 mb-4">
+                                                  <label class="form-label fw-medium" for="course_overview_url">
+                                                      <?php echo get_phrase('Video URL'); ?> <span class="text-danger">*</span>
+                                                  </label>
+                                                  <input type="text" class="form-control border-0 bg-light" value="<?php echo $course['course_overview_url']; ?>" name="course_overview_url" id="course_overview_url" placeholder="<?php echo get_phrase('https://www.youtube.com/watch?v=example'); ?>" required>
                                               </div>
-                                          </div> <!-- end col -->
-                                          
-                                          <div class="col-xl-8">
-                                            <div class="form-group row mb-3">
-                                              <label class="col-md-2 col-form-label" for="course_thumbnail' ?>"><?php echo get_phrase('course_thumbnail'); ?></label>
-                                              <div class="col-md-10">
-                                                <div class="wrapper-image-preview .ml--6">
-                                                  <div class="box w-250">
-                                                    <?php if(file_exists('uploads/course_thumbnail/'.$course['thumbnail'])): ?>
-                                                      <div class="js--image-preview bg-F5F5F5" style="background-image: url(<?php echo base_url('uploads/course_thumbnail/'.$course['thumbnail']); ?>);"></div>
-                                                    <?php else: ?>
-                                                      <div class="js--image-preview bg-F5F5F5" style="background-image: url(<?php echo base_url('uploads/course_thumbnail/placeholder.png'); ?>);"></div>
-                                                    <?php endif; ?>
-                                                    <div class="upload-options">
-                                                      <label for="course_thumbnail" class="btn pb-1"> <i class="mdi mdi-camera"></i> <?php echo get_phrase('course_thumbnail'); ?> <br> <small>(800 X 530)</small> </label>
-                                                      <input id="course_thumbnail" type="file" class="image-upload vb-hidden" name="course_thumbnail" accept="image/*">
-                                                      <input type="hidden" name="current_thumbnail" value="<?php echo $course['thumbnail']; ?>">
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
                                           </div>
-                                      </div> <!-- end row -->
-                                  </div>
-                                  
-                                  <div class="tab-pane" id="finish">
-                                      <div class="row">
-                                          <div class="col-12">
-                                              <div class="text-center">
-                                                  <h2 class="mt-0"><i class="mdi mdi-check-all"></i></h2>
-                                                  <h3 class="mt-0"><?php echo get_phrase("thank_you"); ?> !</h3>
 
-                                                  <p class="w-75 mb-2 mx-auto"><?php echo get_phrase('you_are_just_one_click_away'); ?></p>
+                                          <div class="mb-4">
+                                              <label class="form-label fw-medium mb-3" for="course_thumbnail">
+                                                  <?php echo get_phrase('Course thumbnail'); ?>
+                                              </label>
 
-                                                  <div class="mb-3 mt-3">
-                                                      <button type="button" class="btn btn-primary text-center" onclick="checkRequiredFields()"><?php echo get_phrase('submit'); ?></button>
+                                              <div class="thumbnail-upload bg-light border rounded-3 p-3 text-center">
+                                                  <div class="mb-3">
+                                                    <img src="<?php echo base_url('uploads/course_thumbnail/'.$course['thumbnail'] ? $course['thumbnail'] : 'placeholder.png'); ?>" id="thumbnail-preview" class="img-fluid rounded shadow-sm" style="max-height: 180px;">
+                                                  </div>
+
+                                                  <label for="course_thumbnail" class="btn btn-outline-primary mb-0">
+                                                      <i class="mdi mdi-image me-1"></i> <?php echo get_phrase('Choose image'); ?>
+                                                  </label>
+                                                  <input id="course_thumbnail" type="file" class="d-none" name="course_thumbnail" accept="image/*">
+                                                  <input type="hidden" name="current_thumbnail" value="<?php echo $course['thumbnail']; ?>">
+                                                  <div class="form-text text-secondary small mt-2">
+                                                      <?php echo get_phrase('Recommended size: 800 × 530 pixels'); ?>
                                                   </div>
                                               </div>
-                                          </div> <!-- end col -->
-                                      </div> <!-- end row -->
+                                          </div>
+
+                                          <!-- Navigation Buttons -->
+                                          <div class="d-flex justify-content-between mt-5 custom-navigation-buttons">
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToPrevious()">
+                                                  <i class="mdi mdi-arrow-left me-1"></i> <?php echo get_phrase('Previous'); ?>
+                                              </button>
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToNext()">
+                                                  <?php echo get_phrase('Next'); ?> <i class="mdi mdi-arrow-right ms-1"></i>
+                                              </button>
+                                          </div>
+                                      </div>
                                   </div>
 
-                                  <ul class="list-inline mb-0 wizard text-center">
-                                      <li class="previous list-inline-item">
-                                          <a href="javascript:void(0);" class="btn btn-info" onclick="goToPrevious()"> <i class="mdi mdi-arrow-left-bold"></i> </a>
-                                      </li>
-                                      <li class="next list-inline-item">
-                                          <a href="javascript:void(0);" class="btn btn-info" onclick="goToNext()"> <i class="mdi mdi-arrow-right-bold"></i> </a>
-                                      </li>
-                                  </ul>
+                                  <div class="tab-pane" id="finish">
+                                      <div class="p-4 p-lg-5 text-center">
+                                          <div class="max-w-sm mx-auto py-4">
+                                              <div class="completion-check bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                                                  <i class="mdi mdi-check-bold text-success" style="font-size: 40px;"></i>
+                                              </div>
+
+                                              <h3 class="mb-3"><?php echo get_phrase('Ready to update course'); ?></h3>
+                                              <p class="text-secondary mb-4">
+                                                  <?php echo get_phrase('Please review all information before submitting. Your course details will be updated.'); ?>
+                                              </p>
+
+                                              <button type="button" class="btn btn-success px-5 py-2 fw-medium" onclick="checkRequiredFields()">
+                                                  <?php echo get_phrase('Update course'); ?>
+                                              </button>
+                                          </div>
+
+                                          <!-- Navigation Buttons -->
+                                          <div class="d-flex justify-content-start mt-5 custom-navigation-buttons">
+                                              <button type="button" class="btn btn-outline-primary px-4 py-2" onclick="goToPrevious()">
+                                                  <i class="mdi mdi-arrow-left me-1"></i> <?php echo get_phrase('Previous'); ?>
+                                              </button>
+                                          </div>
+                                      </div>
+                                  </div>
 
                                 </div> <!-- tab-content -->
                             </div> <!-- end #progressbarwizard-->
                         </form>
-                    </div>
-                </div><!-- end row-->
-            </div> <!-- end card-body-->
-        </div> <!-- end card-->
+                        </div>
+                    </div><!-- end row-->
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div>
     </div>
 </div>
 <?php include 'common_scripts.php'; ?>
@@ -240,44 +301,190 @@
       overflow-x: hidden;
     }
 </style>
+
+<!--JoditEditor-->
+
+<link href="<?php echo base_url(); ?>assets/backend/jodit-3.24.4/build/jodit.min.css" rel="stylesheet" type="text/css" />
+<script src="<?php echo base_url(); ?>assets/backend/jodit-3.24.4/build/jodit.min.js"></script>
+
+
 <script type="text/javascript">
-    function goToNext() {
-    let currentTab = document.querySelector('.nav-link.active');
-    let nextTab = currentTab.parentElement.nextElementSibling?.querySelector('.nav-link');
-
-    if (nextTab) {
-        currentTab.classList.remove('active');
-        currentTab.classList.remove('show');
-        nextTab.classList.add('active');
-        nextTab.classList.add('show');
-        
-        // Show the corresponding content
-        let currentContent = document.querySelector(currentTab.getAttribute('href'));
-        let nextContent = document.querySelector(nextTab.getAttribute('href'));
-        currentContent.classList.remove('active');
-        nextContent.classList.add('active');
+/**
+Navigation to the next form tab. **/
+function goToNext() {
+    const currentTabLink = document.querySelector('.nav-link.active');
+    const nextTabListItem = currentTabLink.closest('li').nextElementSibling;
+    if (nextTabListItem) {
+        const nextTabLink = nextTabListItem.querySelector('.nav-link');
+        const nextTab = new bootstrap.Tab(nextTabLink);
+        nextTab.show();
     }
 }
 
+/**
+ * Navigation to the previous form tab.
+ */
 function goToPrevious() {
-    let currentTab = document.querySelector('.nav-link.active');
-    let previousTab = currentTab.parentElement.previousElementSibling?.querySelector('.nav-link');
-
-    if (previousTab) {
-        currentTab.classList.remove('active');
-        currentTab.classList.remove('show');
-        previousTab.classList.add('active');
-        previousTab.classList.add('show');
-        
-        // Show the corresponding content
-        let currentContent = document.querySelector(currentTab.getAttribute('href'));
-        let previousContent = document.querySelector(previousTab.getAttribute('href'));
-        currentContent.classList.remove('active');
-        previousContent.classList.add('active');
+    const currentTabLink = document.querySelector('.nav-link.active');
+    const prevTabListItem = currentTabLink.closest('li').previousElementSibling;
+    if (prevTabListItem) {
+        const prevTabLink = prevTabListItem.querySelector('.nav-link');
+        const prevTab = new bootstrap.Tab(prevTabLink);
+        prevTab.show();
     }
 }
-  $(document).ready(function() {
-      $('#basic_description').summernote();
-      $('#outcomes_desc').summernote();
-  });
+
+// Update the tab icons based on active state
+function updateIcons() {
+    document.querySelectorAll('.course-steps-nav .nav-link').forEach(tab => {
+        const icon = tab.querySelector('i');
+
+        if (tab.classList.contains('active')) {
+            icon.classList.remove('text-muted');
+            icon.classList.add('text-primary');
+        } else {
+            icon.classList.remove('text-primary');
+            icon.classList.add('text-muted');
+        }
+    });
+}
+
+$(document).ready(function() {
+    initRichTextEditors(); // Initialize JoditEditor rich text editors
+    initThumbnailPreview(); // Setup thumbnail image preview functionality
+    initDefaultSelect2();         // Initialize Select2 for dropdowns if available
+    updateTabIcons();      // Set initial tab icons
+    $('.course-steps-nav .nav-link').on('click', function() {
+        setTimeout(updateTabIcons, 50);
+    });
+    
+});
+
+/**
+ * Initializes JoditEditor rich text editors for description and outcomes fields.
+ */
+function initRichTextEditors() {
+    const commonConfig = {
+        height: 300,
+        enableDragAndDropFileToEditor: true,
+        uploader: {
+            insertImageAsBase64URI: true,
+            url: '<?=site_url("addons/courses/upload_image")?>',
+            headers: {
+                'X-CSRF-TOKEN': '<?=$this->security->get_csrf_hash()?>'
+            },
+            defaultHandlerSuccess: function (data) {
+                return data.url;
+            }
+        },
+        video: {
+            insertVideoAsBase64URI: true,
+            url: '<?=site_url("addons/courses/upload_video")?>',
+            headers: {
+                'X-CSRF-TOKEN': '<?=$this->security->get_csrf_hash()?>'
+            },
+            defaultHandlerSuccess: function (data) {
+                return data.url;
+            }
+        },
+        toolbarAdaptive: false,
+        toolbarSticky: false,
+        toolbarStickyOffset: 0,
+        askBeforePasteHTML: false,
+        askBeforePasteFromWord: false,
+        showXPathInStatusbar: false,
+        showCharsCounter: false,
+        showWordsCounter: false,
+        showTooltip: false,
+        showPlaceholder: true,
+        useSearch: false,
+        spellcheck: false,
+        saveModeInCookie: false,
+        saveModeInStorage: false,
+        buttons: 'bold,italic,underline,strikethrough,|,align,undo,redo,|,ul,ol,|,outdent,indent,|,font,fontsize,brush,paragraph,|,image,video,link,|,hr,eraser,|,source,fullsize,preview,print'
+    };
+
+    const basicDescriptionEditor = new Jodit('#basic_description', $.extend({}, commonConfig, {
+        placeholder: 'Describe what students will learn in this course'
+    }));
+
+    const outcomesDescEditor = new Jodit('#outcomes_desc', $.extend({}, commonConfig, {
+        placeholder: '<?php echo get_phrase("List specific skills and knowledge students will gain"); ?>'
+    }));
+}
+
+
+// Ajouter dans initThumbnailPreview
+function initThumbnailPreview() {
+    $('#course_thumbnail').change(function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#thumbnail-preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
+
+/**
+ * Initializes Select2 for all form-select elements if the Select2 plugin is available.
+ * Applies Bootstrap 5 theme and light styling.
+ */
+function initDefaultSelect2() {
+    if ($.fn.select2) {
+        $('.form-select').select2({
+            width: '100%'
+        }).on('select2:open', function() {
+            // Apply specific background color when dropdown opens
+            $('.select2-dropdown').css('background-color', '#f5f5dc');
+            $('.select2-search__field').css('background-color', '#f5f5dc');
+            $('.select2-results').css('background-color', '#f5f5dc');
+        });
+        
+        // Apply background color to the selection container
+        $('.select2-selection').css('background-color', '#f5f5dc');
+    }
+}
+/**
+ * Updates the icons of the navigation tabs based on their active state.
+ * Active tabs get a primary color, while inactive ones are muted.
+ */
+function updateTabIcons() {
+    document.querySelectorAll('.course-steps-nav .nav-link').forEach(tab => {
+        const icon = tab.querySelector('i');
+        if (tab.classList.contains('active')) {
+            icon.classList.remove('text-muted');
+            icon.classList.add('text-primary');
+        } else {
+            icon.classList.remove('text-primary');
+            icon.classList.add('text-muted');
+        }
+    });
+}
+// Form validation function
+function checkRequiredFields() {
+    var isValid = true;
+    $('form.required-form').find('input, select, textarea').each(function() {
+        if ($(this).prop('required') && $(this).val() === '') {
+            isValid = false;
+            $(this).addClass('is-invalid');
+
+            // Switch to the tab containing the first invalid field
+            if (isValid === false) {
+                var tabId = $(this).closest('.tab-pane').attr('id');
+                $('.nav-link[href="#' + tabId + '"]').tab('show');
+                return false;
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+
+    if (isValid) {
+        $('form.required-form').submit();
+    } else {
+        toastr.error('<?php echo get_phrase("Please fill all required fields"); ?>');
+    }
+}
 </script>
