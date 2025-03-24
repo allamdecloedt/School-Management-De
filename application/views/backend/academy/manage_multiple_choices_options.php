@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/backend/css/manageMultipleQuiz.css">
+
 <?php for($i = 1; $i <= $number_of_options; $i++): ?>
     <div class="form-group options">
         <label><?php echo get_phrase('option').' '.$i;?></label>

@@ -1,8 +1,8 @@
 <script type="text/javascript">
-    $(document).ready(function () {
+    /*$(document).ready(function () {
         initSummerNote(['#description']);
         initSummerNote(['#outcomes_desc']);
-    });
+    });*/
 
     function filterCourse(){
         var url         = '<?php echo site_url('addons/courses'); ?>';
