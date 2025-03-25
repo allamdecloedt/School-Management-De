@@ -52,13 +52,15 @@
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
-                        <select class="form-control" name="section" id="section">
+                      
+                        <select class="form-control" name="section[]" id="section" multiple>
                             <?php 
                             $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
                             foreach ($sections as $section): ?>
                                 <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
                             <?php endforeach; ?>
                         </select>
+
                     </div>
                     <div class="form-group mt-2 col-md-12">
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
@@ -94,6 +96,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
+
+<script>
+    $(document).ready(function () {
+        $('#section').selectpicker();
+    });
+</script>
 <script>
   
     $(document).ready(function () {
@@ -134,9 +142,42 @@
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                $('#section').val(event.section);
+               
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
+  
+
+                     $.ajax({
+                        url: "<?= base_url('superadmin/get_sections'); ?>",
+                        type: "POST",
+                        data: { classe_id: event.classe_id },
+                        success: function (response) {
+
+                                var sections = JSON.parse(response);
+                                $('#section').empty();
+
+                                $.each(sections, function (key, value) {
+                                    $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                                });
+
+                                // 👇 Sélection multiple
+                                let selectedSections = event.section ? event.section.split(',') : [];
+                             
+
+                                // ⚠️ Attendre que les <option> soient bien injectés
+                                setTimeout(function () {
+                                    $('#section').val(selectedSections).trigger('change');
+                                    $('#section').selectpicker('destroy'); // Supprime Bootstrap Select
+                                    $('#section').selectpicker();
+                                }, 100);
+                        },
+                        error: function () {
+                            console.error("Erreur lors du chargement des sections.");
+                        }
+                    });
+
+
+                
 
                 $('#appointmentModal').modal('show');
 
@@ -188,6 +229,10 @@
             var classe_id = $('#classe_id').val();
             var section = $('#section').val();
             var room_id = $('#room_id').val();
+              // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
+            if (Array.isArray(section)) {
+                sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
+            }
 
             var url = id ? "<?= base_url('superadmin/update_appointment'); ?>" : "<?= base_url('superadmin/add_appointment'); ?>";
             var successMessage = id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté avec succès !";
@@ -196,7 +241,7 @@
             $.ajax({
                 url: url,
                 type: "POST",
-                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, section: section, room_id: room_id },
+                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, sections: sections, room_id: room_id },
                 success: function () {
                  
                     $('#appointmentModal').modal('hide');

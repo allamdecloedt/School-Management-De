@@ -115,6 +115,61 @@ class Teacher extends CI_Controller {
 		}
 			
 
+			
+			public function add_appointment() {
+			  // Récupération et sécurisation des données
+			  $title = $this->input->post('title', true);
+			  $start_date = $this->input->post('start', true);
+			  $description = $this->input->post('description', true);
+			  $classe_id = $this->input->post('classe_id', true);
+			  $room_id = $this->input->post('room_id', true);
+			  $sections = $this->input->post('sections'); // Tableau de sections sélectionnées
+			  
+			
+			 
+			  // Vérification : Les champs obligatoires ne doivent pas être vides
+			  if (empty($title) || empty($start_date)) {
+				  echo json_encode(["status" => "error", "message" => "Titre et date sont obligatoires"]);
+				  return;
+			  }
+		  
+			  // Création du tableau de données à insérer
+			  $data = array(
+				  'title' => $title,
+				  'start_date' => $start_date,
+				  'description' => $description,
+				  'classe_id' => $classe_id,
+				  'sections_id' => $sections, // Stockage sous forme "1,2,3"
+				  'room_id' => $room_id
+			  );
+		  
+			  // Insertion dans la base de données avec gestion d'erreur
+			  try {
+				  $this->db->insert('appointments', $data);
+				  echo json_encode(["status" => "success", "message" => "Rendez-vous ajouté avec succès"]);
+			  } catch (Exception $e) {
+				  echo json_encode(["status" => "error", "message" => "Erreur lors de l'ajout du rendez-vous : " . $e->getMessage()]);
+			  }
+			}
+		  
+			public function update_appointment() {
+			  $id = $this->input->post('id');
+			  // die( $id);
+		  
+			  $data = array(
+				  'title' => $this->input->post('title'),
+				  'start_date' => $this->input->post('start'),
+				  'description' => $this->input->post('description'),
+				  'classe_id' => $this->input->post('classe_id'),
+				  'sections_id' => $this->input->post('sections'),
+				  'room_id' => $this->input->post('room_id')
+			  );
+		  
+			  $this->db->where('id', $id);
+			  $this->db->update('appointments', $data);
+			  echo json_encode(["status" => "updated"]);
+		  }
+		  
 
 
 		public function get_sections() {

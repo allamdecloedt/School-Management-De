@@ -97,7 +97,7 @@ class Room_model extends CI_Model {
             appointments.start_date AS start, 
           
             appointments.description, 
-            appointments.section_id AS section, 
+            appointments.sections_id AS section, 
             appointments.classe_id, 
             appointments.room_id, 
 
@@ -127,68 +127,59 @@ class Room_model extends CI_Model {
     public function get_all_appointments_student() {
         $user_id = $this->session->userdata('user_id');
     
-        // 🔹 Vérifier si l'utilisateur est un étudiant (peut avoir plusieurs entrées)
+        // 🔹 Vérifie les entrées student liées à l'utilisateur
         $this->db->where('user_id', $user_id);
-        $students = $this->db->get('students')->result_array(); // Plusieurs entrées possibles
+        $students = $this->db->get('students')->result_array();
     
-        if (empty($students)) {
-            return []; // ✅ Aucun étudiant trouvé, retour vide
-        }
+        if (empty($students)) return [];
     
-        // 🔹 Récupérer TOUS les `student_id` associés à ce `user_id`
+        // 🔹 Récupère tous les student_id liés à l'utilisateur
         $student_ids = array_column($students, 'id');
-       
     
-        // 🔹 Récupérer toutes les classes où ces `student_id` sont inscrits
-      
-        $this->db->where_in('student_id', $student_ids); // ✅ Vérifie pour TOUS les student_id
+        // 🔹 Récupère toutes les inscriptions (enrols)
+        $this->db->where_in('student_id', $student_ids);
         $enrolled_classes = $this->db->get('enrols')->result_array();
-       
-        if (empty($enrolled_classes)) {
-            return []; // ✅ Aucun cours inscrit
+    
+        if (empty($enrolled_classes)) return [];
+    
+        // 🔹 Extract class, section, school IDs
+        $class_ids   = array_column($enrolled_classes, 'class_id');
+        $school_ids  = array_column($enrolled_classes, 'school_id');
+        $section_ids = array_unique(array_column($enrolled_classes, 'sections_id'));
+    
+        // 🔍 Récupération des rendez-vous liés à ces classes et sections
+        $this->db->select('
+            appointments.id, 
+            appointments.title, 
+            appointments.start_date AS start, 
+            appointments.description, 
+            appointments.sections_id AS section, 
+            appointments.classe_id, 
+            appointments.room_id
+        ');
+        $this->db->from('appointments');
+        $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+    
+        // 🔒 Filtres de sécurité
+        $this->db->where('appointments.Etat', 1);
+        $this->db->where('rooms.Etat', 1);
+        $this->db->where_in('appointments.classe_id', $class_ids);
+        $this->db->where_in('rooms.school_id', $school_ids);
+    
+        // 🔁 Ajoute une condition `OR FIND_IN_SET` pour chaque section
+        if (!empty($section_ids)) {
+            $this->db->group_start();
+            foreach ($section_ids as $sid) {
+                $this->db->or_where("FIND_IN_SET('$sid', appointments.sections_id) !=", 0);
+            }
+            $this->db->group_end();
         }
     
-        // 🔹 Extraire les IDs des classes
-        $class_ids = array_column($enrolled_classes, 'class_id');
-        $school_ids = array_column($enrolled_classes, 'school_id');
-        $section_ids = array_column($enrolled_classes, 'section_id');
-        // var_dump($class_ids)  ;
-      
+        $query = $this->db->get();
     
-                    $this->db->select('
-                    appointments.id, 
-                    appointments.title, 
-                    appointments.start_date AS start, 
-                
-                    appointments.description, 
-                    appointments.section_id AS section, 
-                    appointments.classe_id, 
-                    appointments.room_id, 
-
-                ');
-                $this->db->from('appointments');
-
-                // Jointure avec la table rooms pour récupérer les informations des salles
-                $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
-
-                // Filtre : récupérer uniquement les rendez-vous actifs
-                $this->db->where('rooms.Etat', 1);
-                $this->db->where('appointments.Etat', 1);
-                $this->db->where_in('appointments.classe_id', $class_ids);
-                $this->db->where_in('appointments.section_id', $section_ids);
-                $this->db->where_in('rooms.school_id', $school_ids);
-                // $this->db->where('rooms.school_id', $schoolID );
-
-                // Exécution de la requête
-                $query = $this->db->get();
-                
-                // Vérification si des résultats existent
-                if ($query->num_rows() > 0) {
-                    return $query->result_array(); // Retourne les résultats sous forme de tableau
-                } else {
-                    return []; // Retourne un tableau vide si aucun rendez-vous trouvé
-                }
+        return $query->num_rows() > 0 ? $query->result_array() : [];
     }
+    
 
 
     

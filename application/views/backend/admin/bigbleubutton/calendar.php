@@ -94,8 +94,17 @@
 
 
 <script>
+    $(document).ready(function () {
+        $('#section').selectpicker();
+    });
+</script>
+<script>
   
     $(document).ready(function () {
+
+        function closeModal() {
+            $("#appointmentModal").modal("hide");
+        }
         var calendar = $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -115,6 +124,7 @@
                 $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentModal').modal('show');
             },
+
             eventRender: function(event, element) {
                 let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
                 let title = event.title.replace(/(\d{2})a/, '$1:00 -'); // Nettoyer le titre
@@ -128,9 +138,42 @@
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                $('#section').val(event.section);
+                // $('#section').val("");
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
+  
+
+                     $.ajax({
+                        url: "<?= base_url('admin/get_sections'); ?>",
+                        type: "POST",
+                        data: { classe_id: event.classe_id },
+                        success: function (response) {
+
+                                var sections = JSON.parse(response);
+                                $('#section').empty();
+
+                                $.each(sections, function (key, value) {
+                                    $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                                });
+
+                                // 👇 Sélection multiple
+                                let selectedSections = event.section ? event.section.split(',') : [];
+                             
+
+                                // ⚠️ Attendre que les <option> soient bien injectés
+                                setTimeout(function () {
+                                    $('#section').val(selectedSections).trigger('change');
+                                    $('#section').selectpicker('destroy'); // Supprime Bootstrap Select
+                                    $('#section').selectpicker();
+                                }, 100);
+                        },
+                        error: function () {
+                            console.error("Erreur lors du chargement des sections.");
+                        }
+                    });
+
+
+                
 
                 $('#appointmentModal').modal('show');
 
@@ -182,17 +225,21 @@
             var classe_id = $('#classe_id').val();
             var section = $('#section').val();
             var room_id = $('#room_id').val();
+              // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
+            if (Array.isArray(section)) {
+                sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
+            }
 
-            var url = id ? "<?= base_url('admin/update_appointment'); ?>" : "<?= base_url('admin/add_appointment'); ?>";
+            var url = id ? "<?= base_url('admin/update_appointment'); ?>" : "<?= base_url('superadmin/add_appointment'); ?>";
             var successMessage = id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté avec succès !";
 
 
             $.ajax({
                 url: url,
                 type: "POST",
-                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, section: section, room_id: room_id },
+                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, sections: sections, room_id: room_id },
                 success: function () {
-                 
+                
                     $('#appointmentModal').modal('hide');
                     $('#calendar').fullCalendar('refetchEvents'); // Rafraîchir le calendrier
                     // alert(id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté !");
@@ -238,6 +285,7 @@
     }
 
 </script>
+
 
 
 
