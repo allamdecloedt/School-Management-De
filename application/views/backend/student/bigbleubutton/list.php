@@ -133,26 +133,19 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
 
                     <div class="form-group">
                         <label for="appointmentTitle">Titre du Rendez-vous</label>
-                        <input type="text" class="form-control" id="appointmentTitle" required>
+                        <input type="text" class="form-control" id="appointmentTitle" disabled>
                     </div>
                     <div class="form-group">
                         <label for="appointmentDate">Date et heure</label>
-                        <input type="datetime-local" class="form-control" id="appointmentDate" required>
+                        <input type="datetime-local" class="form-control"  id="appointmentDate" disabled>
                     </div>
                     <div class="form-group">
                         <label for="appointmentDescription">Description</label>
-                        <textarea class="form-control" id="appointmentDescription" rows="3"></textarea>
+                        <textarea class="form-control" id="appointmentDescription" rows="3" disabled></textarea>
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
-                        <select class="form-control" name="section" id="section">
-                            <?php 
-                            $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
-                            var_dump($classe_id);
-                            var_dump($sections);
-                            foreach ($sections as $section): ?>
-                                <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
-                            <?php endforeach; ?>
+                        <select class="form-control" name="section[]" id="section" multiple disabled >
                         </select>
                     </div>
                 
@@ -165,6 +158,8 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
 <script type="text/javascript">
    $(document).ready(function () {
 
+        $('#section').selectpicker();
+    
     function closeModal() {
         $("#appointmentModal").modal("hide");
     }
@@ -197,7 +192,7 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
 
             // 👉 Modifier un rendez-vous quand on clique dessus
             eventClick: function (event) {
-                console.log(event);
+      
                 $('#appointmentId').val(event.id); // Stocker l'ID
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
@@ -206,20 +201,35 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
              
-                    // $('#section').val(event.section).change();
-                    // Charger les sections dynamiquement
-                    $.ajax({
+
+                     // Charger les sections dynamiquement
+                     $.ajax({
                         url: "<?= base_url('student/get_sections'); ?>",
                         type: "POST",
                         data: { classe_id: event.classe_id },
                         success: function (response) {
-                            var sections = JSON.parse(response);
-                            $('#section').empty();
-                            $.each(sections, function (key, value) {
-                                $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                            });
 
-                            $('#section').val(event.section).change();
+                       
+
+                      
+
+                                var sections = JSON.parse(response);
+                                $('#section').empty();
+
+                                $.each(sections, function (key, value) {
+                                    $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                                });
+
+                                // 👇 Sélection multiple
+                                let selectedSections = event.section ? event.section.split(',') : [];
+                              
+
+                                // ⚠️ Attendre que les <option> soient bien injectés
+                                setTimeout(function () {
+                                    $('#section').val(selectedSections).trigger('change');
+                                    $('#section').selectpicker('destroy'); // Supprime Bootstrap Select
+                                    $('#section').selectpicker();
+                                }, 100);
                         },
                         error: function () {
                             console.error("Erreur lors du chargement des sections.");
