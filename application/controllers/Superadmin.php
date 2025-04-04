@@ -996,23 +996,42 @@ class Superadmin extends CI_Controller
     if ($param1 == 'create_single_student') {
 
       if ($param2 == "submit") {
-        $response = $this->user_model->single_student_create();
+        header('Content-Type: application/json'); // Force le retour JSON
+        $response_from_model = $this->user_model->single_student_create();
+        $status = ($response_from_model === true); // Check if the model returned true for success
+        //$this->session->set_flashdata('flash_message', get_phrase('student_added_successfully'));
+        // Ajout du token CSRF à la réponse
+        $response = [
+          'status' => $status,
+          'message' => $status ? get_phrase('student_added_successfully') : $this->session->flashdata('error'),
+          'redirect' => site_url('superadmin/student'),
+          'csrf' => [
+              'name' => $this->security->get_csrf_token_name(),
+              'hash' => $this->security->get_csrf_hash()
+          ]
+      ];
 
+      echo json_encode($response);
+      exit;
+    } else {
+        // Load the view with filtered data
         $page_data['class_id'] = html_escape($this->input->post('class_id'));
         $page_data['section_id'] = html_escape($this->input->post('section_id'));
         $page_data['working_page'] = 'filter';
         $page_data['folder_name'] = 'student';
         $page_data['page_title'] = 'student_list';
+
         $this->load->view('backend/index', $page_data);
-      } else {
-        $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-      }
     }
+  }else {
+    // Nouveau else ajouté pour la condition parente
+    $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+  }
 
     if ($param1 == 'create_bulk_student') {
       $response = $this->user_model->bulk_student_create();
       // echo $response;
-              // Préparer la réponse avec un nouveau jeton CSRF
+      // Préparer la réponse avec un nouveau jeton CSRF
       $csrf = array(
             'csrfName' => $this->security->get_csrf_token_name(),
               'csrfHash' => $this->security->get_csrf_hash(),
@@ -1035,14 +1054,15 @@ class Superadmin extends CI_Controller
       echo json_encode(array('status' => $response, 'csrf' => $csrf));
     }
 
-    // form view
-    if ($param1 == 'edit') {
-      $page_data['student_id'] = $param2;
-      $page_data['working_page'] = 'edit';
-      $page_data['folder_name'] = 'student';
-      $page_data['page_title'] = 'update_student_information';
-      $this->load->view('backend/index', $page_data);
-    }
+   // form view
+   if ($param1 == 'edit') {
+    $page_data['student_id'] = $param2;
+    $page_data['working_page'] = 'edit';
+    $page_data['folder_name'] = 'student';
+    $page_data['page_title'] = 'update_student_information';
+    $this->load->view('backend/index', $page_data);
+  }
+
 
     if ($param1 == 'status') {
       $this->db->where('id', $param3);
@@ -2130,22 +2150,27 @@ class Superadmin extends CI_Controller
   }
 
   public function website_update($param1 = "")
-  {
+{
     if ($param1 == 'general_settings') {
-      $response = $this->frontend_model->update_frontend_general_settings();
-      // Préparer la réponse avec un nouveau jeton CSRF
-      $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-                    );
-                  
-      // Renvoyer la réponse avec un nouveau jeton CSRF
-      echo json_encode(array('status' => $response, 'csrf' => $csrf));
-
+        // Force JSON Content-Type header
+        header('Content-Type: application/json');
+        
+        $update_status = $this->frontend_model->update_frontend_general_settings();
+        
+        $response = [
+            'status' => $update_status,
+            'notification' => $update_status ? get_phrase('general_settings_updated') : get_phrase('failed_to_update_settings'),
+            'csrf' => [
+                'name' => $this->security->get_csrf_token_name(),
+                'hash' => $this->security->get_csrf_hash()
+            ]
+        ];
+        
+        echo json_encode($response);
+        exit;
     }
+}
 
-    // echo $response;
-  }
 
   public function other_settings_update($param1 = "")
   {
@@ -2572,15 +2597,8 @@ class Superadmin extends CI_Controller
   {
     if ($param1 == 'update_profile') {
       $response = $this->user_model->update_profile();
-      // echo $response;
-            // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-                    );
-                  
-            // Renvoyer la réponse avec un nouveau jeton CSRF
-            echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      echo $response;
+           
     }
     if ($param1 == 'update_password') {
       $response = $this->user_model->update_password();
