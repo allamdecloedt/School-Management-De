@@ -192,14 +192,30 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 </div>
 
 
+<!-- Notification dynamique -->
+<div id="DynamicNotification" class="toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 p-2 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+            Action effectuée avec succès.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#section').selectpicker();
+    });
+</script>
 <script type="text/javascript">
-   $(document).ready(function () {
+        function closeModal() {
+            $("#appointmentModal").modal("hide");
+        }
 
-    function closeModal() {
-     $("#appointmentModal").modal("hide");
-    }
 
+    $(document).ready(function () {
         var calendar = $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -214,7 +230,9 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 
             // 👉 Ouvrir la popup quand on clique sur une date
             select: function (start, end, allDay) {
-           
+                $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
+                $('#appointmentId').val(""); // Vide l'ID
+                $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
 
                 $('#appointmentModal_NonID').modal('show');
             },
@@ -232,24 +250,37 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                // $('#section').val(event.section);
+    
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
-                // console.log(event);
-                    // $('#section').val(event.section).change();
+
+             
+         
                     // Charger les sections dynamiquement
                     $.ajax({
                         url: "<?= base_url('admin/get_sections'); ?>",
                         type: "POST",
                         data: { classe_id: event.classe_id },
                         success: function (response) {
-                            var sections = JSON.parse(response);
-                            $('#section').empty();
-                            $.each(sections, function (key, value) {
-                                $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                            });
+                      
 
-                            $('#section').val(event.section).change();
+                        
+                                var sections = JSON.parse(response);
+                                $('#section').empty();
+
+                                $.each(sections, function (key, value) {
+                                    $('#section').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                                });
+
+                                // 👇 Sélection multiple
+                                let selectedSections = event.section ? event.section.split(',') : [];
+
+                                // ⚠️ Attendre que les <option> soient bien injectés
+                                setTimeout(function () {
+                                    $('#section').val(selectedSections).trigger('change');
+                                    $('#section').selectpicker('destroy'); // Supprime Bootstrap Select
+                                    $('#section').selectpicker();
+                                }, 100);
                         },
                         error: function () {
                             console.error("Erreur lors du chargement des sections.");
@@ -305,15 +336,19 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             var classe_id = $('#classe_id').val();
             var section = $('#section').val();
             var room_id = $('#room_id').val();
+            // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
+            if (Array.isArray(section)) {
+                sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
+            }
 
-            var url = "<?= base_url('admin/update_appointment'); ?>" ;
+            var url = "<?= base_url('superadmin/update_appointment'); ?>" ;
             var successMessage =  "Rendez-vous mis à jour !";
 
 
             $.ajax({
                 url: url,
                 type: "POST",
-                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, section: section, room_id: room_id },
+                data: { id: id, title: title, start: start, description: description, classe_id: classe_id, sections: sections, room_id: room_id },
                 success: function () {
                  
                     $('#appointmentModal').modal('hide');
@@ -327,4 +362,28 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             });
         });
     });
+
+    // Fonction pour afficher une notification dynamique avec un message personnalisé
+    function showNotification(message, type = "success") {
+        let toastEl = document.getElementById("DynamicNotification");
+
+        // Modifier le texte et la classe de la notification
+        let toastBody = toastEl.querySelector(".toast-body");
+        toastBody.innerHTML = message;
+
+        // Modifier la couleur selon le type (success, danger, warning, info)
+        toastEl.className = "toast align-items-center text-white border-0 position-fixed bottom-0 end-0 p-2 m-3";
+        if (type === "success") {
+            toastEl.classList.add("bg-success");
+        } else if (type === "error") {
+            toastEl.classList.add("bg-danger");
+        } else if (type === "warning") {
+            toastEl.classList.add("bg-warning text-dark");
+        } else {
+            toastEl.classList.add("bg-info");
+        }
+
+        let toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
 </script>

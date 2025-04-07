@@ -1347,9 +1347,32 @@
     "chat_&_discussions": "Chat & discussions",
     "accueil": "Accueil",
     "visit_dashboard": "Visit dashboard",
+
     "updating": "Mise à jour",
     "adding":"Ajouté",
     "student_image": "Image de l'étudiant",
     "action_not_allowed":"Action non autorisée",
-    "an_error_occurred_during_submission":"Une erreur est survenue lors de l'envoi"
+    "an_error_occurred_during_submission":"Une erreur est survenue lors de l'envoi",
+
+    "enter_an_engaging_course_title": "Titre du cours engageant",
+    "a_compelling_title_helps_attract_more_students": "Un titre accrocheur aide à attirer plus d'étudiants.",
+    "describe_what_students_will_learn_in_this_course": "Décrivez ce que les étudiants apprendront dans ce cours.",
+    "academic_information": "Academic information",
+    "previous": "Previous",
+    "learning_outcomes": "Résultats d'apprentissage",
+    "what_will_students_achieve?": "Qu'est-ce que les étudiants accompliront?",
+    "list_specific_skills_and_knowledge_students_will_gain": "Liste des compétences spécifiques et des connaissances que les étudiants acquerront",
+    "course_media": "Course media",
+    "video_provider": "Video provider",
+    "https://www.youtube.com/watch?v=example": "Https://www.youtube.com/watch?v=example",
+    "choose_image": "Choose image",
+    "recommended_size:_800_×_530_pixels": "Recommended size: 800 × 530 pixels",
+    "ready_to_create_course": "Prêt à créer le cours",
+    "please_review_all_information_before_submitting._your_course_will_be_available_after_approval.": "Veuillez vérifier toutes les informations avant de soumettre. Votre cours sera disponible après approbation.",
+    "submit_course": "Soumettre le cours",
+    "please_fill_all_required_fields": "Veuillez remplir tous les champs obligatoires.",
+    "ready_to_update_course": "Prêt à mettre à jour le cours",
+    "please_review_all_information_before_submitting._your_course_details_will_be_updated.": "Veuillez vérifier toutes les informations avant de soumettre. Les détails de votre cours seront mis à jour.",
+    "update_course": "Mettre à jour le cours"
+
 }

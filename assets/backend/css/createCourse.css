@@ -1,0 +1,165 @@
+/* Custom styles for the form */
+.form-wrapper {
+    overflow: hidden;
+    background-color: #f5f5dc !important; /* Soft Beige Background */
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+    border-radius: 0.75rem;
+}
+.fw-normal {
+    font-weight: normal !important; /* Keep the original font weight */
+    font-size: 2rem;         /* Add font-size here - BE CAREFUL */
+}
+.form-label {
+    color: #2d3748 !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.text-secondary {
+    color: #495057 !important; /* A slightly darker grey - adjust as needed */
+    opacity: 1 !important;      /* Ensure it's fully opaque (just in case) */
+    font-size: 0.85rem;
+}
+/* Course Steps Navigation Tabs */
+.course-steps-nav {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0.75rem 0.75rem 0 0;
+    overflow: hidden;
+}
+.course-steps-nav .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+.course-steps-nav .nav-link:hover {
+    color: #495057;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+.course-steps-nav .nav-link.active {
+    color: #4361ee;
+    background-color: #eef2f7;
+    border-bottom: 3px solid #4361ee;
+}
+/* Form Controls */
+.form-control,
+.form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #f5f5dc !important; /* Soft Beige Background */
+}
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+    border-color: #4361ee;
+    background-color: #f5f5dc !important; /* Soft Beige Background */
+}
+.form-select {
+    font-size: 0.95rem; /* Adjust to your desired smaller size for the button text */
+}
+.form-select option:first-child { /* Target the first option in form-select */
+    color: #6c757d;       /* A medium grey, adjust to your preference */
+    opacity: 1;          /* Ensure it's fully opaque */
+    font-size: 1rem;      /* Slightly larger font size if desired, adjust as needed */
+    font-weight: 500;     /* Make it a bit bolder, optional */
+}
+.form-control::placeholder { /* Standard placeholder selector */
+    color: #6c757d;       /* A medium grey, adjust to your preference */
+    opacity: 1;          /* Ensure it's fully opaque */
+    font-size: 1rem;      /* Slightly larger font size if desired, adjust as needed */
+    font-weight: 500;     /* Make it a bit bolder, optional */
+}
+/* Custom styles for btn-outline-primary for Previous and Next buttons */
+.custom-navigation-buttons .btn-outline-primary {
+    border: 1px solid #e6eeff;
+    background-color: white;
+    color: #3b82f6;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.05);
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+}
+/* Hover effect for the buttons */
+.custom-navigation-buttons .btn-outline-primary:hover {
+    background-color: #3a56d8;
+    border-color: #3a56d8;
+    color:#fff;
+}
+
+
+/* Success Button */
+.btn-success {
+    background-color: #38b000;
+    border-color: #38b000;
+}
+.btn-success:hover {
+    background-color: #2d9200;
+    border-color: #2d9200;
+}/* Header Container */
+.header-container {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+/* Back Button Styling */
+.btn-back:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    background-color: #f8f9fa;
+ 
+}
+/* Title Styling */
+.header-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+/* Text Color */
+.text-slate-800 {
+    color: #1e293b;
+}
+/* Thumbnail Upload Area */
+.thumbnail-upload {
+    transition: all 0.2s ease;
+    background-color: #f5f5dc !important; /* Soft Beige Background */
+    border: 1px dashed #ced4da;
+}
+.thumbnail-upload:hover {
+    background-color: #f5f5dc !important; /* Soft Beige Background */
+}
+/* Tab Content Area */
+.tab-content {
+    background-color: #ffffff !important; /* White Background for tab content */
+    padding: 20px;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+/* Ensure tab-pane content area is transparent */
+.tab-pane {
+    background-color: transparent !important;
+}
+/* Add responsive rules for smaller screens */
+@media (max-width: 768px) {
+    /* Custom navigation buttons for screens smaller than 768px */
+    .custom-navigation-buttons {
+        justify-content: space-between; /* Ensure buttons are spaced between each other */
+        padding: 0 5px !important; /* Reduce the lateral padding to make space for smaller screens */
+        gap: 0; /* Remove the gap between the buttons */
+    }
+
+    /* Style for the individual buttons */
+    .custom-navigation-buttons .btn-outline-primary {
+        flex: 1 1 auto; /* Allow buttons to resize and adapt more flexibly */
+        margin: 0 2px; /* Apply a tiny margin between buttons */
+        min-width: unset; /* Remove the minimum width constraint */
+        padding: 12px 5px !important; /* Reduce horizontal padding for smaller screens */
+    }
+
+    /* Version for very small screens (max-width 480px) */
+    @media (max-width: 480px) {
+        .custom-navigation-buttons .btn-outline-primary {
+            font-size: 12px; /* Reduce font size to fit better on small screens */
+            padding: 10px 3px !important; /* Further reduce padding for even smaller screens */
+        }
+    }
+}
