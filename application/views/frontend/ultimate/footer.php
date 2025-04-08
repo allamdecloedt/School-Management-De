@@ -14,8 +14,10 @@ $links = json_decode($social);
         <div>
           <ul class="list-group list-group-flush list-group-borderless text-break ">
            <h4 class="h6 font-weight-semi-bold pb-4 pt-4 pt-sm-0 light-border-bottom">Contact</h4>
-            <li class="list-group-item text-light custom-list-group-item">
+            <li class="list-group-item custom-list-group-item">
+              <a class="footer-phone" href="tel:<?php echo get_settings('phone'); ?>">
               <?php echo get_settings('phone'); ?>
+              </a>
             </li>
             <li class="list-group-item custom-list-group-item">
               <a class="footer-email" href="mailto:<?php echo get_settings('system_email'); ?>">
@@ -23,7 +25,9 @@ $links = json_decode($social);
               </a>
             </li>
             <li class="list-group-item custom-list-group-item">
+              <a class="footer-address" href="<?php echo site_url('home/contact#map'); ?>">
               <?php echo get_settings('address'); ?>
+              </a>
             </li>
           </ul>
         </div>
