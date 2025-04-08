@@ -1,8 +1,80 @@
 RewriteEngine On
+
+# Blocage complet du répertoire vendor
+RewriteCond %{REQUEST_URI} ^/School-Management-De/vendor/ [NC]
+RewriteRule ^ - [F,L]
+
+# Redirection vers index.php pour les ressources inexistantes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
 
+# Empêcher l'indexation des répertoires
+Options -Indexes
+
+# Protection des images contre l'accès direct et ouverture dans nouvel onglet
+<IfModule mod_rewrite.c>
+    # Si la requête cible une image
+    RewriteCond %{REQUEST_URI} \.(jpe?g|png|gif|svg|webp)$ [NC]
+    
+   
+    # Et si le referrer est vide (accès direct) ou n'est pas de votre domaine
+    RewriteCond %{HTTP_REFERER} !^https?://(www\.)?(localhost|wayo\.academy)(:[0-9]+)?/School-Management-De [NC]
+    RewriteCond %{HTTP_REFERER} ^$
+    
+    # Alors bloquer avec erreur 403
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Ajouter des en-têtes spécifiques pour les images
+<FilesMatch "\.(jpe?g|png|gif|svg|webp)$">
+    # Cette directive permet de cibler tous les fichiers dont l'extension est .jpg, .jpeg, .png, .gif, .svg ou .webp.
+    # Cela signifie que les règles suivantes s'appliqueront uniquement à ces types d'images.
+    
+    Header set X-Content-Type-Options "nosniff"
+    # Cette directive ajoute un en-tête HTTP qui empêche les navigateurs de "deviner" le type de contenu.
+    # Elle est utilisée pour renforcer la sécurité, en particulier contre certains types d'attaques comme le "MIME sniffing",
+    # où le navigateur pourrait tenter d'interpréter un fichier comme un autre type (par exemple, un script).
+
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Cette directive empêche le contenu de la page d'être affiché dans un <iframe>, <object> ou <embed> d'un autre site web.
+    # "SAMEORIGIN" signifie que l'image peut être affichée dans un cadre (frame) seulement si elle provient du même domaine que la page.
+    # Cela empêche certaines attaques comme le "clickjacking" où un autre site tente d'afficher votre contenu dans un cadre invisible.
+
+    Header set Content-Security-Policy "img-src 'self'; frame-ancestors 'self'"
+    # La politique de sécurité du contenu (CSP) est définie ici. Cette règle stipule que les images (img-src) ne peuvent être
+    # chargées que depuis le même domaine (source 'self').
+    # La règle "frame-ancestors 'self'" signifie que l'image ne peut être incluse dans un cadre (frame) que si elle provient
+    # du même domaine (encore une fois pour limiter le risque de clickjacking).
+
+    Header set Cache-Control "private, no-store, no-cache, must-revalidate, max-age=0"
+    # Cette directive définit des instructions pour le cache.
+    # - "private" indique que la ressource est destinée à un seul utilisateur et ne doit pas être mise en cache par un proxy partagé.
+    # - "no-store" empêche la mise en cache de la ressource.
+    # - "no-cache" indique que la ressource ne doit pas être utilisée sans être vérifiée au préalable.
+    # - "must-revalidate" impose que la ressource soit validée avant de l'utiliser.
+    # - "max-age=0" signifie que la ressource est immédiatement périmée, ce qui empêche tout stockage en cache.
+
+    Header unset ETag
+     # Cette directive supprime l'en-tête ETag.
+    # Un ETag est un identifiant unique généré par le serveur pour identifier la version d'un fichier.
+    # En supprimant cet en-tête, on évite que le navigateur fasse des comparaisons entre les versions locales du fichier et celles du serveur,
+    # ce qui peut aider à réduire le risque de certaines attaques ou d'incohérences dans le cache.
+</FilesMatch>
+
+# Bloquer l'accès direct aux fichiers dans les dossiers sensibles
+RewriteCond %{REQUEST_URI} ^/School-Management-De/(assets|system|update|update_pack|uploads)/ [NC]
+# Vérifie si l'URL demande un fichier dans les répertoires spécifiés (assets, system, etc.).
+
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?(localhost|wayo\.academy)(:[0-9]+)?/School-Management-De [NC]
+# Vérifie si la demande ne vient pas de "localhost" ou "127.0.0.1" ou wayoacedemy pour le domaine spécifié.
+
+RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
+# Interdit l'accès à certains types de fichiers (images, CSS, JS, etc.) dans les répertoires spécifiés.
+# [F] bloque l'accès, [L] arrête les règles après celle-ci, [NC] signifie insensible à la casse.
+
+# Page d'erreur personnalisée pour les erreurs 403
+ErrorDocument 403 /School-Management-De/application/views/errors/html/error_403.php
 
 
 # Activer la réécriture d'URL
