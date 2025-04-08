@@ -1,0 +1,148 @@
+/* Modern Logo Upload Interface */
+.logo-upload-container {
+    padding: 20px 0;
+  }
+  
+  .logo-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  
+  .logo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  .mdi {
+    margin-right: 12px; /* Espace après l'icône */
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+  }
+  .logo-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo-header h5 {
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .logo-preview {
+    height: 150px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .small-preview {
+    height: 120px;
+  }
+  
+  .preview-image {
+    max-width: 100%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+  
+  .logo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .logo-overlay i {
+    color: #ffffff;
+    font-size: 24px;
+  }
+  
+  .logo-preview:hover .logo-overlay {
+    opacity: 1;
+  }
+  
+  .logo-upload-btn {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .logo-upload-btn label {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    padding: 10px 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .logo-upload-btn label:hover {
+    background-color: #3b5998;
+  }
+  
+  .logo-upload-btn i {
+    margin-right: 8px;
+  }
+  
+  .image-upload {
+    display: none;
+  }
+  
+  #update-logos-btn {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border: none;
+    border-radius: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  #update-logos-btn:hover {
+    background-color: #3b5998;
+  }
+  
+  #update-logos-btn i {
+    margin-right: 8px;
+  }
+  
+  /* Animations for upload success */
+  @keyframes success-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+  }
+  .upload-highlight {
+    animation: pulse-highlight 1.5s ease-out;
+}
+
+@keyframes pulse-highlight {
+    0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+.preview-image {
+    transition: border-color 0.3s ease;
+}
