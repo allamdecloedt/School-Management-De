@@ -14,7 +14,7 @@ body,
 main {
   position: relative;
   z-index: -3 !important;
-  background: #212121 !important;
+  background: #000000 !important;
   font-family: var(--font-primary);
 }
 #mobile-version-announcement img {
@@ -42,7 +42,7 @@ main {
   /* align-items: center; */
   justify-content: center;
   width: 100%;
-
+  background: linear-gradient(to right, #ffffff, #FFD071, #FF9F44);
 }
 .marg_wayo {
     margin-left: 28px;
@@ -52,8 +52,6 @@ main {
   flex: 1;
   display: flex;
   justify-content: center;
-  /* align-items: center; */
-  background-color: #ffffff; /* Couleur de fond pour un meilleur contraste */
 }
 .image-container img {
   max-width: 100%;
@@ -61,13 +59,10 @@ main {
 }
 .text-container_wayo {
   flex: 1;
-  /* padding: 60px; */
-  background-color: #cdc9e1; /* Couleur de fond blanche */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center;
-  text-align: center; */
+
 }
 
 .text-container p {
@@ -76,7 +71,9 @@ main {
   line-height: 1.5;
 }
 
-
+.card-mentors {
+  background: linear-gradient(to right, #ED9838, #EFA149, #F0AB5A);
+}
 
 
 
@@ -128,7 +125,6 @@ main {
 @media (max-width: 992px) {
  
   .text-container h1 {
-    margin-bottom: 89px;
     color: #ffffff;
   }
   
@@ -148,7 +144,6 @@ main {
 
 .general-container {
   position: relative;
-  background: #212121ba;
   align-items: center;
   width: 100%;
   min-height: 300px;
@@ -194,6 +189,7 @@ main {
   z-index: -1;
 }
 
+
 .general-header h1 {
   position: absolute;
   width: 100%;
@@ -226,27 +222,6 @@ main {
   opacity: 0.1;
 }
 
-.general-header div:nth-child(2) {
-  -webkit-box-shadow: 0 0 45vmax 45vmax #212121;
-  box-shadow: 0 0 45vmax 45vmax #212121;
-  -webkit-animation: hue 10s 0s linear infinite, move1 19s 0s linear infinite;
-  animation: hue 10s 0s linear infinite, move1 19s 0s linear infinite;
-}
-
-.general-header div:nth-child(3) {
-  -webkit-box-shadow: 0 0 45vmax 45vmax #282828;
-  box-shadow: 0 0 45vmax 45vmax #474747;
-  -webkit-animation: hue 15s 0s linear infinite, move2 25s 0s linear infinite;
-  animation: hue 15s 0s linear infinite, move2 25s 0s linear infinite;
-}
-
-.general-header div:nth-child(4) {
-  -webkit-box-shadow: 0 0 45vmax 45vmax #e7e7e7;
-  box-shadow: 0 0 45vmax 45vmax #b0b0b0;
-  -webkit-animation: hue 20s 0s linear infinite, move3 15s 0s linear infinite;
-  animation: hue 20s 0s linear infinite, move3 15s 0s linear infinite;
-  opacity: 0.2;
-}
 @-webkit-keyframes hue {
   0% {
     -webkit-filter: hue-rotate(0deg);

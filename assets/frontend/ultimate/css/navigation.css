@@ -18,9 +18,14 @@ Navigation Styling
   top: 0;
   height: 80px;
   font-weight: 600;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: transparent; /* Transparent par défaut */
   z-index: 1;
   transition: all 0.2s;
+}
+
+/* Classe qui s'ajoute quand on scroll */
+.sticky-nav.scrolled {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 #navBar {
@@ -39,7 +44,6 @@ Navigation Styling
 
 .small-nav {
   height: 60px !important;
-  background: #212121;
   overflow: visible;
   width: 100%;
 
@@ -91,9 +95,17 @@ Navigation Styling
 }
 
 .show {
+  background-color: black;
   opacity: 1;
   transition: all 0.5s;
-  height: auto !important;
+  height: 292px !important;
+}
+
+
+.register-choice-dropdown.show,
+.learner-form-container.show,
+.form-step.show {
+  background-color: transparent !important; /* Force la transparence */
 }
 
 .display-none {
@@ -205,7 +217,7 @@ label div:last-child {
 
 .register-dropdown {
   position: absolute;
-  height: 300px !important;
+  height: 350px !important;
   width: 400px;
   top: 60px;
   right: 0;
@@ -305,7 +317,7 @@ label div:last-child {
 }
 
 .register-link:hover {
-  color: #8f00af;
+  color: rgba(210, 210, 210, 0.7);
   transition: all 0.3s;
 }
 
@@ -319,7 +331,7 @@ label div:last-child {
 }
 
 .forget-link:hover {
-  color: #8f00af;
+  color: rgba(210, 210, 210, 0.7);
   transition: all 0.3s;
 }
 
@@ -327,7 +339,7 @@ label div:last-child {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background-color: rgba(143, 0, 175, 0.55);
+  background-color: rgba(210, 130, 45, 0.7);
   padding: 5px 10px;
   border-radius: 6px;
   color: #ffffff !important;
@@ -344,7 +356,7 @@ label div:last-child {
   font-size: 12px;
   bottom: 20px;
   left: 20px;
-  background-color: rgba(143, 0, 175, 0.55);
+  background-color: rgba(210, 130, 45, 0.7);
   padding: 5px 10px;
   border-radius: 6px;
   color: #ffffff !important;
@@ -416,11 +428,11 @@ label div:last-child {
 
 .step.active {
   opacity: 1;
-  background-color: #8f00afff;
+  background-color: rgba(210, 130, 45, 0.7);
 }
 
 .step.finish {
-  background-color: #8f00afff;
+  background-color: rgba(210, 130, 45, 0.7);
 }
 
 .tab {
@@ -429,7 +441,7 @@ label div:last-child {
 
 .register-button {
   position: absolute;
-  background-color: rgb(143, 0, 175);
+  background-color: rgba(210, 130, 45, 0.7);
   padding: 5px 10px;
   right: 0;
   color: #ffffff;
@@ -460,7 +472,7 @@ label div:last-child {
 }
 
 .loginforge-link:hover {
-  color: #8f00af !important;
+  color: rgba(210, 130, 45, 0.7) !important;
   transition: all 0.3s;
 }
 .loginforge-link {
@@ -477,7 +489,7 @@ label div:last-child {
 }
 
 .loginforge-link:hover {
-  color: #8f00af !important;
+  color: rgba(210, 130, 45, 0.7) !important;
   transition: all 0.3s;
 }
 
@@ -532,7 +544,7 @@ select.invalid {
   border-radius: 5px;
   border: none;
   height: 35px;
-  background-color: rgb(143, 0, 175);
+  background-color: rgba(210, 130, 45, 0.7);
   font-size: 14px;
   border: #515151 1px solid;
 }
@@ -725,7 +737,7 @@ Responsive Styling
 
 @media (min-width: 1200px) {
   .bottom_nav{
-    bottom: 87% !important;
+    bottom: 91% !important;
   }
   .user-dropdown {
     position: fixed;
@@ -774,7 +786,7 @@ Responsive Styling
     bottom: 53% !important;
   }
   .button_with{
-    width: 34%;
+    width: 38%;
   }
 }
 

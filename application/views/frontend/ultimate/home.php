@@ -1,346 +1,640 @@
-<!-- ========== MAIN ========== -->
-<?php
+<!-- ========== MAIN ========== --> <?php
 $slider = get_frontend_settings('slider_images');
 $slider_images = json_decode($slider);
 $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
-?>
+?>  <!-- Ajout d'un style pour gérer le min-height sur les petits écrans -->
+<style>
+  @media (max-width: 1024px) {
+        #intro-container {
+            min-height: 150vh !important;
+        }
+    }
+    @media (max-width: 1024px) {
+        #intro-container {
+            min-height: 110vh !important;
+        }
+    }
+    @media (max-width: 991px) {
+        #intro-container {
+            min-height: 110vh !important;
+        }
+    }
+    @media (max-width: 400px) {
+        #intro-container {
+            min-height: 120vh !important;
+        }
+    }
+    @media (max-width: 402px) {
+      .btn-discov {
+      padding-left: 12px !important;
+  padding-right: 12px !important;
+          }
+    }
+    .btn-discov {
+      padding-left: 112px;
+  padding-right: 112px;
+          }
+</style>
 <main class="" id="content" role="main">
-
   <!-- Intro Section -->
-
-  <div class=" intro-section">
-    <div id="intro-container" class="intro-container" >
-    <!-- Contenu de votre page -->
-    <?php $this->load->view('frontend/alert_view'); ?>
-    <!-- Autres contenus de la page -->
-      <div class="container pt-5 section-height">
-        <div class="row">
-          <div class="col-lg-6 mb-7 mb-lg-0 align-content-center intro-container-content-front">
-            <div class="pr-md-4">
-
-            <div class="background"></div>
-
-            <div class="text-container">
-                <div class="title">Your mentorship</div>
-                <div class="title">their success</div>
-
-
-                <div class="subtitle">Strengthen loyalty, maintain engagement and drive growth</div>
-
-            </div>
-              <!-- Title -->
-              <!-- <div class="mb-7 intro-text-section"> -->
-                <!-- <h2 class="display-3  text-md-start text-center text-break text-uppercase" style="font-size: 3.5em;">Learning that suits you. </h2> -->
-                <!-- <?php //echo get_frontend_settings('homepage_note_title'); ?>-->
-
-                <!-- <p class="h4 text-center text-break intro-container-content-back"> -->
-                  <!--<?php //echo htmlspecialchars_decode(get_frontend_settings('homepage_note_description')); ?>-->
-                  <!-- <span class="intro-container-content-back">Empowering skills for today and tomorrow</span></br> -->
-                  <!-- <span class="intro-container-content-back">We're here to support you every step of the way.</span> -->
-                <!-- </p> -->
-              <!-- </div> -->
-              <!-- End Title -->
-              <!-- Buttons -->
-              <div class="text-center">
-                <div class="row justify-content-center">
-                  <!-- Student Admission Button -->
-                  <div class="col-sm-auto w-50 align-self-center pb-2">
-                    <a class="text-light btn btn-change5 btn-sm w-100 violet-button"
-                      href="<?php echo site_url('admission/online_admission_student'); ?>">
-                      Student admission
-                    </a>
-                  </div>
-                  <!-- Mentor Admission Button -->
-                  <div class="col-sm-auto w-50 align-self-center pb-2">
-                    <a class="text-light btn btn-change5 btn-sm w-100 violet-button"
-                      href="<?php echo site_url('admission/online_admission'); ?>">
-                      Mentor admission
-                    </a>
-                  </div>
+  <div class="intro-section">
+  <div id="intro-container" class="intro-container position-relative" style="min-height: 100vh;">
+    <!-- Background -->
+    <div class="position-absolute top-0 start-0 end-0 bottom-0 opacity-75" style="background-image: url('uploads/images/decloedt/home/main_bg.jpg'); background-size: cover; background-position: center; filter: brightness(40%); z-index: 0;"></div>
+    <!-- Container for content -->
+    <div class="container" style="padding-top: 13%;">
+        <div class="row position-relative" style="z-index: 1;">
+            <!-- Left Column -->
+            <div class="col-lg-6 mb-5 mb-lg-0 d-flex align-items-center">
+                <div class="px-md-4 w-100">
+                    <div class="text-container">
+                        <h1 class="text-white fw-bold fs-3 display-6 display-md-4 display-lg-3">YOUR MENTORSHIP THEIR SUCCESS</h1>
+                        <p class="text-white fs-4.5 fs-md-4 fs-lg-3">Strengthen loyalty, maintain engagement and drive growth</p>
+                    </div>
+                    <!-- Buttons -->
+                    <div class="text-center ">
+                        <div class="row justify-content-center g-3">
+                            <!-- Student Admission Button -->
+                            <div class="col-auto">
+                                <a class="btn text-white border-3 shadow-sm rounded-3 w-100 w-md-auto px-4 py-2" style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('admission/online_admission_student'); ?>">Student admission</a>
+                            </div>
+                            <!-- Mentor Admission Button -->
+                            <div class="col-auto">
+                                <a class="btn text-white border-3 shadow-sm rounded-3 w-100 w-md-auto px-4 py-2" style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('admission/online_admission'); ?>">Mentor admission</a>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-3">
+                            <!-- Discover Our Courses Button -->
+                            <div class="col-auto">
+                                <a class="btn text-white border-3 shadow-sm rounded-3 w-100 w-md-auto btn-discov py-2" style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('home/courses'); ?>">Discover our courses</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Buttons -->
                 </div>
-                <div class="row justify-content-center">
-                  <!-- Discover Our Courses Button -->
-                  <div class="col-sm-auto w-100 align-self-center mt-3">
-                    <a class="text-light btn btn-change6  w-50 violet-button"
-                      href="<?php echo site_url('home/courses'); ?>">
-                      Discover our courses
-                    </a>
-                  </div>
+            </div>
+            <!-- Right Column -->
+            <div class="col-lg-6 mt-3 mb-lg-0 d-flex align-items-center">
+                <div class="text-container text-center text-lg-center w-100">
+                    <p class="text-white fw-bold fs-4 fs-md-4">Enjoy 30 days free to explore Wayo Academy!</p>
+                    <p class="text-white fw-bold fs-4 fs-md-4">Offer valid until June 28th</p>
+                    <a class="btn text-white border-5 shadow-sm rounded-3 w-75 w-md-auto px-5 py-3 fw-bold " style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('home/courses'); ?>">START NOW</a>
                 </div>
-              </div>
-
-
-              <!-- End Buttons -->
             </div>
-          </div>
-          <!-- Intro section image-->
-          <div class="col-lg-6 intro-container-content-back">
-            <div class="intro-img intro-container-content-back">
-              <img class="" src="uploads/images/decloedt/home/19198419.jpg" alt="Image">
-            </div>
-          </div>
-          <!-- End Intro section image -->
-          <!-- Social Media Buttons -->
-          <div class="container">
-            <div class="row">
-              <div class="">
-                <!-- <p class="social-media-main-text text-uppercase intro-container-content-front">Suivez Nous!</p> -->
-              </div>
-              <div class="col-12 social-media-buttons intro-container-content-front ">
-                <ul class=" intro-container-content-front">
-                  <!-- <li>
-                    <a class="facebook  intro-container-content-front" href="#">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <svg class="mb-2  intro-container-content-front" xmlns="http://www.w3.org/2000/svg" width="16"
-                        height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-                        <path
-                          d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="twitter-x  intro-container-content-front" href="#">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <svg class="mb-2  intro-container-content-front" xmlns="http://www.w3.org/2000/svg" width="16"
-                        height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-                        <path
-                          d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="instagram  intro-container-content-front" href="#">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <svg class="mb-2  intro-container-content-front" xmlns="http://www.w3.org/2000/svg" width="16"
-                        height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-                        <path
-                          d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334" />
-                      </svg>
-                    </a>
-                  </li> -->
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- End Social Media Buttons -->
         </div>
-      </div>
     </div>
-    <!-- End Intro Section -->
-    <svg id="visual" class="spacer-top" viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
-      <path
-        d="M0 47L75 39L150 16L225 22L300 49L375 43L450 29L525 11L600 17L675 39L750 16L825 41L900 14L900 101L825 101L750 101L675 101L600 101L525 101L450 101L375 101L300 101L225 101L150 101L75 101L0 101Z"
-        fill="#3a3c43"></path>
-      <path
-        d="M0 45L75 47L150 31L225 38L300 33L375 56L450 34L525 42L600 56L675 63L750 34L825 62L900 29L900 101L825 101L750 101L675 101L600 101L525 101L450 101L375 101L300 101L225 101L150 101L75 101L0 101Z"
-        fill="#33353a"></path>
-      <path
-        d="M0 51L75 58L150 44L225 58L300 64L375 74L450 41L525 43L600 73L675 62L750 66L825 66L900 53L900 101L825 101L750 101L675 101L600 101L525 101L450 101L375 101L300 101L225 101L150 101L75 101L0 101Z"
-        fill="#2d2e32"></path>
-      <path
-        d="M0 66L75 63L150 69L225 65L300 56L375 60L450 79L525 64L600 75L675 60L750 77L825 56L900 58L900 101L825 101L750 101L675 101L600 101L525 101L450 101L375 101L300 101L225 101L150 101L75 101L0 101Z"
-        fill="#272729"></path>
-      <path
-        d="M0 92L75 82L150 83L225 88L300 78L375 93L450 73L525 79L600 94L675 81L750 82L825 90L900 82L900 101L825 101L750 101L675 101L600 101L525 101L450 101L375 101L300 101L225 101L150 101L75 101L0 101Z"
-        fill="#212121"></path>
-    </svg>
-  </div>
+    <!-- Image positioned bottom-right -->
+    <img src="uploads/images/decloedt/home/bg_ClaimYourFreeTrial.png" class="position-absolute bottom-0 end-0" style="max-width: 100%; width: 600px; height: auto; z-index: 1;" alt="Claim Your Free Trial">
+</div>
 
-
-
-<div id="mentors-section" >
-  <!-- Teacher Section -->
-  <div class="section-height teacher-section"  >
-    <!-- Title -->
-    <h2 class="social-media-main-text">Meet Your Mentors</h2>
-    <!-- End Title -->
-
-
-    <!-- Teacher Cards Carousel Start-->
-
-    <!-- This is a place holder carousel -->
-
-
-    <div class="container teacher-carousel-container">
-      <div class="owl-carousel owl-theme  justify-content-center">
-
-        <div class="teacher-card ">
-          <div class="teacher-card-img">
-            <img src="https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=800">
-          </div>
-          <div class="teacher-card-desc">
-            <h6 class="teacher-card-primary-text">Fattah</h6>
-            <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
-          </div>
-          
-          <div class="teacher-card-details">
-            <div class="">
-              <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
-                <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="30" height="30"
-                  fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
-                  <path
-                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                </svg>
-              </a>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="teacher-card ">
-          <div class="teacher-card-img">
-            <img
-              src="https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&w=800">
-          </div>
-          <div class="teacher-card-desc">
-            <h6 class="teacher-card-primary-text">Mehdi</h6>
-            <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
-          </div>
-          
-          <div class="teacher-card-details">
-            <div class="">
-              <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
-                <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="30" height="30"
-                  fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
-                  <path
-                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                </svg>
-              </a>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="teacher-card">
-          <div class="teacher-card-img">
-            <img
-              src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=800">
-          </div>
-          <div class="teacher-card-desc">
-            <h6 class="teacher-card-primary-text">Mohamed</h6>
-            <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
-          </div>
-          
-          <div class="teacher-card-details">
-            <div class="">
-              <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
-                <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="30" height="30"
-                  fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
-                  <path
-                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                </svg>
-              </a>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="teacher-card ">
-          <div class="teacher-card-img">
-            <img src="https://dl.dropbox.com/s/u3j25jx9tkaruap/Webp.net-resizeimage.jpg?raw=1">
-          </div>
-          <div class="teacher-card-desc">
-            <h6 class="teacher-card-primary-text">Olivia</h6>
-            <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
-          </div>
-          
-          <div class="teacher-card-details">
-            <div>
-              <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
-                <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="30" height="30"
-                  fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
-                  <path
-                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                </svg>
-              </a>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="teacher-card ">
-          <div class="teacher-card-img">
-            <img
-              src="https://images.pexels.com/photos/1759530/pexels-photo-1759530.jpeg?auto=compress&cs=tinysrgb&w=800">
-          </div>
-          <div class="teacher-card-desc">
-            <h6 class="teacher-card-primary-text">Arran</h6>
-            <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
-          </div>
-          
-          <div class="teacher-card-details">
-            <div class="">
-              <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
-                <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="30" height="30"
-                  fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
-                  <path
-                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                </svg>
-              </a>
-
-
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Teacher Cards Carousel End-->
-
-
-
-
-
-  </div>
-  <!-- End Teacher Section -->
 
 </div>
-<?php
- $App_Google_play = base_url('uploads/images/decloedt/logo/App_Google_play.png');
- $App_store = base_url('uploads/images/decloedt/logo/App_store.png');
- $telephone_wayo = base_url('uploads/images/decloedt/logo/telephone_wayo.png');
-
-?>
-     
-
-
-<div class="section">
-        <div class="image-container">
-            <img src="<?php echo $telephone_wayo; ?>" style="width: 100%;" alt="Image description">
-        </div>
-        <div class="text-container_wayo ">
-        <h1 class="promo-title marg_wayo">Easier, faster and more accessible mentoring at your fingertips</h1>
-        <p class="coming-soon  marg_wayo">Coming Soon!</p>
-        <div class="promo-buttons ">
-          <a href="#" class="store-button">
-            <img src="<?php echo $App_store; ?>"  alt="Download on App Store">
-          </a>
-          <a href="#" class="store-button">
-            <img src="<?php echo $App_Google_play; ?>" alt="Get it on Google Play">
-          </a>
-        </div>
+  <section class="container py-5">
+    <div class="row align-items-center">
+      <!-- Colonne de gauche : Texte -->
+      <div class="col-md-6">
+        <h1 class="text-white text-center display-7 ">Get to know us</h1>
+        <p class="lead mt-3 text-white"> Welcome to Wayo Academy, your partner in digital learning. Designed to meet the needs of mentors, educators, and professional coaches, our platform offers comprehensive tools to manage your online classes, organize educational routines, track learner progress, and more. Whether you're an experienced educator or new to digital teaching, </p>
+        <p class="lead text-white"> Wayo Academy is here to support you. Discover a new way to share your knowledge with simplicity and efficiency! </p>
+      </div>
+      <!-- Colonne de droite : Vidéo -->
+      <div class="col-md-6">
+    <div class="border rounded">
+        <div class="ratio ratio-16x9 rounded overflow-hidden">
+            <iframe src="https://www.youtube.com/embed/viHILXVY_eU?si=r6tjXyeM_8hIEnL0" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="border-0"></iframe>
         </div>
     </div>
+</div>
+</div>
+    </div>
+  </section>
+  <section class="py-5 position-relative">
+    <!-- Background Image -->
+    <div class="position-absolute top-0 start-0 end-0 bottom-0" style="background-image: url('uploads/images/decloedt/home/bg_WhyChooseAcademy.jpg'); background-size: cover; background-position: center; filter: brightness(75%); z-index: -1;"></div>
+    
+    <div class="container position-relative" style="z-index: 1;">
+        <!-- Title -->
+        <h2 class="text-center text-white mb-5">Why choose Wayo Academy as a...</h2>
 
+        <!-- Mentor Section -->
+        <div class="mb-5">
+            <h3 class="text-center text-white mb-4">Mentor</h3>
+            <div class="row g-4">
+                <!-- Mentor Item 1 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Create and customize interactive courses in just a few clicks</p>
+                    </div>
+                </div>
+                <!-- Mentor Item 2 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Easily schedule online classes and track attendance</p>
+                    </div>
+                </div>
+                <!-- Mentor Item 3 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Access an intuitive calendar to organize your events</p>
+                    </div>
+                </div>
+                <!-- Mentor Item 4 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Evaluate learners with automated quizzes & reports</p>
+                    </div>
+                </div>
+                <!-- Mentor Item 5 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Analyze performance with detailed reports</p>
+                    </div>
+                </div>
+                <!-- Mentor Item 6 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Build a community around your expertise</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Learner Section -->
+        <div>
+            <h3 class="text-center text-white mb-4">Learner</h3>
+            <div class="row g-4">
+                <!-- Learner Item 1 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Learn at your own pace with online courses</p>
+                    </div>
+                </div>
+                <!-- Learner Item 2 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Follow a clear and motivating class routine</p>
+                    </div>
+                </div>
+                <!-- Learner Item 3 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Access a variety of multimedia resources (videos, quizzes, etc.)</p>
+                    </div>
+                </div>
+                <!-- Learner Item 4 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Stay organized with event reminders & deadlines</p>
+                    </div>
+                </div>
+                <!-- Learner Item 5 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Join interactive classes with your mentors</p>
+                    </div>
+                </div>
+                <!-- Learner Item 6 -->
+                <div class="col-xl-2 col-md-4 col-sm-6">
+                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
+                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Progress with instant feedback on your results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+  <div id="mentors-section">
+    <!-- Teacher Section -->
+    <div class="section-height teacher-section">
+      <!-- Title -->
+      <h2 class="social-media-main-text">Meet Your Mentors</h2>
+      <!-- End Title -->
+      <!-- Teacher Cards Carousel Start-->
+      <!-- This is a place holder carousel -->
+      <div class=" teacher-carousel-container">
+        <div class="owl-carousel owl-theme  justify-content-center">
+          <div class="teacher-card">
+            <div class="teacher-card-img">
+              <img src="uploads/images/decloedt/home/Mentor_01.jpg">
+            </div>
+            <div class="teacher-card-desc">
+              <h6 class="teacher-card-primary-text">Fattah</h6>
+              <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
+            </div>
+            <div class="teacher-card-details">
+              <div class="">
+                <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
+                  <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="20" height="20" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="teacher-card ">
+            <div class="teacher-card-img">
+              <img src="uploads/images/decloedt/home/Mentor_02.png">
+            </div>
+            <div class="teacher-card-desc">
+              <h6 class="teacher-card-primary-text">Natalie</h6>
+              <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
+            </div>
+            <div class="teacher-card-details">
+              <div class="">
+                <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
+                  <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="20" height="20" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="teacher-card">
+            <div class="teacher-card-img">
+              <img src="uploads/images/decloedt/home/Mentor_03.png">
+            </div>
+            <div class="teacher-card-desc">
+              <h6 class="teacher-card-primary-text">Mohamed</h6>
+              <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
+            </div>
+            <div class="teacher-card-details">
+              <div class="">
+                <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
+                  <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="20" height="20" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="teacher-card ">
+            <div class="teacher-card-img">
+              <img src="uploads/images/decloedt/home/Mentor_04.png">
+            </div>
+            <div class="teacher-card-desc">
+              <h6 class="teacher-card-primary-text">Olivia</h6>
+              <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
+            </div>
+            <div class="teacher-card-details">
+              <div>
+                <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
+                  <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="20" height="20" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="teacher-card ">
+            <div class="teacher-card-img">
+              <img src="https://images.pexels.com/photos/1759530/pexels-photo-1759530.jpeg?auto=compress&cs=tinysrgb&w=800">
+            </div>
+            <div class="teacher-card-desc">
+              <h6 class="teacher-card-primary-text">Hamza</h6>
+              <h6 class="teacher-card-secondary-text">Full Stack Developer</h6>
+            </div>
+            <div class="teacher-card-details">
+              <div class="">
+                <a class="teacher-card-social-button" href="https://www.linkedin.com/company/decloedtcloud/mycompany/">
+                  <svg xmlns="http://www.w3.org/2000/svg" class=" teacher-linkedin" width="20" height="20" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Teacher Cards Carousel End-->
+    </div>
+    <!-- End Teacher Section -->
+  </div> <?php
+ $App_Google_play = base_url('uploads/images/decloedt/logo/Google_Play_Store_Bouton.svg');
+ $App_store = base_url('uploads/images/decloedt/logo/App_Store_Bouton.svg');
+ $telephone_wayo = base_url('uploads/images/decloedt/home/bg_download.png');
 
+?> <div class="section">
+    <div class="image-container">
+      <img src="<?php echo $telephone_wayo; ?>" class="hide-on-mobile" style="width: 100%;" alt="Image description">
+    </div>
+    <div class="text-container_wayo">
+      <h1 class="text-black promo-title marg_wayo">Easier, faster and more accessible mentoring at your fingertips</h1>
+      <div class="promo-buttons ">
+        <a href="#" class="store-button">
+          <img src="<?php echo $App_store; ?>" alt="Download on App Store">
+        </a>
+        <a href="#" class="store-button">
+          <img src="<?php echo $App_Google_play; ?>" alt="Get it on Google Play">
+        </a>
+      </div>
+    </div>
+  </div>
+  <style>
+  @media (max-width: 768px) {
+    .hide-on-mobile {
+      display: none;
+    }
+    .section {
+      height: 30vh !important;
+    }
+  }
+</style>
+<div class="bg-black text-white py-5">
+    <h2 class="text-center fs-2 font-serif mb-4">Follow us on :</h2>
+
+    <!-- Section des icônes -->
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 gap-md-5 gap-lg-5 gap-xl-5">
+      <!-- Facebook -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-white text-black px-3 py-2 rounded">
+          <i class="fab fa-facebook-f fs-4"></i>
+        </div>
+        <span class="fs-6 font-serif">Wayo Academy</span>
+      </div>
+
+      <!-- LinkedIn -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-white text-black px-2 py-2 rounded">
+          <i class="fab fa-linkedin-in fs-4"></i>
+        </div>
+        <span class="fs-6 font-serif">Wayo Academy</span>
+      </div>
+
+      <!-- Instagram -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-white text-black px-2 py-2 rounded">
+          <i class="fab fa-instagram fs-3"></i>
+        </div>
+        <span class="fs-6 font-serif">@wayo_academy</span>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex flex-column flex-md-row w-100 min-vh-50 min-vh-sm-75">
+  <!-- Image occupant la moitié gauche -->
+  <div class="w-100 w-2xl-66 w-md-50 h-300px h-sm-400px h-md-auto">
+    <img
+      src="uploads/images/decloedt/home/WhatOurMentorsSay.jpg"
+      class="w-100 h-100 object-fit-cover"
+      alt="Mentors background"
+    />
+  </div>
+
+  <!-- Section témoignage occupant la moitié droite -->
+  <div
+    class="w-100 w-md-50 d-flex flex-column align-items-center justify-content-center px-4 px-sm-5 px-md-6 py-5 py-sm-6 card-mentors"
+  >
+    <!-- Titre -->
+    <h2
+      class="text-white fs-5 fs-2xl-3 fs-sm-4 fs-md-3 font-serif mb-4 mb-sm-5 text-center"
+    >
+      What our mentors say about us
+    </h2>
+    <!-- Carte Témoignage -->
+    <div class="bg-white shadow-lg rounded-3 p-4 p-sm-5 w-100 max-w-xs max-w-2xl-2xl max-w-sm-sm max-w-xl-md mx-auto">
+      <!-- Étoiles -->
+      <div class="d-flex align-items-center mb-2 mb-sm-4 gap-1">
+        <!-- Remplacez AiFillStar par des icônes Bootstrap ou un SVG personnalisé -->
+        <svg class="text-warning" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <svg class="text-warning" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <svg class="text-warning" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <svg class="text-warning" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <svg class="text-warning" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+      </div>
+
+      <!-- Témoignage -->
+      <p class="text-black fs-6 fs-sm-5 fs-md-4 lh-base text-justify">
+        "Wayo Academy has changed the way I connect with my students. The platform is 
+        user-friendly and has everything I need to create a meaningful learning experience. 
+        I appreciate how it helps me stay organized and engaged with my learners. 
+        Highly recommend!"
+      </p>
+
+      <!-- Auteur -->
+      <div class="d-flex align-items-center mt-3 mt-sm-4">
+        <img
+          src="uploads/images/decloedt/home/Mentor_03.png"
+          alt="Théo James"
+          class="rounded-circle me-2 me-sm-3" width="50" height="50"
+        />
+        <span class="fs-5 fs-sm-4 fw-bold text-gray-900">Théo James</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-faq faq-section">
+    <div class="faq-left">
+        <h1 class="faq-title">FAQ</h1>
+         <div class="question-marks">
+            <span class="question-mark1"><img src="uploads/images/decloedt/home/FAQ.png" width="90" height="120" class="mt-3"></span>
+            <span class="question-mark2"><img src="uploads/images/decloedt/home/FAQ.png" width="100" height="120" class="mt-10"></span>
+        </div>
+    </div>
+    <div class="faq-right">
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "What are the main features offered by Wayo Academy?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                Wayo Academy offers a variety of features including interactive online classes, quizzes, progress tracking, and a user-friendly interface for both learners and mentors.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "Can I organize online classes and quizzes on the platform?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                Yes, Wayo Academy allows you to organize and schedule online classes as well as create quizzes to assess learner progress.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "How do I create an account on Wayo Academy?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                To create an account, click on the "register" button, and choose between learner and mentor, and fill in the required details.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "Is Wayo Academy available on both mobile and desktop?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                Yes, Wayo Academy is accessible on both mobile devices and desktops.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "What subscription plans are available?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                Wayo Academy offers a free trial, and have access to all courses by purchasing a class.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "How can I contact technical support if I encounter an issue?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                You can contact technical support via email at info@wayo.cloud or through the contact form.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                "Is my personal data secure on Wayo Academy?"
+                <span class="toggle-icon"></span>
+            </div>
+            <div class="faq-answer">
+                Yes, Wayo Academy uses advanced encryption and security protocols to ensure that your personal data is protected.
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container-faq {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 50px 30px;
+        width: 100%;
+        max-width: 1200px; /* Adjust as needed */
+        margin: 0 auto;
+    }
+    .faq-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .question-marks {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .question-mark1 {
+      transform: rotate(-15deg);
+    }
+    .question-mark2 {
+      transform: rotate(20deg);
+}
+    .faq-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+    }
+    .faq-right {
+        flex: 2;
+    }
+    .faq-question {
+        color: white;
+        font-size: 1.7rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 5px solid #fff;
+    }
+    .faq-question.active {
+        color: orange !important; /* Couleur orange pour la question sélectionnée */
+    }
+    .faq-answer {
+        color: white !important;
+        font-size: 1.2rem;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+    }
+    .faq-answer.active {
+        max-height: 200px;
+        padding: 10px 0;
+        color: white;
+    }
+    .toggle-icon::after {
+        content: "+";
+        font-size: 2rem;
+        color: white;
+        transition: transform 0.3s ease;
+    }
+    .toggle-icon.active::after {
+        content: "-";
+        transform: rotate(180deg);
+    }
+    @media (max-width: 1024px) {
+        .question-marks {
+            display: none; /* Masque les images */
+        }
+        .container-faq {
+            flex-direction: column; /* Passe en disposition verticale */
+            align-items: center; /* Centre les éléments */
+        }
+        .faq-left {
+            flex: none; /* Supprime la flexibilité pour éviter l'étirement */
+            margin-bottom: 20px; /* Ajoute un espace sous le titre */
+        }
+        .faq-right {
+            flex: none; /* Supprime la flexibilité */
+            width: 100%; /* Prend toute la largeur disponible */
+            max-width: 800px; /* Limite la largeur des questions pour lisibilité */
+        }
+        .faq-question {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+<script>
+    function toggleAnswer(element) {
+        const answer = element.nextElementSibling;
+        const icon = element.querySelector('.toggle-icon');
+        const allQuestions = document.querySelectorAll('.faq-question');
+        const allAnswers = document.querySelectorAll('.faq-answer');
+        const allIcons = document.querySelectorAll('.toggle-icon');
+
+        // Si la réponse cliquée est déjà active, on la ferme
+        if (answer.classList.contains('active')) {
+            answer.classList.remove('active');
+            icon.classList.remove('active');
+            element.classList.remove('active');
+        } else {
+            // Ferme toutes les autres réponses actives
+            allAnswers.forEach((ans, index) => {
+                if (ans !== answer) {
+                    ans.classList.remove('active');
+                    allIcons[index].classList.remove('active');
+                    allQuestions[index].classList.remove('active');
+                }
+            });
+
+            // Ouvre la nouvelle réponse
+            answer.classList.add('active');
+            icon.classList.add('active');
+            element.classList.add('active');
+        }
+    }
+</script>
   <!-- Title -->
   <div class="event-title-section">
     <div class=" text-center event-title-section-text">
-      <h2 class="">
-        <?php echo get_phrase('Upcomig Events'); ?>
-      </h2>
+      <h2 class=""> <?php echo get_phrase('Upcomig Events'); ?> </h2>
       <div class="content">
         <svg id="more-arrows">
           <polygon class="arrow-top" points="37.6,27.9 1.8,1.3 3.3,0 37.6,25.3 71.9,0 73.7,1.3 " />
@@ -349,68 +643,278 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         </svg>
       </div>
     </div>
-
   </div>
-
   <!-- End Title -->
+  <section class="container-fluid">
+    <div class="row">
+        <!-- Sidebar avec les phrases -->
+        <div class="col-md-4 sidebar">
+            <p class="clickable active" data-target="video">Exciting News Ahead! Watch Our Teaser</p>
+        </div>
+        <!-- Zone de contenu à droite -->
+        <div class="col-md-8 content-area">
+            <!-- Vidéo YouTube -->
+            <iframe id="video" 
+                    class="active" 
+                    width="1260" 
+                    src="https://www.youtube.com/embed/viHILXVY_eU?si=r6tjXyeM_8hIEnL0" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
 
-  <div class="event-section">
+<!-- CSS -->
+<style>
+    .sidebar {
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        top: 50px;
+    }
+    .sidebar p {
+        color: #fff;
+        font-size: 1.2rem;
+        margin-top: 20px;
+        padding: 5px 0;
+        justify-content: space-between;
+        align-items: center !important;
+        border-bottom: 5px solid #fff;
+        cursor: pointer;
+    }
+    .sidebar .active {
+        color: orange !important;/* Optionnel : change la couleur du texte actif */
+        font-weight: bold; /* Optionnel : met en gras le texte actif */
+    }
+    .content-area {
+        padding: 20px;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .content-area iframe, .content-area img {
+        display: none;
+        max-width: 100%;
+        height: 80%;
+    }
+    .content-area iframe.active {
+        display: block;
+        border: 1px solid white;
+        border-radius: 10px;
+    }
+    .content-area img.active {
+        display: block;
+    }
+</style>
 
-    <!-----------------------------This Is a temporary visual-------------------------------------------->
-    <div id="eventCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-        <!-- Carousel Indicators -->
+<!-- JavaScript pour gérer les clics -->
+<script>
+    document.querySelectorAll('.clickable').forEach(item => {
+        item.addEventListener('click', function() {
+            // Récupérer la cible (video ou image)
+            const target = this.getAttribute('data-target');
+            
+            // Supprimer la classe active de tous les éléments
+            document.querySelectorAll('.clickable').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.content-area > *').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Ajouter la classe active à l'élément cliqué et au contenu correspondant
+            this.classList.add('active');
+            document.getElementById(target).classList.add('active');
+        });
+    });
+</script>
+<section class="pricing-section">
+        <h1>Pricing</h1>
+        <h2>Flexible Plans for Every Mentor</h2>
+        <div class="container">
+            <div class="row g-4"> <!-- g-4 for gutter spacing -->
+                <!-- Free Trial Card -->
+                <div class="col-md-4">
+                    <div class="pricing-card">
+                        <h3>Free Trial:</h3>
+                        <p>Explore Wayo Academy for <span style="color: #FD9830;">free</span>  for 30 days!</p>
+                    </div>
+                </div>
+                <!-- Monthly Plan Card -->
+                <div class="col-md-4">
+                    <div class="pricing-card">
+                        <h3>Monthly Plan:</h3>
+                        <p>Start at just <span style="color: #FD9830;">...AED/month</span> for full access to all features</p>
+                    </div>
+                </div>
+                <!-- Yearly Plan Card -->
+                <div class="col-md-4">
+                    <div class="pricing-card">
+                        <h3>Yearly Plan:</h3>
+                        <p>Save ...% with an annual subscription at <span style="color: #FD9830;">...AED/year</span> for full access to all features</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <style>
+        .pricing-section {
+            padding: 50px 0;
+        }
+        .pricing-section h1 {
+            color: white;
+            text-align: center;
+            font-size: 2.0rem;
+            margin-bottom: 5px;
+        }
+        .pricing-section h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #fff;
+            border-bottom: 2px solid #fff;
+            display: inline-block;
+            margin-left: 2%;
+        }
+        .pricing-card {
+            background-color: #CCCCCC;
+            color: #000;
+            border: none;
+            padding: 40px;
+            text-align: center;
+            height: 100%;
+        }
+        .pricing-card h3 {
+            color: #FD9830; /* Orange color for the plan titles */
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .pricing-card p {
+            color: white;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: bold;
+        }
+    </style>
+  <div class="carousel-container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <!-- Indicateurs verticaux -->
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
 
-        <!-- Carousel Inner -->
+        <!-- Slides -->
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="event-overlay">
-                    <img src="uploads/images/decloedt/placeholders/Image_01.png" class="d-block w-100" alt="Slide 1">
-                </div>
-                <div class="carousel-caption d-md-block">
-                    <h5 class="event-content-title">Work Smarter, Not Harder Online Course</h5>
-                </div>
-            </div>
-
-            <div class="carousel-item">
-                <div class="event-overlay">
-                    <img src="uploads/images/decloedt/placeholders/Image_02.png" class="d-block w-100" alt="Slide 2">
-                </div>
-                <div class="carousel-caption d-md-block">
-                    <h5 class="event-content-title">From Awkward To Awesome: Secrets To Success</h5>
+            <!-- Slide 1 -->
+            <div class="carousel-item active" style="background-image: url('uploads/images/decloedt/placeholders/Image_01.png');">
+                <div class="carousel-caption">
+                    <h5>Work Smarter, Not Harder Online Course</h5>
+                    <a href="#" class="btn">Read More</a>
                 </div>
             </div>
-
-            <div class="carousel-item">
-                <div class="event-overlay">
-                    <img src="uploads/images/decloedt/placeholders/Image_03.png" class="d-block w-100" alt="Slide 3">
+            <!-- Slide 2 -->
+            <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_02.png');">
+                <div class="carousel-caption">
+                    <h5>From Awkward To Awesome: Secrets To Success</h5>
+                    <a href="#" class="btn">Read More</a>
                 </div>
-                <div class="carousel-caption d-md-block">
-                    <h5 class="event-content-title">Virtual Learning In Modern Scrum Environments</h5>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_03.png');">
+                <div class="carousel-caption">
+                    <h5>Virtual Learning In Modern Scrum Environments</h5>
+                    <a href="#" class="btn">Read More</a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<style>
+        /* Style personnalisé pour le carrousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px; /* Ajustez selon vos besoins */
+            overflow: hidden;
+        }
 
-        <!-- Carousel Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-  </div>
+        .carousel-item {
+        position: relative;
+        height: 600px; /* Ajustez selon vos besoins */
+        transition: transform 0.5s linear; /* Transition fluide */
+    }
 
+    /* Utilisation de ::before pour l'image de fond avec filtre brightness */
+    .carousel-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-image: inherit; /* Hérite de l'image définie dans le style inline */
+        filter: brightness(70%); /* Ajustez la valeur selon vos besoins (0% = noir, 100% = normal, >100% = plus lumineux) */
+        z-index: 1; /* Place l'image derrière le contenu */
+    }
 
+        /* Style pour les points de navigation verticaux */
+        .carousel-indicators {
+            position: absolute;
+            left: 20px;
+            top: 40%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 0;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            width: 6px;
+            height: 60px;
+            border-radius: 10%;
+            background-color: white !important;
+            opacity: 0.5;
+            border: none;
+        }
+
+        .carousel-indicators .active {
+            background-color: #000;
+            opacity: 1;
+        }
+
+        /* Style pour le texte et le bouton */
+        .carousel-caption {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            width: 80%;
+        }
+
+        .carousel-caption h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .carousel-caption .btn {
+            margin-top: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
     <!------------------------------------------------------------------------------------------------>
-
-    
-
-
 </main>
 <!-- ========== END MAIN ========== -->
