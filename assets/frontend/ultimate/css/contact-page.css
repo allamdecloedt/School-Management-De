@@ -13,143 +13,99 @@ gmp-map {
 }
 
 .card-row {
-  min-height: 400px;
+  min-height: 500px;
 }
 
 .card-main-container {
-  min-height: 400px;
-  background-color: #212121;
+  padding: 20px 0;
 }
 
 .card-container {
-  min-height: 400px !important;
+  padding: 0 15px;
 }
 
-
-
-
-.card {
-  min-height: 270px !important;
-  background-color: #212121 !important;
-  border: none !important;
-  transition: all 0.5s ease-in-out;
-  transform: 2s ease-in-out;
-  margin-top: 70px;
-}
-
-.card-img-top {
-  margin-top: 40px !important;
-  min-height: 40px;
-}
-
-.card-title {
-  color: #aaaaaa !important;
-  font-weight: 900;
-}
-
-.card-img-top {
+.btn-send {
+  background-color: rgba(210, 130, 45, 0.937); 
   color: white;
-  transition: all 0.5s ease-in-out;
 }
 
-.card-subtitle {
-  color: #6e6e6e !important;
-}
-
-.card-text {
-  color: white !important;
-  font-weight: 700;
-}
-
-.card:hover {
-  background-color: #2c2c2c !important;
-  min-height: 290px !important;
-  transition: all 0.5s ease-in-out;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-  .card-bar {
-    display: block;
-    transition: all 0.5s ease-in-out;
-    background-color: #9800ba !important;
-  }
-
-  .card-img-top {
-    color: #be02e8 !important;
-  }
-}
-
-.card-bar {
-  background-color: #c01c1c00 !important;
-  border-radius: 10px;
-  position: absolute;
-  bottom: 0;
-  left: 25%;
-  min-width: 50%;
-  height: 4px;
-  transition: all 0.5s;
+.btn-send:hover {
+  background-color: rgba(187, 117, 41, 0.937) !important; 
+  color: white;
 }
 
 .form-section {
-  min-height: 500px;
+  padding: 20px 0;
   position: relative;
 }
 
 .form-text-title {
-  position: relative;
-  z-index: 1;
   font-family: "Roboto", sans-serif;
   font-weight: 900;
 }
 
 .form-text {
-  position: relative;
-  z-index: 1;
-  color: white;
+  color: black;
   font-weight: 700;
   font-size: 1.2rem;
 }
 
-.form-section form {
-  position: relative;
-  z-index: 1;
-}
-
 .form {
-  background-color: #212121e1;
+  background-color: #000000e1;
   border-radius: 30px;
-  width: 45%;
   transition: all 0.5s ease-in-out;
-}
-
-.form:hover{
-      background-color: #212121f7;
-
+  padding: 20px;
+  color: black;
 }
 
 .required {
- position: absolute;
- right: 10px;
- top: 5px;
- }
-
- textarea {
-  resize: none;
- }
-
-input input:focus {
-outline: 0 !important;}
-
-
-
-.location-container {
-  background-color: #212121;
+  position: absolute;
+  right: 7px;
+  top: 7px;
 }
 
+textarea {
+  resize: none;
+}
+
+input:focus,
+textarea:focus {
+  outline: 0 !important;
+}
+
+.contact-phone {
+  text-decoration: none !important;
+  color: #ffffff;
+}
+
+.contact-phone:hover {
+  text-decoration: none !important;
+  color: rgba(255, 255, 255, 0.937);
+}
+
+.contact-email {
+  text-decoration: none !important;
+  color: #ffffff;
+}
+
+.contact-email:hover {
+  text-decoration: none !important;
+  color: rgba(210, 130, 45, 0.937);
+}
+
+.contact-address {
+  text-decoration: none !important;
+  color: #ffffff;
+}
+
+.contact-address:hover {
+  text-decoration: none !important;
+  color: rgba(210, 130, 45, 0.937);
+}
 
 .cm-img {
   width: 100%;
-  min-height: 900px;
-
+  min-height: 120%;
   object-fit: cover;
   object-position: bottom center;
   position: absolute;
@@ -158,53 +114,156 @@ outline: 0 !important;}
   z-index: -1;
 }
 
-.img-mid-ol {
-  background-color: #21212194;
-  position: absolute;
-  width: 100%;
-  min-height: 800px;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 0;
-}
-
 .office-title {
   color: #ffffff !important;
   font-family: "Roboto", sans-serif;
   font-weight: 900;
-  z-index: 1;
   text-shadow: 3px 6px 10px rgba(179, 179, 179, 0.38);
 }
 
-/* Extra small devices (portrait phones, less than 576px) */
-/* No media query for `xs` since this is the default in Bootstrap */
-
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) {
+/* Styles pour le nouveau box */
+.additional-card {
+  top: 60px;
+  height: 70% !important;
+  background-color: #000000e1 !important;
+  border-radius: 30px;
+  transition: all 0.5s ease-in-out;
+  color: white; /* White text to match the image */
 }
 
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
+.additional-box {
+  padding: 20px;
 }
 
-/* Large devices (desktops, 992px and up) */
+.card-body {
+  text-align: left; /* Align all content to the left */
+}
+
+.contact-item {
+  margin: 34px 0; /* Spacing between the lines */
+  font-size: 1.1rem; /* Adjust font size as needed */
+  display: flex; /* Use flexbox to align icon and text */
+  align-items: center; /* Vertically center the icon and text */
+  color: white;
+}
+
+.bi-telephone-fill {
+  color: white !important;
+}
+
+.contact-item svg {
+  margin-right: 20px; /* Space between icons and text */
+ /* Fixed width for icons to ensure alignment */
+  text-align: center; /* Center the icon within its space */
+  color: white !important;
+}
+
+.social-icons {
+  margin-top: 30px !important;
+  display: flex; /* Use flexbox to align social icons horizontally */
+  justify-content: center; /* Align icons to the left */
+  gap: 20px;
+}
+
+.social-icons a {
+  color: white; /* White icons */
+  margin: 0 10px; /* Spacing between social media icons */
+  font-size: 1.5rem; /* Size of the icons */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.social-icons a:hover {
+  color: #ccc; /* Light gray on hover for a subtle effect */
+}
+
+
+@media (max-width: 400px) {
+  
+  .cm-img {
+    min-height: 1300px !important;
+  }
+}
+/* Media Queries pour la responsivité */
+@media (max-width: 575.98px) {
+  .card {
+    margin-top: 15px;
+    min-height: 200px;
+  }
+  .form-section {
+    padding: 15px 0;
+  }
+  .form {
+    padding: 15px;
+  }
+  .cm-img {
+    min-height: 1300px;
+  }
+  .office-title {
+    font-size: 1.5rem;
+    padding: 15px 0;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .card {
+    margin-top: 20px;
+    min-height: 220px;
+  }
+  .form-section .row {
+    justify-content: center;
+  }
+  .form,
+  .additional-box {
+    max-width: 100%;
+  }
+  .cm-img {
+    min-height: 1350px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .card {
+    margin-top: 20px;
+    min-height: 240px;
+  }
+  .form-section .row {
+    justify-content: center;
+  }
+  .form,
+  .additional-box {
+    max-width: 80%;
+  }
+  .cm-img {
+    min-height: 1150px;
+  }
+}
+
 @media (min-width: 992px) {
-  .form {
-    box-shadow: 2px 1px 27px 2px rgb(96, 96, 96);
+  .form-section .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
   }
-}
-@media (max-width: 992px) {
-  .form {
-    background-color: #212121 !important;
-    width: 100% !important;
+  .form-section .col-lg-6 {
+    display: flex;
+    flex-direction: column;
+  }
+  .form,
+  .additional-box {
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  .cm-img {
+    min-height: 1000px;
   }
 }
 
-/* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-}
-
-/* Extra extra large devices (larger desktops, 1400px and up) */
-@media (min-width: 1400px) {
+  .form,
+  .additional-box {
+    padding: 30px;
+  }
+  .cm-img {
+    min-height: 730px;
+  }
 }
