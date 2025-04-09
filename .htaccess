@@ -12,6 +12,7 @@ RewriteRule ^(.*)$ index.php/$1 [L]
 
 # Empêcher l'indexation des répertoires
 Options -Indexes
+ErrorDocument 403 /School-Management-De/application/views/errors/html/error_403.php
 
 # Protection des images contre l'accès direct et ouverture dans nouvel onglet
 # <IfModule mod_rewrite.c>
