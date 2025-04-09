@@ -1,8 +1,8 @@
 RewriteEngine On
 
 # Blocage complet du répertoire vendor
-RewriteCond %{REQUEST_URI} ^/vendor/ [NC]
-RewriteRule ^ - [F,L]
+<!-- RewriteCond %{REQUEST_URI} ^/vendor/ [NC]
+RewriteRule ^ - [F,L] -->
 
 
 # Redirection vers index.php pour les ressources inexistantes
@@ -14,7 +14,7 @@ RewriteRule ^(.*)$ index.php/$1 [L]
 Options -Indexes
 
 # Protection des images contre l'accès direct et ouverture dans nouvel onglet
-<IfModule mod_rewrite.c>
+<!-- <IfModule mod_rewrite.c>
     # Si la requête cible une image
     RewriteCond %{REQUEST_URI} \.(jpe?g|png|gif|svg|webp)$ [NC]
     
@@ -76,7 +76,7 @@ RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|p
 
 # Page d'erreur personnalisée pour les erreurs 403
 ErrorDocument 403 /errors/html/error_403.php
-
+ -->
 
 # Activer la réécriture d'URL
 # RewriteEngine On
