@@ -76,6 +76,7 @@ Options -Indexes
 # Vérifie si la demande ne vient pas de "localhost" ou wayoacadem.y pour le domaine spécifié.
     #RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
     RewriteRule \.(zip|txt|html|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
+
 #It could block a URL  even if file doesn’t exist on the server.
 
 # Interdit l'accès à certains types de fichiers (images, CSS, JS, etc.) dans les répertoires spécifiés.
