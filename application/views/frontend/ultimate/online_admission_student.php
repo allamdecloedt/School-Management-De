@@ -53,10 +53,10 @@
 
       <div class="row justify-content-center">
         <h4 class="col h2 pb-11 text-uppercase d-flex justify-content-center form-title">
-          <?php echo get_phrase('student_admission'); ?>
+          <?php echo get_phrase('learner_admission'); ?>
         </h4>
         <p class="text-white h5 pb-5 text-uppercase d-flex justify-content-center form-label">
-          <?php echo get_phrase('student_information'); ?>
+          <?php echo get_phrase('learner_information'); ?>
         </p>
 
       </div>
@@ -124,7 +124,7 @@
           <div class="col-sm-4 col-11">
             <div class="js-form-message mb-5">
               <label class="form-label text-white">
-                <?php echo get_phrase('student_email'); ?>
+                <?php echo get_phrase('learner_email'); ?>
                 <span class="text-danger">*</span>
               </label>
               <div class="input-group pt-1">
