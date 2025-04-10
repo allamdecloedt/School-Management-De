@@ -225,9 +225,8 @@
   color: #c9c9c9;
 }
 
-/* Styles spécifiques pour le "new box" (deuxième .details-signup-card) */
 .details-signup-card:nth-child(2) {
-  height: 400px; /* Hauteur fixe pour le new box */
+  height: 578px; /* Hauteur fixe pour le new box */
 }
 
 .details-signup-card:nth-child(2) .courses-slider {
@@ -240,4 +239,22 @@
   width: 100%;
   max-height: 100px; /* Hauteur maximale pour la description */
   overflow-y: auto; /* Défilement interne pour la description */
+}
+
+@media (min-width: 1400px) { /* Tablets and smaller */
+  .details-signup-card:nth-child(2) {
+    height: 578px !important; /* Hauteur fixe pour le new box */
+  }
+}
+
+@media (max-width: 1399px) { /* Tablets and smaller */
+  .details-signup-card:nth-child(2) {
+    height: 532px !important; /* Hauteur fixe pour le new box */
+  }
+}
+
+@media (max-width: 1199px) { /* Tablets and smaller */
+  .details-signup-card:nth-child(2) {
+    height: 513px !important; /* Hauteur fixe pour le new box */
+  }
 }
