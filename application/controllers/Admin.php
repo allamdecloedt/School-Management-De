@@ -1038,21 +1038,41 @@ class Admin extends CI_Controller
 			}
 		}
 
-		//create to database
-		if ($param1 == 'create_single_student') {
-			if ($param2 == "submit") {
+	  //create to database
+	  if ($param1 == 'create_single_student') {
 
-				$response = $this->user_model->single_student_create();
-				$page_data['class_id'] = html_escape($this->input->post('class_id'));
-				$page_data['section_id'] = html_escape($this->input->post('section_id'));
-				$page_data['working_page'] = 'filter';
-				$page_data['folder_name'] = 'student';
-				$page_data['page_title'] = 'student_list';
-				$this->load->view('backend/index', $page_data);
-			} else {
-				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-			}
-		}
+		if ($param2 == "submit") {
+		  header('Content-Type: application/json'); // Force le retour JSON
+		  $response_from_model = $this->user_model->single_student_create();
+		  $status = ($response_from_model === true); // Check if the model returned true for success
+		  //$this->session->set_flashdata('flash_message', get_phrase('student_added_successfully'));
+		  // Ajoute le token CSRF à la réponse
+		  $response = [
+			'status' => $status,
+			'message' => $status ? get_phrase('student_added_successfully') : $this->session->flashdata('error'),
+			'redirect' => site_url('admin/student'),
+			'csrf' => [
+				'name' => $this->security->get_csrf_token_name(),
+				'hash' => $this->security->get_csrf_hash()
+			]
+		];
+  
+		echo json_encode($response);
+		exit;
+	  } else {
+		  // Load the view with filtered data
+		  $page_data['class_id'] = html_escape($this->input->post('class_id'));
+		  $page_data['section_id'] = html_escape($this->input->post('section_id'));
+		  $page_data['working_page'] = 'filter';
+		  $page_data['folder_name'] = 'student';
+		  $page_data['page_title'] = 'student_list';
+  
+		  $this->load->view('backend/index', $page_data);
+	  }
+	}else {
+		// Nouveau else ajouté pour la condition parente
+		$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+	  }
 
 		if ($param1 == 'create_bulk_student') {
 			$response = $this->user_model->bulk_student_create();
@@ -1088,17 +1108,7 @@ class Admin extends CI_Controller
 			$page_data['page_title'] = 'update_student_information';
 			$this->load->view('backend/index', $page_data);
 
-
-			// // Charger la vue mise à jour
-			// $response_html = $this->load->view('backend/index', $page_data, TRUE);
-			// // Préparer le nouveau jeton CSRF
-			// $csrf = array(
-			//  'csrfName' => $this->security->get_csrf_token_name(),
-			//  'csrfHash' => $this->security->get_csrf_hash(),
-			// );
-
-			// // Renvoyer la réponse JSON avec le HTML mis à jour et le nouveau jeton CSRF
-			// echo json_encode(array('status' => $response_html, 'csrf' => $csrf));			
+	
 		}
 
 		if ($param1 == 'status') {

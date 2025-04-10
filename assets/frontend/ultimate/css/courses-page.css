@@ -55,7 +55,7 @@
   right: 10px;
   height: 30px;
   width: auto;
-  background-color: #5956e9;
+  background-color: rgba(210, 130, 45, 0.937);
   padding: 5px 10px;
   border-radius: 12px;
   color: #ffffff;
@@ -156,26 +156,26 @@
 }
 
 .search-bar input {
-  background-color: #4e4e4e;
+  background-color: #ffffff;
   outline: none !important;
-  color: #ffffff;
+  color: #000000;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   border: none;
 }
 
 .search-bar input::placeholder {
-  color: #ffffff;
+  color: #000000;
 }
 
 .search-bar input:focus {
-  background-color: #4e4e4e;
+  background-color: white;
   outline: none !important;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  color: #ffffff;
+  color: #000000;
 }
 
 .input-group-text {
-  background-color: #373737;
+  background-color: white;
   color: #ffffff;
   border: none;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -218,7 +218,7 @@
 }
 
 .pagination-item.active {
-  background-color: #5956e9;
+  background-color: rgba(210, 130, 45, 0.937);
   color: #ffffff;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 5px;
 }
