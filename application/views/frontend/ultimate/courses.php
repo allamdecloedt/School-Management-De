@@ -1,6 +1,55 @@
-<!-- ========== MAIN ========== -->
 <main id="content" role="main">
-
+<style>
+        /* Conteneur pour la barre de recherche */
+        .search-container {
+            max-width: 600px; /* Ajustez selon vos besoins */
+            margin: 20px auto;
+        }
+        .input-group {
+            border-radius: 50px; /* Coins arrondis */
+            overflow: hidden; /* Pour que les coins arrondis s'appliquent correctement */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+        .input-group .form-control {
+            border: none !important; /* Supprimer les bordures par défaut */
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            border-radius: 0 !important; /* Pas de coins arrondis ici, géré par le conteneur */
+        }
+        .input-group .btn {
+            border: none; /* Supprimer les bordures par défaut */
+            background-color: #d4a017; /* Couleur marron de l'icône */
+            color: white;
+            border-radius: 0 50px 50px 0; /* Arrondir uniquement le côté droit */
+        }
+        /* Style pour le select (catégorie) */
+        .select_course {
+            border: none !important; /* Supprimer les bordures */
+            background-color: #f1f1f1 !important; /* Fond gris clair comme dans l'image */
+            color: #333 !important;
+            border-radius: 50px 0 0 50px !important; /* Arrondir uniquement le côté gauche */
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            min-width: 100px; /* Ajustez selon vos besoins */
+        }
+        /* Ajuster l'apparence du select pour qu'il soit cohérent */
+        .select_course:focus {
+            box-shadow: none !important; /* Supprimer l'ombre au focus */
+            outline: none !important;
+        }
+        .input-group .form-control:focus {
+            box-shadow: none !important; /* Supprimer l'ombre au focus */
+            outline: none !important;
+        }
+        /* Style pour le bouton de recherche */
+        .input-group .input-group-text {
+            border: none !important; /* Supprimer les bordures par défaut */
+            background-color: #d4a017 !important; /* Couleur marron de l'icône */
+            color: white !important;
+            border-radius: 0 50px 50px 0 !important; /* Arrondir uniquement le côté droit */
+            padding: 10px 20px !important;
+        }
+    </style>
     <!-- Header Section -->
     <div class="general-container container-fluid">
         <div class="general-header align-items-center">
@@ -30,34 +79,35 @@
             <div class="input-group pb-5 shadow-sm rounded">
                 <!-- Dropdown des catégories -->
            
-                    <select name="categories" id="categories"  class="form-select border-0 select_course"  onchange="location = this.value;">
-                        <!-- Option pour "All" -->
-                        <option value="<?php echo base_url('home/courses/'); ?>" <?php echo empty($selected_category) ? 'selected' : ''; ?>>
-                            <?php echo get_phrase('All'); ?>
-                        </option>
+                <select name="categories" id="categories" class="form-select border-0 select_course" onchange="location = this.value;">
+    <!-- Option pour "All" -->
+    <option value="<?php echo base_url('home/courses/'); ?>" <?php echo empty($selected_category) ? 'selected' : ''; ?>>
+        <?php echo get_phrase('All'); ?>
+    </option>
 
-                        <!-- Boucle sur les catégories -->
-                        <?php foreach ($categories as $category): ?>
-                            <?php 
-                            $cat_formated = $this->frontend_model->get_category_formated($category['name']); 
-                            ?>
-                            <option value="<?php echo base_url('home/courses/' . $cat_formated); ?>" 
-                                <?php echo ($selected_category == $category['name']) ? 'selected' : ''; ?>>
-                                <?php echo $category['name']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+    <!-- Boucle sur les catégories -->
+    <?php foreach ($categories as $category): ?>
+        <?php 
+        $cat_formated = $this->frontend_model->get_category_formated($category['name']); 
+        ?>
+        <option value="<?php echo base_url('home/courses/' . $cat_formated); ?>" 
+            <?php echo ($selected_category == $category['name']) ? 'selected' : ''; ?>>
+            <?php echo $category['name']; ?>
+        </option>
+    <?php endforeach; ?>
+</select>
 
             <div style="margin-left: 10px;"></div>
 
                 <!-- Champ de recherche -->
-                <input name="search" type="search" class="form-control border-0" placeholder="<?php echo get_phrase('Search'); ?>"
-                    aria-label="Search" aria-describedby="search-addon" value="<?php if ($input_search) echo ($input_search); ?>" />
-
-                <!-- Bouton de recherche -->
-                <button type="submit" class=" input-group-text px-4 rounded-end" id="search-addon">
-                    <i class="fas fa-search"></i>
-                </button>
+                <input name="search" type="search" class="form-control border-0" 
+                   placeholder="<?php echo get_phrase('Search'); ?>" 
+                   aria-label="Search" aria-describedby="search-addon" 
+                   value="<?php if ($input_search) echo ($input_search); ?>" />
+            <!-- Bouton de recherche -->
+            <button type="submit" class="input-group-text px-4 rounded-end" style="background-color:rgba(210, 130, 45, 0.937) !important;" id="search-addon">
+                <i class="fas fa-search"></i>
+            </button>
             </div>
 
 

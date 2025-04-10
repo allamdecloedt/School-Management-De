@@ -1438,8 +1438,6 @@
     "room_has_been_updated_successfully": "Room has been updated successfully",
     "Update_room": "Update room",
     "0_courses_found_for_search": "0 courses found for search",
-<<<<<<< Updated upstream
-=======
     "updating": "Updating",
     "upload_school_image": "Upload school image",
     "student_image": "Student image",
@@ -1465,7 +1463,6 @@
     "action_non_autorisée": "Unauthorized action",
     "an_error_occurred_during_submission": "An error occurred during submission",
     "general_settings_updated_successfully": "General settings updated successfully",
->>>>>>> Stashed changes
     "fill_in_the_details_to_create_an_engaging_learning_experience": "Fill in the details to create an engaging learning experience",
     "enter_an_engaging_course_title": "Enter an engaging course title",
     "a_compelling_title_helps_attract_more_students": "A compelling title helps attract more students",
@@ -1498,14 +1495,11 @@
     "update_course": "Update course",
     "video_upload_failed": "Video upload failed",
     "invalid_attachment": "Invalid attachment",
-<<<<<<< Updated upstream
-    "invalid_lesson_url_and_duration": "Invalid lesson url and duration"
-=======
+    "invalid_lesson_url_and_duration": "Invalid lesson url and duration",
     "invalid_lesson_url_and_duration": "Invalid lesson url and duration",
     "demo_request": "Demo request",
     "school_phone": "School phone",
     "learner_email": "Learner email",
     "learner_admission": "Learner admission",
     "learner_information": "Learner information"
->>>>>>> Stashed changes
 }

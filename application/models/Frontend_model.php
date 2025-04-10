@@ -461,7 +461,7 @@ class Frontend_model extends CI_Model
 
     $response = array(
       'status' => true,
-      'notification' => get_phrase('general_settings_updated')
+      'notification' => get_phrase('general_settings_updated_successfully')
     );
     return json_encode($response);
   }

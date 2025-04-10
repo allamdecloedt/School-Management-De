@@ -1329,7 +1329,7 @@
     "privé": "Privé",
     "provide_admin_access": "Provide admin access",
     "provide_admin_category": "Provide admin category",
-    "school_profile_image": "School profile image",
+    "school_profile_image": "Image de profil de l'école",
     "approved_school": "Approved school",
     "0_courses_found_in_category": "0 courses found in category",
     "admin_has_been_deleted_successfully": "Admin has been deleted successfully",
@@ -1347,6 +1347,11 @@
     "chat_&_discussions": "Chat & discussions",
     "accueil": "Accueil",
     "visit_dashboard": "Visit dashboard",
+    "updating": "Mise à jour",
+    "adding":"Ajouté",
+    "student_image": "Image de l'étudiant",
+    "action_not_allowed":"Action non autorisée",
+    "an_error_occurred_during_submission":"Une erreur est survenue lors de l'envoi",
     "enter_an_engaging_course_title": "Titre du cours engageant",
     "a_compelling_title_helps_attract_more_students": "Un titre accrocheur aide à attirer plus d'étudiants.",
     "describe_what_students_will_learn_in_this_course": "Décrivez ce que les étudiants apprendront dans ce cours.",
@@ -1366,8 +1371,6 @@
     "please_fill_all_required_fields": "Veuillez remplir tous les champs obligatoires.",
     "ready_to_update_course": "Prêt à mettre à jour le cours",
     "please_review_all_information_before_submitting._your_course_details_will_be_updated.": "Veuillez vérifier toutes les informations avant de soumettre. Les détails de votre cours seront mis à jour.",
-<<<<<<< Updated upstream
-=======
     "update_course": "Mettre à jour le cours",
     "admission_en_ligne": "Admission en ligne",
     "access_mode": "Access mode",
@@ -1425,6 +1428,5 @@
     "update_room": "Update room",
     "invalid_email_address": "Invalid email address",
     "email_already_exists": "Email already exists",
->>>>>>> Stashed changes
     "update_course": "Mettre à jour le cours"
 }
