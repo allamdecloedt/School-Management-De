@@ -12,7 +12,7 @@ RewriteRule ^(.*)$ index.php/$1 [L]
 
 # Empêcher l'indexation des répertoires
 Options -Indexes
-ErrorDocument 403 /School-Management-De/application/views/errors/html/error_403.php
+# ErrorDocument 403 /School-Management-De/application/views/errors/html/error_403.php il affiche 
 
 # Protection des images contre l'accès direct et ouverture dans nouvel onglet
 # <IfModule mod_rewrite.c>
@@ -62,13 +62,18 @@ ErrorDocument 403 /School-Management-De/application/views/errors/html/error_403.
 #    # En supprimant cet en-tête, on évite que le navigateur fasse des comparaisons entre les versions locales du fichier et celles du serveur,
 #    # ce qui peut aider à réduire le risque de certaines attaques ou d'incohérences dans le cache.
 # </FilesMatch>
-#
+
+<FilesMatch "\.(csv|sql|db|sqlite|bak|config|yml|env|json|lock|psd|log|sh|zip|tar|gz|rar|md)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
 # Bloquer l'accès direct aux fichiers dans les dossiers sensibles
-# RewriteCond %{REQUEST_URI} ^/(assets|system|update|update_pack|uploads)/ [NC]
+    RewriteCond %{REQUEST_URI} ^/(assets|system|update|update_pack|uploads)/ [NC]
 # Vérifie si l'URL demande un fichier dans les répertoires spécifiés (assets, system, etc.).
 # RewriteCond %{HTTP_REFERER} !^https?://(www\.)?(localhost|wayo\.academy)(:[0-9]+)? [NC]
 # Vérifie si la demande ne vient pas de "localhost" ou wayoacadem.y pour le domaine spécifié.
-# RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
+    RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
 # Interdit l'accès à certains types de fichiers (images, CSS, JS, etc.) dans les répertoires spécifiés.
 # [F] bloque l'accès, [L] arrête les règles après celle-ci, [NC] signifie insensible à la casse.
 # Page d'erreur personnalisée pour les erreurs 403
