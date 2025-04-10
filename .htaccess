@@ -64,7 +64,7 @@ Options -Indexes
 # </FilesMatch>
 
 # block access to files that physically exist on server
-<FilesMatch "\.(sql|db|sqlite|bak|config|yml|env|json|lock|psd|log|sh|zip|tar|gz|rar|md)$">
+<FilesMatch "\.(sql|db|sqlite|bak|config|yml|env|lock|psd|log|sh|zip|tar|gz|rar|md)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
