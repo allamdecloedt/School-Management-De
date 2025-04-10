@@ -64,18 +64,18 @@ Options -Indexes
 # </FilesMatch>
 
 # block access to files that physically exist on server
-<FilesMatch "\.(sql|db|sqlite|bak|config|yml|env|json|lock|psd|log|sh|zip|tar|gz|rar|md)$">
+<FilesMatch "\.(sql|db|sqlite|bak|config|yml|env|lock|psd|log|sh|zip|tar|gz|rar|md)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
 
 # Bloquer l'accès direct aux fichiers dans les dossiers sensibles
-    RewriteCond %{REQUEST_URI} ^/(assets|system|update|update_pack|uploads)/ [NC]
+    RewriteCond %{REQUEST_URI} ^/(system|update|update_pack|uploads)/ [NC]
 # Vérifie si l'URL demande un fichier dans les répertoires spécifiés (assets, system, etc.).
 # RewriteCond %{HTTP_REFERER} !^https?://(www\.)?(localhost|wayo\.academy)(:[0-9]+)? [NC]
 # Vérifie si la demande ne vient pas de "localhost" ou wayoacadem.y pour le domaine spécifié.
     #RewriteRule \.(jpe?g|png|gif|ico|svg|css|js|map|woff2?|ttf|eot|pdf|csv|zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
-    RewriteRule \.(zip|txt|php|html|json|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
+    RewriteRule \.(zip|txt|html|sql|yml|xml|dist|neon|md|env|lock|bat|gitattributes)$ - [F,L,NC]
 #It could block a URL  even if file doesn’t exist on the server.
 
 # Interdit l'accès à certains types de fichiers (images, CSS, JS, etc.) dans les répertoires spécifiés.
