@@ -184,3 +184,44 @@
 
 
 
+<<<<<<< Updated upstream
+=======
+.courses-slider .course-slider-item > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.courses-slider .course-slider-item img {
+  width: 100% !important;
+  max-height: 200px; /* Hauteur maximale pour les images */
+  height: auto;
+  object-fit: cover;
+  border-radius: 0 !important;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+.courses-slider .course-slider-item p {
+  margin: 0;
+  padding-top: 0.5rem;
+  color: #c9c9c9;
+}
+
+/* Styles spécifiques pour le "new box" (deuxième .details-signup-card) */
+.details-signup-card:nth-child(2) {
+  height: 578px; /* Hauteur fixe pour le new box */
+}
+
+.details-signup-card:nth-child(2) .courses-slider {
+  height: 100%; /* Prend toute la hauteur du conteneur parent */
+  overflow-y: auto; /* Défilement pour le slider */
+}
+
+.details-signup-card:nth-child(2) .course-slider-description {
+  padding: 0.5rem 0;
+  width: 100%;
+  max-height: 100px; /* Hauteur maximale pour la description */
+  overflow-y: auto; /* Défilement interne pour la description */
+}
+>>>>>>> Stashed changes
