@@ -219,6 +219,22 @@
   display: block;
 }
 
+.courses-slider .course-slider-item > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.courses-slider .course-slider-item img {
+  width: 100% !important;
+  max-height: 200px; /* Hauteur maximale pour les images */
+  height: auto;
+  object-fit: cover;
+  border-radius: 0 !important;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
 .courses-slider .course-slider-item p {
   margin: 0;
   padding-top: 0.5rem;
@@ -227,7 +243,7 @@
 
 /* Styles spécifiques pour le "new box" (deuxième .details-signup-card) */
 .details-signup-card:nth-child(2) {
-  height: 400px; /* Hauteur fixe pour le new box */
+  height: 578px; /* Hauteur fixe pour le new box */
 }
 
 .details-signup-card:nth-child(2) .courses-slider {
