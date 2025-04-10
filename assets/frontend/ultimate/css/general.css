@@ -61,8 +61,8 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-
+  margin-top: 50px;
+  gap: 20%;
 }
 
 .text-container p {
@@ -85,14 +85,7 @@ main {
 }
 
 
-.promo-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 15px;
-  font-family: "The Seasons";
 
-}
 
 .coming-soon {
   font-size: 1.8rem;
@@ -128,12 +121,6 @@ main {
     color: #ffffff;
   }
   
-  
-
-  .promo-title {
-    font-size: 2rem;
-  }
-
   .coming-soon {
     font-size: 1.6rem;
   }
@@ -378,10 +365,6 @@ main {
     padding: 15px;
 }
 
-  .promo-title {
-    font-size: 2rem;
-  }
-
   .promo-image-container {
     margin-bottom: 20px;
   }
@@ -407,12 +390,13 @@ main {
 /*--------------------------------------------576px---------------------------------------------------*//*--------------------------------------------Extra small devices (phones)---------------------------------------------------*/
 @media (max-width: 576px) {
 
+  .section {
+    min-height: 60vh !important;
+  }
+
   .general-header h1 {
     font-size: 2rem;
     transition: all 0.3s ease-in;
-  }
-  .promo-title {
-    font-size: 1.7rem;
   }
 
   .coming-soon {
@@ -420,7 +404,7 @@ main {
   }
 
   .store-button img {
-    width: 120px;
+    width: 180px;
   }
   .promo-image-container {
     display: flex;
@@ -433,8 +417,8 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a lifted effect */
   }
   .text-container h1 {
-  margin-bottom: 89px;
-  color: #ffffff;
+    margin-top: 70px;
+    color: #ffffff;
   }
 
 }
@@ -459,13 +443,10 @@ main {
     background-color: #f9f9f9; /* Optional background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a lifted effect */
   }
-  .promo-title {
-    font-size: 2rem;
-  }
 }
 
 /*--------------------------------------------Medium devices (tablets/desktops)---------------------------------------------------*/
-@media (min-width: 768px)  {
+@media (min-width: 862px)  {
 
   
   .app-promo-text {
@@ -474,6 +455,7 @@ main {
 
   .promo-buttons {
     justify-content: center;
+    gap: 61px;
   }
   .app-promo-image img {
     max-width: 100%;
@@ -488,9 +470,6 @@ main {
     padding: 0px; /* Space between image and border */
     background-color: #f9f9f9; /* Optional background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a lifted effect */
-  }
-  .promo-title {
-    font-size: 2rem;
   }
 }
 
@@ -509,9 +488,6 @@ main {
     background-color: #f9f9f9; /* Optional background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a lifted effect */
   }
-  .promo-title {
-    font-size: 2rem;
-  }
 }
 
 /*--------------------------------------------Specific adjustments for smaller devices---------------------------------------------------*/
@@ -526,9 +502,6 @@ main {
     padding: 0px; /* Space between image and border */
     background-color: #f9f9f9; /* Optional background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a lifted effect */
-  }
-  .promo-title {
-    font-size: 2rem;
   }
 }
 

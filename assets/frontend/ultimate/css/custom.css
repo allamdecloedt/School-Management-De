@@ -232,7 +232,7 @@ First Section Styling
 }
 
 .section-height {
-  height: 80vh !important;
+  height: 70vh !important;
 }
 
 .gap-xl-5 {
@@ -268,7 +268,6 @@ Social Media Buttons CSS
 .social-media-main-text {
   color: #ffffff;
   font-size: 1.5em;
-  font-weight: 900;
   text-align: center;
   padding-top: 50px;
   padding-bottom: 20px;
@@ -729,7 +728,7 @@ Event Section Styling
 .content {
   position: absolute;
   left: 50%;
-  top: 100px;
+  top: 147px;
   transform: translate(-50%, -50%);
 }
 

@@ -1438,6 +1438,34 @@
     "room_has_been_updated_successfully": "Room has been updated successfully",
     "Update_room": "Update room",
     "0_courses_found_for_search": "0 courses found for search",
+<<<<<<< Updated upstream
+=======
+    "updating": "Updating",
+    "upload_school_image": "Upload school image",
+    "student_image": "Student image",
+    "adding": "Adding",
+    "error": "Error",
+    "unauthorized_action": "Unauthorized action",
+    "upload_error": "Upload error",
+    "mentor_profile_image": "Mentor profile image",
+    "this_field_is_required": "This field is required",
+    "please_enter_valid_email": "Please enter valid email",
+    "processing": "Processing",
+    "invalid_response_from_server": "Invalid response from server",
+    "please_fill_all_required_fields": "Please fill all required fields",
+    "image_upload_failed": "Image upload failed",
+    "unexpected_error": "Unexpected error",
+    "required_fields_missing": "Required fields missing",
+    "student_added_successfully!": "Student added successfully!",
+    "action_not_allowed": "Action not allowed",
+    "request_failed": "Request failed",
+    "update_student": "Update student",
+    "error_fetching_sections": "Error fetching sections",
+    "update_failed": "Update failed",
+    "action_non_autorisée": "Unauthorized action",
+    "an_error_occurred_during_submission": "An error occurred during submission",
+    "general_settings_updated_successfully": "General settings updated successfully",
+>>>>>>> Stashed changes
     "fill_in_the_details_to_create_an_engaging_learning_experience": "Fill in the details to create an engaging learning experience",
     "enter_an_engaging_course_title": "Enter an engaging course title",
     "a_compelling_title_helps_attract_more_students": "A compelling title helps attract more students",
@@ -1464,12 +1492,20 @@
     "ready_to_create_course": "Ready to create course",
     "please_review_all_information_before_submitting._your_course_will_be_available_after_approval.": "Please review all information before submitting. your course will be available after approval.",
     "submit_course": "Submit course",
-    "please_fill_all_required_fields": "Please fill all required fields",
     "course_ready": "Course ready",
     "ready_to_update_course": "Ready to update course",
     "please_review_all_information_before_submitting._your_course_details_will_be_updated.": "Please review all information before submitting. your course details will be updated.",
     "update_course": "Update course",
     "video_upload_failed": "Video upload failed",
     "invalid_attachment": "Invalid attachment",
+<<<<<<< Updated upstream
     "invalid_lesson_url_and_duration": "Invalid lesson url and duration"
+=======
+    "invalid_lesson_url_and_duration": "Invalid lesson url and duration",
+    "demo_request": "Demo request",
+    "school_phone": "School phone",
+    "learner_email": "Learner email",
+    "learner_admission": "Learner admission",
+    "learner_information": "Learner information"
+>>>>>>> Stashed changes
 }

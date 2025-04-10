@@ -4,27 +4,87 @@ $slider_images = json_decode($slider);
 $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 ?>  <!-- Ajout d'un style pour gérer le min-height sur les petits écrans -->
 <style>
-  @media (max-width: 1024px) {
-        #intro-container {
-            min-height: 150vh !important;
-        }
+  .claim-free-trial {
+    max-width: 100%; /* Ensures the image doesn't exceed its container */
+    width: 600px; /* Default width for larger screens */
+    height: auto; /* Maintains aspect ratio */
+    z-index: 1; /* Keeps it above the background */
+}
+
+/* Responsive adjustments with media queries */
+@media (max-width: 1200px) {
+    .claim-free-trial {
+        width: 50%; /* Scales down to 50% of the container width */
     }
-    @media (max-width: 1024px) {
-        #intro-container {
-            min-height: 110vh !important;
-        }
+}
+
+@media (max-width: 1024px) and (max-height: 600px) {
+    .claim-free-trial {
+        width: 50%; /* Scales down to 50% of the container width */
     }
-    @media (max-width: 991px) {
-        #intro-container {
-            min-height: 110vh !important;
-        }
+    .intro-container {
+      min-height: 120vh !important;
     }
-    @media (max-width: 400px) {
-        #intro-container {
-            min-height: 120vh !important;
-        }
+}
+
+
+@media (max-width: 991px) {
+    .claim-free-trial {
+        width: 50%; /* Further reduction for medium screens */
     }
-    @media (max-width: 402px) {
+}
+
+@media (max-width: 768px) {
+    .claim-free-trial {
+        width: 75%; /* Adjust for tablets */
+    }
+    .intro-container {
+      min-height: 120vh !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .claim-free-trial {
+        width: 75%; /* Smaller size for mobile devices */
+        right: 5px; /* Slight adjustment to avoid edge overlap */
+        bottom: 5px;
+    }
+    .intro-container {
+      min-height: 120vh !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .claim-free-trial {
+        width: 75%; /* Smaller size for mobile devices */
+        right: 5px; /* Slight adjustment to avoid edge overlap */
+        bottom: 5px;
+    }
+    .intro-container {
+      min-height: 120vh !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .claim-free-trial {
+        width:  85%; /* Smaller size for mobile devices */
+        right: 5px; /* Slight adjustment to avoid edge overlap */
+        bottom: 5px;
+    }
+    .intro-container {
+      min-height: 120vh !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .claim-free-trial {
+        width: 95%; /* Even smaller for very small screens */
+    }
+    .intro-container {
+      min-height: 145vh !important;
+    }
+}
+    @media (max-width: 402px) { 
       .btn-discov {
       padding-left: 12px !important;
   padding-right: 12px !important;
@@ -32,8 +92,13 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     }
     .btn-discov {
       padding-left: 112px;
-  padding-right: 112px;
+      padding-right: 112px;
           }
+    @media (min-width: 1400px) {
+      .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 1520px;
+    }
+}
 </style>
 <main class="" id="content" role="main">
   <!-- Intro Section -->
@@ -48,15 +113,15 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <div class="col-lg-6 mb-5 mb-lg-0 d-flex align-items-center">
                 <div class="px-md-4 w-100">
                     <div class="text-container">
-                        <h1 class="text-white fw-bold fs-3 display-6 display-md-4 display-lg-3">YOUR MENTORSHIP THEIR SUCCESS</h1>
-                        <p class="text-white fs-4.5 fs-md-4 fs-lg-3">Strengthen loyalty, maintain engagement and drive growth</p>
+                        <h1 class="text-white fs-2 display-2 fw-bold display-md-4 display-lg-3" style="letter-spacing: 2px;">YOUR MENTORSHIP THEIR SUCCESS</h1>
+                        <p class="text-white fs-md-4 fs-lg-3" style="letter-spacing: 1px; font-size: 17px;">Strengthen loyalty, maintain engagement and drive growth</p>
                     </div>
                     <!-- Buttons -->
                     <div class="text-center ">
                         <div class="row justify-content-center g-3">
                             <!-- Student Admission Button -->
                             <div class="col-auto">
-                                <a class="btn text-white border-3 shadow-sm rounded-3 w-100 w-md-auto px-4 py-2" style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('admission/online_admission_student'); ?>">Student admission</a>
+                                <a class="btn text-white border-3 shadow-sm rounded-3 w-100 w-md-auto px-4 py-2" style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('admission/online_admission_student'); ?>">Learner admission</a>
                             </div>
                             <!-- Mentor Admission Button -->
                             <div class="col-auto">
@@ -84,7 +149,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         </div>
     </div>
     <!-- Image positioned bottom-right -->
-    <img src="uploads/images/decloedt/home/bg_ClaimYourFreeTrial.png" class="position-absolute bottom-0 end-0" style="max-width: 100%; width: 600px; height: auto; z-index: 1;" alt="Claim Your Free Trial">
+    <img src="uploads/images/decloedt/home/bg_ClaimYourFreeTrial.png" class="position-absolute bottom-0 end-0 claim-free-trial" alt="Claim Your Free Trial">
 </div>
 
 
@@ -93,9 +158,9 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     <div class="row align-items-center">
       <!-- Colonne de gauche : Texte -->
       <div class="col-md-6">
-        <h1 class="text-white text-center display-7 ">Get to know us</h1>
-        <p class="lead mt-3 text-white"> Welcome to Wayo Academy, your partner in digital learning. Designed to meet the needs of mentors, educators, and professional coaches, our platform offers comprehensive tools to manage your online classes, organize educational routines, track learner progress, and more. Whether you're an experienced educator or new to digital teaching, </p>
-        <p class="lead text-white"> Wayo Academy is here to support you. Discover a new way to share your knowledge with simplicity and efficiency! </p>
+        <h1 class="text-white text-center" style="font-family: 'Playfair Display', serif; font-size: 34px;">Get to know us</h1>
+        <p class="lead mt-3" style="color: #DDDBDF;"> Welcome to Wayo Academy, your partner in digital learning. Designed to meet the needs of mentors, educators, and professional coaches, our platform offers comprehensive tools to manage your online classes, organize educational routines, track learner progress, and more. Whether you're an experienced educator or new to digital teaching, </p>
+        <p class="lead text-white" style="font-weight: 700;"> Wayo Academy is here to support you. Discover a new way to share your knowledge with simplicity and efficiency ! </p>
       </div>
       <!-- Colonne de droite : Vidéo -->
       <div class="col-md-6">
@@ -108,52 +173,52 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 </div>
     </div>
   </section>
-  <section class="py-5 position-relative">
+  <section class="py-3 position-relative" style="min-height: 100vh;">
     <!-- Background Image -->
     <div class="position-absolute top-0 start-0 end-0 bottom-0" style="background-image: url('uploads/images/decloedt/home/bg_WhyChooseAcademy.jpg'); background-size: cover; background-position: center; filter: brightness(75%); z-index: -1;"></div>
     
     <div class="container position-relative" style="z-index: 1;">
         <!-- Title -->
-        <h2 class="text-center text-white mb-5">Why choose Wayo Academy as a...</h2>
+        <h2 class="text-center text-white mb-5" style="font-family: 'Playfair Display', serif; font-size: 34px;">Why choose Wayo Academy as a...</h2>
 
         <!-- Mentor Section -->
         <div class="mb-5">
-            <h3 class="text-center text-white mb-4">Mentor</h3>
+            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Mentor</h3>
             <div class="row g-4">
                 <!-- Mentor Item 1 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Create and customize interactive courses in just a few clicks</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Create and customize interactive courses in just a few clicks</p>
                     </div>
                 </div>
                 <!-- Mentor Item 2 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Easily schedule online classes and track attendance</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Easily schedule online classes and track attendance</p>
                     </div>
                 </div>
                 <!-- Mentor Item 3 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Access an intuitive calendar to organize your events</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access an intuitive calendar to organize your events</p>
                     </div>
                 </div>
                 <!-- Mentor Item 4 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Evaluate learners with automated quizzes & reports</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Evaluate learners with automated quizzes & reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 5 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Analyze performance with detailed reports</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Analyze performance with detailed reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 6 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Build a community around your expertise</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Build a community around your expertise</p>
                     </div>
                 </div>
             </div>
@@ -161,42 +226,42 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 
         <!-- Learner Section -->
         <div>
-            <h3 class="text-center text-white mb-4">Learner</h3>
+            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Learner</h3>
             <div class="row g-4">
                 <!-- Learner Item 1 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Learn at your own pace with online courses</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Learn at your own pace with online courses</p>
                     </div>
                 </div>
                 <!-- Learner Item 2 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Follow a clear and motivating class routine</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Follow a clear and motivating class routine</p>
                     </div>
                 </div>
                 <!-- Learner Item 3 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Access a variety of multimedia resources (videos, quizzes, etc.)</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access a variety of multimedia resources (videos, quizzes, etc.)</p>
                     </div>
                 </div>
                 <!-- Learner Item 4 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Stay organized with event reminders & deadlines</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Stay organized with event reminders & deadlines</p>
                     </div>
                 </div>
                 <!-- Learner Item 5 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Join interactive classes with your mentors</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Join interactive classes with your mentors</p>
                     </div>
                 </div>
                 <!-- Learner Item 6 -->
                 <div class="col-xl-2 col-md-4 col-sm-6">
                     <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0"><span class="text-white me-2">✔</span>Progress with instant feedback on your results</p>
+                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Progress with instant feedback on your results</p>
                     </div>
                 </div>
             </div>
@@ -207,7 +272,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     <!-- Teacher Section -->
     <div class="section-height teacher-section">
       <!-- Title -->
-      <h2 class="social-media-main-text">Meet Your Mentors</h2>
+      <h2 class="social-media-main-text" style="font-family: 'Playfair Display', serif; font-size: 34px;">Meet Your Mentors</h2>
       <!-- End Title -->
       <!-- Teacher Cards Carousel Start-->
       <!-- This is a place holder carousel -->
@@ -313,12 +378,12 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
  $App_store = base_url('uploads/images/decloedt/logo/App_Store_Bouton.svg');
  $telephone_wayo = base_url('uploads/images/decloedt/home/bg_download.png');
 
-?> <div class="section">
+?> <div class="section" style="min-height: 50vh;">
     <div class="image-container">
       <img src="<?php echo $telephone_wayo; ?>" class="hide-on-mobile" style="width: 100%;" alt="Image description">
     </div>
     <div class="text-container_wayo">
-      <h1 class="text-black promo-title marg_wayo">Easier, faster and more accessible mentoring at your fingertips</h1>
+      <h1 class="text-black marg_wayo" style="font-family: 'Playfair Display', serif; font-size: 34px;">Easier, faster and more accessible mentoring at your fingertips !</h1>
       <div class="promo-buttons ">
         <a href="#" class="store-button">
           <img src="<?php echo $App_store; ?>" alt="Download on App Store">
@@ -340,7 +405,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
   }
 </style>
 <div class="bg-black text-white py-5">
-    <h2 class="text-center fs-2 font-serif mb-4">Follow us on :</h2>
+    <h2 class="text-center fs-2 mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Follow us on :</h2>
 
     <!-- Section des icônes -->
     <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 gap-md-5 gap-lg-5 gap-xl-5">
@@ -349,7 +414,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-3 py-2 rounded">
           <i class="fab fa-facebook-f fs-4"></i>
         </div>
-        <span class="fs-6 font-serif">Wayo Academy</span>
+        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
       </div>
 
       <!-- LinkedIn -->
@@ -357,7 +422,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-linkedin-in fs-4"></i>
         </div>
-        <span class="fs-6 font-serif">Wayo Academy</span>
+        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
       </div>
 
       <!-- Instagram -->
@@ -365,7 +430,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-instagram fs-3"></i>
         </div>
-        <span class="fs-6 font-serif">@wayo_academy</span>
+        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">@wayo_academy</span>
       </div>
     </div>
   </div>
@@ -385,7 +450,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
   >
     <!-- Titre -->
     <h2
-      class="text-white fs-5 fs-2xl-3 fs-sm-4 fs-md-3 font-serif mb-4 mb-sm-5 text-center"
+      class="text-white mb-4 mb-sm-5 text-center" style="font-family: 'Playfair Display', serif; font-size: 40px;"
     >
       What our mentors say about us
     </h2>
@@ -412,7 +477,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
       </div>
 
       <!-- Témoignage -->
-      <p class="text-black fs-6 fs-sm-5 fs-md-4 lh-base text-justify">
+      <p class="text-black fs-5 fs-sm-5 fs-md-4 lh-base text-justify">
         "Wayo Academy has changed the way I connect with my students. The platform is 
         user-friendly and has everything I need to create a meaningful learning experience. 
         I appreciate how it helps me stay organized and engaged with my learners. 
@@ -434,7 +499,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 
 <div class="container-faq faq-section">
     <div class="faq-left">
-        <h1 class="faq-title">FAQ</h1>
+        <h1 class="faq-title" style="font-family: 'Playfair Display', serif; font-size: 50px;">FAQ</h1>
          <div class="question-marks">
             <span class="question-mark1"><img src="uploads/images/decloedt/home/FAQ.png" width="90" height="120" class="mt-3"></span>
             <span class="question-mark2"><img src="uploads/images/decloedt/home/FAQ.png" width="100" height="120" class="mt-10"></span>
@@ -535,8 +600,6 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
       transform: rotate(20deg);
 }
     .faq-title {
-        font-size: 2.5rem;
-        font-weight: bold;
         color: #fff;
         text-align: center;
     }
@@ -634,7 +697,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
   <!-- Title -->
   <div class="event-title-section">
     <div class=" text-center event-title-section-text">
-      <h2 class=""> <?php echo get_phrase('Upcomig Events'); ?> </h2>
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 45px;"> <?php echo get_phrase('Upcomig Events'); ?> </h2>
       <div class="content">
         <svg id="more-arrows">
           <polygon class="arrow-top" points="37.6,27.9 1.8,1.3 3.3,0 37.6,25.3 71.9,0 73.7,1.3 " />
@@ -649,7 +712,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     <div class="row">
         <!-- Sidebar avec les phrases -->
         <div class="col-md-4 sidebar">
-            <p class="clickable active" data-target="video">Exciting News Ahead! Watch Our Teaser</p>
+            <p class="clickable active" data-target="video" style="font-family: 'Playfair Display', serif; font-size: 30px;">Exciting News Ahead! Watch Our Teaser</p>
         </div>
         <!-- Zone de contenu à droite -->
         <div class="col-md-8 content-area">
@@ -676,7 +739,6 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     }
     .sidebar p {
         color: #fff;
-        font-size: 1.2rem;
         margin-top: 20px;
         padding: 5px 0;
         justify-content: space-between;
@@ -685,8 +747,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         cursor: pointer;
     }
     .sidebar .active {
-        color: orange !important;/* Optionnel : change la couleur du texte actif */
-        font-weight: bold; /* Optionnel : met en gras le texte actif */
+        color: #FD9830 !important;/* Optionnel : change la couleur du texte actif */
     }
     .content-area {
         padding: 20px;
@@ -732,8 +793,8 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     });
 </script>
 <section class="pricing-section">
-        <h1>Pricing</h1>
-        <h2>Flexible Plans for Every Mentor</h2>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 40px;">Pricing</h1>
+        <h2 style="">Flexible Plans for Every Mentor</h2>
         <div class="container">
             <div class="row g-4"> <!-- g-4 for gutter spacing -->
                 <!-- Free Trial Card -->
@@ -761,6 +822,20 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         </div>
     </section>
     <style>
+
+@media (min-width: 1100px) {
+  .pricing-section h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #fff;
+            border-bottom: 2px solid #fff;
+            display: inline-block;
+            margin-left: 10% !important;
+            font-weight: bold; 
+            font-size: 30px;
+        }
+}
         .pricing-section {
             padding: 50px 0;
         }
@@ -768,7 +843,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             color: white;
             text-align: center;
             font-size: 2.0rem;
-            margin-bottom: 5px;
+            margin-bottom: 55px;
         }
         .pricing-section h2 {
             text-align: center;
@@ -778,6 +853,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             border-bottom: 2px solid #fff;
             display: inline-block;
             margin-left: 2%;
+            font-weight: bold; 
         }
         .pricing-card {
             background-color: #CCCCCC;
@@ -814,21 +890,21 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <!-- Slide 1 -->
             <div class="carousel-item active" style="background-image: url('uploads/images/decloedt/placeholders/Image_01.png');">
                 <div class="carousel-caption">
-                    <h5>Work Smarter, Not Harder Online Course</h5>
+                    <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Work Smarter, Not Harder Online Course</h5>
                     <a href="#" class="btn">Read More</a>
                 </div>
             </div>
             <!-- Slide 2 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_02.png');">
                 <div class="carousel-caption">
-                    <h5>From Awkward To Awesome: Secrets To Success</h5>
+                    <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">From Awkward To Awesome: Secrets To Success</h5>
                     <a href="#" class="btn">Read More</a>
                 </div>
             </div>
             <!-- Slide 3 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_03.png');">
                 <div class="carousel-caption">
-                    <h5>Virtual Learning In Modern Scrum Environments</h5>
+                    <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Virtual Learning In Modern Scrum Environments</h5>
                     <a href="#" class="btn">Read More</a>
                 </div>
             </div>
@@ -840,13 +916,13 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         .carousel-container {
             position: relative;
             width: 100%;
-            height: 500px; /* Ajustez selon vos besoins */
+            height: 600px; /* Ajustez selon vos besoins */
             overflow: hidden;
         }
 
         .carousel-item {
         position: relative;
-        height: 600px; /* Ajustez selon vos besoins */
+        height: 1000px; /* Ajustez selon vos besoins */
         transition: transform 0.5s linear; /* Transition fluide */
     }
 
@@ -861,15 +937,16 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         background-size: cover;
         background-position: center;
         background-image: inherit; /* Hérite de l'image définie dans le style inline */
-        filter: brightness(70%); /* Ajustez la valeur selon vos besoins (0% = noir, 100% = normal, >100% = plus lumineux) */
+        filter: brightness(65%); /* Ajustez la valeur selon vos besoins (0% = noir, 100% = normal, >100% = plus lumineux) */
         z-index: 1; /* Place l'image derrière le contenu */
+       
     }
 
         /* Style pour les points de navigation verticaux */
         .carousel-indicators {
             position: absolute;
             left: 20px;
-            top: 40%;
+            top: 30%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -894,7 +971,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         /* Style pour le texte et le bouton */
         .carousel-caption {
             position: absolute;
-            top: 50%;
+            top: 32%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
@@ -902,15 +979,13 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             width: 80%;
         }
 
-        .carousel-caption h1 {
-            font-size: 2.5rem;
+        .carousel-caption a {
+            font-size: 1.4rem;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         .carousel-caption .btn {
-            margin-top: 20px;
-            text-transform: uppercase;
+            margin-top: 25rem;
             font-weight: bold;
             color: white;
         }

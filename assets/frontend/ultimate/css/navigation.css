@@ -69,9 +69,50 @@ Navigation Styling
 
 .nav-link {
   color: #ffffff !important;
+  font-size: 15px !important;
   text-transform: uppercase;
   margin: 0 10px;
   transition: all 0.5s ease-in-out;
+}
+
+@media (max-width: 1160px) {
+  .nav-link {
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 14px !important;
+    margin: 0 10px;
+    transition: all 0.5s ease-in-out;
+  }
+}
+
+@media (max-width: 1124px) {
+  .nav-link {
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 12px !important;
+    margin: 0 10px;
+    transition: all 0.5s ease-in-out;
+  }
+}
+
+@media (max-width: 1053px) {
+  .nav-link {
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 11px !important;
+    margin: 0 10px;
+    transition: all 0.5s ease-in-out;
+  }
+}
+
+@media (max-width: 1018px) {
+  .nav-link {
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 10px !important;
+    margin: 0 10px;
+    transition: all 0.5s ease-in-out;
+  }
 }
 
 #menu_checkbox {
@@ -616,80 +657,6 @@ Responsive Styling
   }
 }
 
-@media (max-width: 992px) {
-  .nav-bar-items {
-    background-color: #212121;
-  }
-  .button_with{
-    width: 17%;
-  }
-  .user-dropdown {
-    
-    height: auto;
-    width: auto;
-    right: 1%;
-    bottom: -25px;
-    background-color: #464646dd;
-    border-radius: 6px;
-    backdrop-filter: blur(10px);
-    transition: all 0.1s ease-in;
-  }
-
-  .collapse-nav {
-    height: 0px !important;
-    overflow: auto;
-    opacity: 0;
-    transition: all 0.2s;
-  }
-  .bottom_nav{
-    bottom: 50% !important;
-  }
-  .show-nav {
-    height: 220px !important;
-    overflow: visible;
-    opacity: 1;
-    transition: all 0.2s;
-  }
-
-  .small-nav {
-    height: 80px !important;
-
-    .user-dropdown {
-      bottom: -79px;
-    }
-
-    .login-dropdown {
-      top: 0px;
-    }
-
-    .register-dropdown {
-      top: 0px;
-    }
-
-    .forget-dropdown {
-      top: 0px;
-    }
-  }
-
-  .user-dropdown {
-    left: 1% !important;
-  }
-
-  .login-dropdown {
-    top: 0;
-    left: 0;
-  }
-
-  .register-dropdown {
-    top: 0;
-    left: 0;
-  }
-
-  .forget-dropdown {
-    top: 0;
-    left: 0;
-  }
-}
 
 @media (min-width: 992px) {
   /*--------------Navigation----------------*/
@@ -707,7 +674,7 @@ Responsive Styling
     height: 3px;
     background-color: #a8a8a86d;
     bottom: 0;
-    left: 50%;
+    left: 70%;
     border-radius: 5px;
     transition: width 0.3s ease 0s, left 0.3s ease 0s;
   }
@@ -756,6 +723,7 @@ Responsive Styling
     bottom: 85% !important;
   }
 } */
+
 @media (max-width: 767px) {
   .bottom_nav{
     bottom: 50% !important;
