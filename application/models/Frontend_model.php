@@ -461,7 +461,7 @@ class Frontend_model extends CI_Model
 
     $response = array(
       'status' => true,
-      'notification' => get_phrase('general_settings_updated')
+      'notification' => get_phrase('general_settings_updated_successfully')
     );
     return json_encode($response);
   }
@@ -674,10 +674,13 @@ class Frontend_model extends CI_Model
 
   function get_school_courses($school_id)
   {
-
-    $courses = $this->db->get_where('course', array('school_id' => $school_id))->result_array();
-
-    return $courses;
+      $this->db->select('course.*, classes.price');
+      $this->db->from('course');
+      $this->db->join('classes', 'classes.id = course.class_id', 'left');
+      $this->db->where('course.school_id', $school_id);
+      $courses = $this->db->get()->result_array();
+  
+      return $courses;
   }
 
   public function get_course_image($thumbnail)

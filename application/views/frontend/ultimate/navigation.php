@@ -4,7 +4,7 @@ $system_name = get_frontend_settings('website_title');
 ?>
 <!-- ========== HEADER ========== -->
 <header id="header">
-  <nav class="navbar position-relative navbar-expand-lg container-fluid navbar-dark bg-dark sticky-top sticky-nav">
+  <nav class="navbar position-relative navbar-expand-lg container-fluid navbar-dark  sticky-top sticky-nav">
     <div class="container-fluid">
       <!-- Logo -->
       <a class="navbar-brand" href="<?php echo site_url('home'); ?>">
@@ -19,7 +19,7 @@ $system_name = get_frontend_settings('website_title');
       <!-- End Toggle Button -->
 
       <!-- Navigation Links -->
-      <div class="collapse navbar-collapse" id="navbarContent" style="background-color:rgb(33 37 41);;">
+      <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link <?php if ($page_name === 'home') echo 'active'; ?>" href="<?php echo site_url('home'); ?>">
@@ -39,6 +39,11 @@ $system_name = get_frontend_settings('website_title');
           <li class="nav-item">
             <a class="nav-link <?php if ($page_name === 'contact') echo 'active'; ?>" href="<?php echo site_url('home/contact'); ?>">
               <?php echo get_phrase('Contact_us'); ?>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?php if ($page_name === 'demo') echo 'active'; ?>" href="<?php echo site_url(''); ?>">
+              <?php echo get_phrase('Demo_Request'); ?>
             </a>
           </li>
           <?php if ($this->session->userdata('user_id')) { ?>
@@ -81,6 +86,16 @@ $system_name = get_frontend_settings('website_title');
 
 </header>
 <!-- ========== END HEADER ========== -->
+ <script>
+  window.addEventListener('scroll', function() {
+  const nav = document.querySelector('.sticky-nav');
+  if (window.scrollY > 0) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+ </script>
 
 
 

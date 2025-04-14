@@ -1,47 +1,204 @@
-<!-- ========== MAIN ========== -->
-<main>
-  <!-- Hero Section -->
-  <div class="general-container container-fluid ">
-  <div class="general-header align-items-center">
-      <h1  class='col-6 display-4 text_fade text-uppercase text-center  text-sm-break'> About us </h1>
-      <!-- Divs for "About Us" Background fade in-out animation-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+
+<div class=" container-about">
+  <div class="general-container ">
+    <div class="general-header align-items-center">
+      <h1 class='col-6 display-4 text_fade text-uppercase text-center  text-sm-break'> <?php echo get_phrase('About_us'); ?> </h1>
+      <!-- Div Section For Header Background Fade In-Out Animation-->
       <div></div>
       <div></div>
       <div></div>
-      <!-- End Divs-->
+      <!-- End Div Section-->
+    </div>
+    <img class="ct-img rellax " data-rellax-speed="1.5" src="
+			<?php echo base_url('assets/frontend/ultimate/img/online admission/oa-img-top.jpg') ?>" alt="">
+    <div class="general-container-ol"></div>
+  </div>
+  <div class="container row">
+    <!-- Text Section -->
+    <div class="col-md-6 content-section">
+      <h1>Welcome to Wayo Academy</h1>
+      <p> Where learning adapts to you at WAYO Academy, we are dedicated to delivering a personalized, dynamic educational experience that integrates effortlessly into your life. Our platform offers a diverse selection of expert-led courses and practical resources to help you develop the skills that matter most, for today and the future. </p>
+      <p> Whether you are beginning a new career, advancing in your field or exploring a passion, we will support you at every stage. Join us in a journey of growth, discovery and achievement. </p>
+      <p style="font-family: 'Dancing Script', cursive; font-optical-sizing: auto; font-weight: bold; font-style: normal; font-size: 1.9rem;">Because learning should evolve with you !</p>
+    </div>
+    <!-- Image Section -->
+    <div class="col-md-6 image-section">
+      <img alt="About Us" src="
+					<?php echo base_url('uploads/images/about_us/gros-plan-personnes-travaillant-au-bureau-min.jpg') ?>">
     </div>
   </div>
+</div>
+<div class="general-container g-0 container-fluid ">
+        <img id="img-bot" class="ct-img rellax " data-rellax-speed="1.5"
+            src="<?php echo base_url('assets/frontend/ultimate/img/online admission/oa-img-bot.jpg') ?>" alt="">
+        <div class="general-container-ol-bot"></div>
 
-  <!-- Image Section -->
-  <div class="about-image-container">
-    <img class="rellax about-image" data-rellax-speed="3" alt="About Us"
-      src="<?php echo base_url('uploads/images/about_us/gros-plan-personnes-travaillant-au-bureau-min.jpg') ?>">
-
-    <!-- Content Section -->
-    <div class="about-section">
-      <div class="container about-section-content">
-        <h1 class="section-title">Welcome to Wayo Academy</h1>
-        <div class="split-text">
-          <p class="h4 fade-in">
-            Where learning adapts to you at Wayo Academy, we are dedicated to delivering a personalized,
-            dynamic educational experience that integrates effortlessly into your life.
-            Our platform offers a diverse selection of expert-led courses and practical resources 
-            to help you develop the skills that matter most, for today and the future.
-            </br>
-            </br>
-            Whether you are beginning a new career, advancing in your field or exploring a passion,
-            we will support you at every stage. Join us in a journey of growth, discovery and achievement.
-          </p>
-          <span class="dynamic-message fade-in">Because learning should evolve with you !</span>
-        </div>
-      </div>
-
-      <!-- Decorative SVG -->
-      <svg class="about-section-bottom-svg" id="visual" viewBox="0 0 1920 60" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 40L45.7 36.5C91.3 33 182.7 26 274.2 28.2C365.7 30.3 457.3 41.7 548.8 42.3C640.3 43 731.7 33 823 27.7C914.3 22.3 1005.7 21.7 1097 26.8C1188.3 32 1279.7 43 1371.2 49C1462.7 55 1554.3 56 1645.8 56.3C1737.3 56.7 1828.7 56.3 1874.3 56.2L1920 56L1920 0L1874.3 0C1828.7 0 1737.3 0 1645.8 0C1554.3 0 1462.7 0 1371.2 0C1279.7 0 1188.3 0 1097 0C1005.7 0 914.3 0 823 0C731.7 0 640.3 0 548.8 0C457.3 0 365.7 0 274.2 0C182.7 0 91.3 0 45.7 0L0 0Z" fill="#41434c"></path>
-        <path d="M0 4L45.7 3.7C91.3 3.3 182.7 2.7 274.2 5.8C365.7 9 457.3 16 548.8 21.7C640.3 27.3 731.7 31.7 823 31.3C914.3 31 1005.7 26 1097 21C1188.3 16 1279.7 11 1371.2 12C1462.7 13 1554.3 20 1645.8 25.5C1737.3 31 1828.7 35 1874.3 37L1920 39L1920 0L1874.3 0C1828.7 0 1737.3 0 1645.8 0C1554.3 0 1462.7 0 1371.2 0C1279.7 0 1188.3 0 1097 0C1005.7 0 914.3 0 823 0C731.7 0 640.3 0 548.8 0C457.3 0 365.7 0 274.2 0C182.7 0 91.3 0 45.7 0L0 0Z" fill="#212121"></path>
-      </svg>
     </div>
-  </div>
-</main>
-<!-- ========== END MAIN ========== -->
+    <style>
+/* OR add padding-top to the text/image container */
+.container.row {
+  padding-top: 80px; /* Adjust this value as needed */
+}
+
+/* Existing styles remain unchanged */
+.container-about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-section {
+  padding: 40px;
+}
+
+.content-section h1 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.content-section p {
+  color: white;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.image-section img {
+  width: 90%;
+  height: 65%;
+  border-radius: 15px;
+}
+
+@media (max-width: 1399px) { /* Tablets and smaller */
+  .container.row {
+    padding-top: 40px; /* Reduce padding for smaller screens */
+  }
+
+  .content-section {
+    padding: 20px; /* Reduce padding */
+  }
+
+  .content-section h1 {
+    font-size: 2rem; /* Smaller heading */
+  }
+
+  .content-section p {
+    font-size: 1rem; /* Slightly smaller text */
+  }
+
+  .image-section img {
+    width: 100%; /* Full width for images */
+    height: 65%; /* Maintain aspect ratio */
+    margin-top: 20px; /* Add spacing between text and image */
+  }
+}
+
+@media (max-width: 991px) { /* Tablets and smaller */
+  .container.row {
+    padding-top: 40px; /* Reduce padding for smaller screens */
+  }
+
+  .content-section {
+    padding: 20px; /* Reduce padding */
+  }
+
+  .content-section h1 {
+    font-size: 1.7rem; /* Smaller heading */
+    text-align: center;
+  }
+
+  .content-section p {
+    font-size: 0.9rem; /* Slightly smaller text */
+    text-align: center;
+  }
+
+  .image-section img {
+    width: 110%; /* Full width for images */
+    height: 75%; /* Maintain aspect ratio */
+    margin-top: 20px; /* Add spacing between text and image */
+  }
+}
+
+@media (max-width: 767px) { /* Tablets and smaller */
+  .container.row {
+    padding-top: 40px; /* Reduce padding for smaller screens */
+  }
+
+  .content-section {
+    padding: 20px; /* Reduce padding */
+  }
+
+  .content-section h1 {
+    font-size: 2rem; /* Smaller heading */
+    text-align: center;
+  }
+
+  .content-section p {
+    font-size: 1rem; /* Slightly smaller text */
+    text-align: center;
+  }
+
+  .image-section img {
+    width: 100%; /* Full width for images */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 20px; /* Add spacing between text and image */
+  }
+}
+
+@media (max-width: 859px) { /* Tablets and smaller */
+  .container.row {
+    padding-top: 40px; /* Reduce padding for smaller screens */
+  }
+
+  .content-section {
+    padding: 20px; /* Reduce padding */
+  }
+
+  .content-section h1 {
+    font-size: 1.7rem; /* Smaller heading */
+    text-align: center;
+  }
+
+  .content-section p {
+    font-size: 0.9rem; /* Slightly smaller text */
+    text-align: center;
+  }
+
+  .image-section img {
+    width: 100%; /* Full width for images */
+    height: 75%; /* Maintain aspect ratio */
+    margin-top: 20px; /* Add spacing between text and image */
+  }
+}
+
+@media (max-width: 633px) { /* Tablets and smaller */
+  .container.row {
+    padding-top: 40px; /* Reduce padding for smaller screens */
+  }
+
+  .content-section {
+    padding: 20px; /* Reduce padding */
+  }
+
+  .content-section h1 {
+    font-size: 1.7rem; /* Smaller heading */
+    text-align: center;
+  }
+
+  .content-section p {
+    font-size: 0.9rem; /* Slightly smaller text */
+    text-align: center;
+  }
+
+  .image-section img {
+    width: 100%; /* Full width for images */
+    height: 60%; /* Maintain aspect ratio */
+    margin-top: 20px; /* Add spacing between text and image */
+  }
+}
+</style>
