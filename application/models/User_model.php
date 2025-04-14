@@ -1490,6 +1490,56 @@ class User_model extends CI_Model
     }
 }
 
+// Ajouter ou mettre à jour les préférences de cookies
+public function set_cookie_preference($user_id = null, $session_id = null, $preference) {
+    $data = [
+        'cookie_preference' => $preference,
+        'updated_at' => date('Y-m-d H:i:s')
+    ];
+
+    // Si user_id est fourni (utilisateur connecté)
+    if ($user_id) {
+        $existing = $this->db->get_where('cookie_preferences', ['user_id' => $user_id])->row_array();
+        if ($existing) {
+            $this->db->where('user_id', $user_id);
+            $this->db->update('cookie_preferences', $data);
+        } else {
+            $data['user_id'] = $user_id;
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $this->db->insert('cookie_preferences', $data);
+        }
+    } 
+    // Si session_id est fourni (utilisateur non connecté)
+    elseif ($session_id) {
+        $existing = $this->db->get_where('cookie_preferences', ['session_id' => $session_id])->row_array();
+        if ($existing) {
+            $this->db->where('session_id', $session_id);
+            $this->db->update('cookie_preferences', $data);
+        } else {
+            $data['session_id'] = $session_id;
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $this->db->insert('cookie_preferences', $data);
+        }
+    }
+
+    return $this->db->affected_rows() > 0 || $this->db->insert_id() > 0;
+}
+
+// Récupérer les préférences de cookies
+public function get_cookie_preference($user_id = null, $session_id = null) {
+    if ($user_id) {
+        $this->db->select('cookie_preferences.cookie_preference');
+        $this->db->from('cookie_preferences');
+        $this->db->join('users', 'users.id = cookie_preferences.user_id', 'left');
+        $this->db->where('cookie_preferences.user_id', $user_id);
+        $result = $this->db->get()->row_array();
+        return $result ? $result['cookie_preference'] : null;
+    } elseif ($session_id) {
+        $result = $this->db->get_where('cookie_preferences', ['session_id' => $session_id])->row_array();
+        return $result ? $result['cookie_preference'] : null;
+    }
+    return null;
+}
 
 
 public function register_user_form()

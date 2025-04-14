@@ -20,9 +20,8 @@
     
   </head>
   <body>
-
     <?php include 'navigation.php';?>
-
+    <?php include 'cookies_banner.php';?>
     <?php include $page_name . '.php';?>
     
 
