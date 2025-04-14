@@ -155,7 +155,7 @@
           </div>
           <div class="mb-4 login-input">
             <label class="login-input-label text-uppercase"><?php echo get_phrase('category'); ?> <span class="required"> * </span></label>
-            <select name="category" class="form-control shadow-none" required>
+            <select name="category" class="form-control shadow-none" style="color: #707275;" required>
               <option value=""><?php echo get_phrase('select_a_category'); ?></option>
               <?php $categories = $this->db->get_where('categories', array())->result_array(); ?>
               <?php foreach ($categories as $categorie): ?>
