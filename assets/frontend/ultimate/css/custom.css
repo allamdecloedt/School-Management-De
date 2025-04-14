@@ -195,9 +195,6 @@ First Section Styling
   position: relative;
 }
 
-.intro-container {
-}
-
 .intro-canvas {
   position: absolute;
   z-index: 0;
@@ -246,7 +243,7 @@ First Section Styling
 }
 
 .section-height {
-  height: 75vh !important;
+  height: 90vh !important;
 }
 
 /*-----------------------------------
