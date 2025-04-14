@@ -408,5 +408,16 @@ if (!function_exists('get_grade')) {
 }
 
 
+if (!function_exists('get_cookie_preference')) {
+  function get_cookie_preference() {
+      $CI = &get_instance();
+      $CI->load->model('User_model');
+      $user_id = $CI->session->userdata('user_id');
+      $session_id = isset($_COOKIE['session_id']) ? $_COOKIE['session_id'] : null;
+
+      return $CI->User_model->get_cookie_preference($user_id, $session_id);
+  }
+}
+
 // ------------------------------------------------------------------------
 /* End of file common_helper.php */

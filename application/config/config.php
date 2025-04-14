@@ -482,6 +482,8 @@ $config['csrf_exclude_uris'] = array(
      'BigBlueButton/join_meeting',
      'superadmin/delete_room',
     'BigBlueButton/*',
+    'cookie/check_preference',
+    'cookie/save_preference'
 );
  
 /*
