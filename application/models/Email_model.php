@@ -236,7 +236,7 @@ class Email_model extends CI_Model {
 			}else{
 				$this->send_mail_using_smtp($email_msg , $email_sub , $email_to);
 			}
-			return true;
+			//return true; ca il va return toujours true même si l’envoi échoue !
 		}
 		else
 		{
@@ -927,11 +927,15 @@ class Email_model extends CI_Model {
 		//Load email library
 		$this->load->library('email');
 
-		if($from == NULL){
-			$from		=	get_settings('system_email');
-		}
+		// if($from == NULL){
+		// 	$from		=	get_settings('system_email');
+		// }
 		$smtp_username = get_smtp('smtp_username');
 		$smtp_password = get_smtp('smtp_password');
+		if ($from == NULL) {
+			$from = $smtp_username; // Use SMTP username instead of system_email
+		}
+		
 		//SMTP & mail configuration llcmpoajhkmglyf ghlirqnydynumjgy
 		$config = array(
 			'protocol'  => get_smtp('smtp_protocol'),
@@ -945,8 +949,9 @@ class Email_model extends CI_Model {
 			'newline'   => "\r\n",
 			'smtp_timeout' => '30',
 			'mailpath' => '/usr/sbin/sendmail',
-            'smtp_timeout' => '10', //in seconds
 			'wordwrap' => TRUE
+           // 'smtp_timeout' => '10', //in seconds
+			
 		);
 		//  print_r('smtp_username : '.get_smtp('smtp_username').' - smtp_username : '.get_smtp('smtp_password'));die;
 		$this->email->initialize($config);
@@ -961,7 +966,7 @@ class Email_model extends CI_Model {
 		$this->email->message($htmlContent);
 
 		//Send email
-		$this->email->send();
+		//$this->email->send();
 		        // Envoyer l'email
 				// if ($this->email->send()) {
 				// 	echo "Email envoyé avec succès.";
@@ -970,6 +975,15 @@ class Email_model extends CI_Model {
 				// 	echo $this->email->print_debugger();
 				// }
 				// die;
+
+		// Vérification et log si erreur
+		if (!$this->email->send()) {
+			log_message('error', 'CI Email Debugger: ' . $this->email->print_debugger(['headers']));
+			return false;
+		} else {
+			return true;
+			}
+
 	}
 
 	public function send_mail_using_php_mailer($message=NULL, $subject=NULL, $to=NULL, $from=NULL) {

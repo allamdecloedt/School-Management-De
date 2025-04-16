@@ -678,7 +678,76 @@ class User_model extends CI_Model
 		}
 	}
 	
-
+	public function bulk_student_create()
+    {
+        $duplication_counter = 0;
+        $class_id = html_escape($this->input->post('class_id'));
+        $section_id = html_escape($this->input->post('section_id'));
+ 
+        $students_name = html_escape($this->input->post('name'));
+        $students_email = html_escape($this->input->post('email'));
+        //$students_password = html_escape($this->input->post('password'));
+        $students_gender = html_escape($this->input->post('gender'));
+        $students_parent = html_escape($this->input->post('parent_id'));
+ 
+        foreach ($students_name as $key => $value):
+            // check email duplication
+            $duplication_status = $this->check_duplication('on_create', $students_email[$key]);
+            if ($duplication_status) {
+                $user_data['name'] = $students_name[$key];
+                $user_data['email'] = $students_email[$key];
+             // $user_data['password'] = sha1($students_password[$key]);
+                $user_data['gender'] = $students_gender[$key];
+                $user_data['role'] = 'student';
+                $user_data['school_id'] = $this->school_id;
+                $user_data['watch_history'] = '[]';
+                $user_data['status'] = '1';
+                $this->db->insert('users', $user_data);
+                $user_id = $this->db->insert_id();
+ 
+                $student_data['code'] = student_code();
+                $student_data['user_id'] = $user_id;
+ 
+                $student_data['session'] = $this->active_session;
+                $student_data['school_id'] = $this->school_id;
+                $this->db->insert('students', $student_data);
+                $student_id = $this->db->insert_id();
+ 
+                $enroll_data['student_id'] = $student_id;
+                $enroll_data['class_id'] = $class_id;
+                $enroll_data['section_id'] = $section_id;
+                $enroll_data['session'] = $this->active_session;
+                $enroll_data['school_id'] = $this->school_id;
+                $this->db->insert('enrols', $enroll_data);
+				
+				// Envoi d'email de réinitialisation du mot de passe
+				$reset_link = base_url("login/new_password_student?user_id=" . $user_id);
+				if (!$this->email_model->password_send_add_student($reset_link, $user_id)) {
+					log_message('error', 'Email sending failed for user: ' . $user_id);
+				}
+            } else {
+                $duplication_counter++;
+            }
+        endforeach;
+	
+        if ($duplication_counter > 0) {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('some_of_the_emails_have_been_taken'),
+				'type'=>'error'
+            );
+        } else {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('students_added_successfully'),
+				'type'=>'success'
+            );
+        }
+ 
+		header('Content-Type: application/json');
+		echo json_encode($response);
+		exit(); 
+    }
 	public function excel_create()
 	{
 		$class_id = html_escape($this->input->post('class_id'));
@@ -715,9 +784,8 @@ class User_model extends CI_Model
 				if ($count > 0) {
 					$user_data['name'] = str_replace('"', '', trim($all_data[0]));
 					$user_data['email'] = html_escape($all_data[1]);
-					$user_data['password'] = sha1(trim($all_data[2]));
-					$user_data['phone'] = trim(html_escape($all_data[3]));
-					$user_data['gender'] = str_replace('"', '', trim($all_data[4]));
+					$user_data['phone'] = trim(html_escape($all_data[2]));
+					$user_data['gender'] = str_replace('"', '', trim($all_data[3]));
 					$user_data['role'] = $role;
 					$user_data['school_id'] = $school_id;
 					$user_data['watch_history'] = '[]';
@@ -742,6 +810,11 @@ class User_model extends CI_Model
 						$enroll_data['session'] = $session_id;
 						$enroll_data['school_id'] = $school_id;
 						$this->db->insert('enrols', $enroll_data);
+						// Envoi d'email de réinitialisation du mot de passe
+						$reset_link = base_url("login/new_password_student?user_id=" . $user_id);
+						if (!$this->email_model->password_send_add_student($reset_link, $user_id)) {
+							log_message('error', 'Email sending failed for user: ' . $user_id);
+						}
 					} else {
 						$duplication_counter++;
 					}
@@ -752,18 +825,22 @@ class User_model extends CI_Model
 		}
 
 		if ($duplication_counter > 0) {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('some_of_the_emails_have_been_taken')
-			);
-		} else {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('students_added_successfully')
-			);
-		}
-
-		return json_encode($response);
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('some_of_the_emails_have_been_taken'),
+				'type'=>'error'
+            );
+        } else {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('students_added_successfully'),
+				'type'=>'success'
+            );
+        }
+ 
+		header('Content-Type: application/json');
+		echo json_encode($response);
+		exit(); 
 	}
 
 	public function student_update($student_id = '', $user_id = '')

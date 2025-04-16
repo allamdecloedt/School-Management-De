@@ -30,9 +30,7 @@
                     <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
                         <input type="email" name="email[]" class="form-control"  value="" placeholder="Email" required>
                     </div>
-                    <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
-                        <input type="password" name="password[]" class="form-control"  value="" placeholder="Password" required>
-                    </div>
+                 
                     <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
                         <select name="gender[]" class="form-control" required>
                             <option value=""><?php echo get_phrase('select_gender'); ?></option>
@@ -70,9 +68,7 @@
                 <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
                     <input type="email" name="email[]" class="form-control"  value="" placeholder="Email">
                 </div>
-                <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
-                    <input type="password" name="password[]" class="form-control"  value="" placeholder="Password">
-                </div>
+               
 
                 <div class="form-group col-xl-2 col-lg-2 col-md-12 col-sm-12 mb-1 mb-lg-0">
                     <select name="gender[]" class="form-control">
@@ -105,15 +101,46 @@ function appendRow() {
 function removeRow(elem) {
     $(elem).closest('.student-row').remove();
 }
-</script>
 
-<script>
-var form;
 $(".ajaxForm").submit(function(e) {
-    form = $(this);
-    ajaxSubmit(e, form, refreshForm);
+    e.preventDefault();
+    var form = $(this);
+    
+    // Afficher le spinner et désactiver le bouton
+    var adding_text = "<?php echo get_phrase('adding'); ?>";
+    var submitBtn = $('button[type="submit"]', form);
+    var original_text = submitBtn.html();
+    
+    submitBtn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i> ' + adding_text);
+    
+    // Soumettre le formulaire en AJAX
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+            form.trigger("reset");
+            
+            // Afficher la notification appropriée
+            if(response.type === 'error') {
+                error_notify(response.notification);
+            } else {
+                success_notify(response.notification);
+            }
+            
+            // Réactiver le bouton après délai
+            setTimeout(function() {
+                submitBtn.prop('disabled', false).html(original_text);
+            }, 3300);
+        },
+        error: function(xhr, status, error) {
+            error_notify("<?php echo get_phrase('an_error_occurred_please_try_again'); ?>");
+            submitBtn.prop('disabled', false).html(original_text);
+            
+            // Debug: afficher l'erreur dans la console
+            // console.error(xhr.responseText);
+        }
+    });
 });
-var refreshForm = function () {
-    form.trigger("reset");
-}
 </script>

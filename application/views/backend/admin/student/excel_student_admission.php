@@ -41,17 +41,53 @@
     </div>
 </form>
 
+
 <script>
 $(document).ready(function(){
     initCustomFileUploader();
+
+    // Nouveau code pour gérer la soumission
+    $('#student_admission_form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var submitBtn = form.find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        
+        // Afficher le spinner
+        submitBtn.html('<i class="mdi mdi-loading mdi-spin"></i> ' + originalText).prop('disabled', true);
+
+        // Créer FormData pour l'envoi de fichier
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if(response.type === 'error') {
+                    error_notify(response.notification);
+                } else {
+                    success_notify(response.notification);
+                }
+            },
+            error: function(xhr, status, error) {
+            error_notify("<?php echo get_phrase('an_error_occurred_please_try_again'); ?>");
+               // Debug: afficher l'erreur dans la console
+              // console.error(xhr.responseText);
+             },
+            complete: function() {
+                // Réinitialiser après 3 secondes
+                setTimeout(function() {
+                    submitBtn.html(originalText).prop('disabled', false);
+                    form.trigger("reset");
+                    $('#class_id_excel, #section_id').val('').trigger('change');
+                }, 3300);
+            }
+        });
+    });
 });
 
-var form;
-$(".ajaxForm").submit(function(e) {
-  form = $(this);
-  ajaxSubmit(e, form, refreshForm);
-});
-var refreshForm = function () {
-    form.trigger("reset");
-}
 </script>
