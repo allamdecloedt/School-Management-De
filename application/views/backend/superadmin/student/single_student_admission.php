@@ -21,14 +21,6 @@
             </div>
         </div>
 
-        <!-- <div class="form-group row mb-3">
-            <label class="col-md-3 col-form-label" for="password"><?php echo get_phrase('password'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
-                <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
-            </div>
-        </div> -->
-
-
         <div class="form-group row mb-3">
             <label class="col-md-3 col-form-label" for="class_id"><?php echo get_phrase('class'); ?><span class="required"> * </span></label>
             <div class="col-md-9">
@@ -239,7 +231,7 @@ $(document).ready(function() {
     var name = $("#name").val();
     var email = $("#email").val();
     //var password = $("#password").val();
-    //var parent_id = $("#parent_id").val();
+    var parent_id = $("#parent_id").val();
     var class_id = $("#class_id").val();
     var birthday = $("#birthday").val();
     var gender = $("#gender").val();

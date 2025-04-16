@@ -1500,5 +1500,8 @@
     "school_phone": "School phone",
     "learner_email": "Learner email",
     "learner_admission": "Learner admission",
-    "learner_information": "Learner information"
+    "learner_information": "Learner information",
+    "server_communication_error": "Server communication error",
+    "try_again": "Try again",
+    "an_error_occurred_please_try_again": "An error occurred please try again"
 }
