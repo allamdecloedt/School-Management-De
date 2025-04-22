@@ -255,9 +255,14 @@ class Settings_model extends CI_Model
 
     $response = array(
       'status' => true,
+      'type' => 'success',
       'notification' => get_phrase('smtp_settings_updated_successfully')
-    );
-    return json_encode($response);
+  );
+
+  // Ajoutez ces lignes avant de retourner la réponse
+  header('Content-Type: application/json');
+  echo json_encode($response);
+  exit();
   }
 
   // This function is responsible for retreving all the files and folder
