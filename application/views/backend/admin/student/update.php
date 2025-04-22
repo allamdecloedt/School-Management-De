@@ -322,7 +322,7 @@ $(document).ready(function () {
         
                 // Re-enable submit button
                 $('button[type="submit"]').prop('disabled', false)
-                .html('<i class="mdi mdi-account-check"></i> <?= get_phrase("update_student_information"); ?>'); 
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
             }
 
                     $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
@@ -330,7 +330,7 @@ $(document).ready(function () {
              error: function(xhr) {
                 error_notify('<?= get_phrase("request_failed"); ?>: ' + xhr.statusText);
                 $('button[type="submit"]').prop('disabled', false)
-                .html('<i class="mdi mdi-account-check"></i> <?= get_phrase("update_student_information"); ?>'); 
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
             }
         });
     });

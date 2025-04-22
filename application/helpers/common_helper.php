@@ -48,7 +48,24 @@ if (!function_exists('get_settings')) {
     return $result[$type];
   }
 }
+// Dans common_helper.php
+if (!function_exists('get_user_language')) {
+  function get_user_language() {
+    $CI =& get_instance();
+    $CI->load->database();
+    
+    // Récupérer l'ID de l'utilisateur connecté
+    $user_id = $CI->session->userdata('user_id');
+    
+    // Si l'utilisateur est connecté
+    if ($user_id) {
+      $user_data = $CI->db->get_where('users', ['id' => $user_id])->row_array();
+      return $user_data['language'] ?? get_settings('language'); // Fallback
+    }
 
+    return get_settings('language'); // Langue par défaut
+  }
+}
 if (!function_exists('get_common_settings')) {
   function get_common_settings($type = '')
   {

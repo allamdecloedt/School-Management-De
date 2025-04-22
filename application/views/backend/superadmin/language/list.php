@@ -13,7 +13,7 @@
                     <tr>
                         <td>
                             <?php echo  ucfirst($language);?>
-                            <?php if (get_settings('language') == $language): ?>
+                            <?php if (get_user_language() == $language): ?>
                                 <i class="mdi mdi-check-circle" style="color: #4CAF50;"></i>
                             <?php endif; ?>
                          </td>

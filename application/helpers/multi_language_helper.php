@@ -16,7 +16,7 @@ if ( ! function_exists('get_phrase'))
 		$CI = get_instance();
 		$CI	=&	get_instance();
 		$CI->load->database();
-		$language_code = get_settings('language');
+		$language_code = get_user_language('language');
 		$key = str_replace(" ", "_", strtolower(preg_replace('/\s+/', '_', $phrase)));
 		$langArray = openJSONFile($language_code);
 
@@ -26,11 +26,19 @@ if ( ! function_exists('get_phrase'))
 
             file_put_contents(APPPATH.'language/'.$language_code.'.json', stripslashes($jsonData));
         }
-
 		return $langArray[$key];
+		// Échapper les apostrophes et guillemets avant de retourner
+        //return isset($langArray[$key]) ? addslashes($langArray[$key]) : addslashes(ucfirst(str_replace('_', ' ', $key)));
 	}
 }
-
+// This function retrieves the translated phrase from the language JSON file
+// and encodes it properly for safe use in JavaScript (e.g., avoiding quote(') issues).
+// It wraps the get_phrase() function and applies json_encode with UTF-8 support.
+if (!function_exists('js_phrase')) {
+    function js_phrase($key) {
+        return json_encode(get_phrase($key), JSON_UNESCAPED_UNICODE);
+    }
+}
 // This function helps us to decode the language json and return that array to us
 if ( ! function_exists('openJSONFile'))
 {

@@ -23,7 +23,7 @@ if (count($exams) > 0): ?>
 					<button type="button" class="btn btn-sm btn-icon btn-rounded btn-outline-secondary dropdown-btn dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></button>
 					<div class="dropdown-menu dropdown-menu-end">
 						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/exam/edit/'.$exam['id'])?>', '<?php echo get_phrase('update_exam'); ?>');"><?php echo get_phrase('edit'); ?></a>
+						<a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/exam/edit/'.$exam['id'])?>',&quot;<?php echo get_phrase('update_exam'); ?>&quot;)"><?php echo get_phrase('edit'); ?></a>
 						<!-- item-->
 						<a href="javascript:void(0);" class="dropdown-item" onclick="confirmModal('<?php echo route('exam/delete/'.$exam['id']); ?>', showAllExams)"><?php echo get_phrase('delete'); ?></a>
 					</div>

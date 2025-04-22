@@ -348,14 +348,17 @@ class Settings_model extends CI_Model
     return json_encode($response);
   }
 
-  public function update_system_language($selected_language = "")
-  {
-    $data['language'] = $selected_language;
+ // Settings_model.php
+  public function update_system_language($user_id = "", $selected_language = "") {
+    if (!empty($user_id)) {
+        $this->db->where('id', $user_id);
+        $this->db->update('users', ['language' => $selected_language]);
 
-    $this->db->where('id', 1);
-    $this->db->update('settings', $data);
+    } else {
+        $this->db->where('id', 1);
+        $this->db->update('settings', ['language' => $selected_language]);
+    }
   }
-
   function get_currencies()
   {
     return $this->db->get('currencies')->result_array();

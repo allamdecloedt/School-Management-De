@@ -137,15 +137,20 @@
   
   #update-logos-btn {
     color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    /* background-color: #6c757d;
+    border-color: #6c757d; */
+    background-color:#536de6;
+    border-color: #536de6;
     border: none;
     border-radius: 16px;
     font-weight: 500;
     transition: all 0.3s ease;
   }
   #update-logos-btn:hover {
-    background-color: #3b5998;
+    /* background-color: #3b5998; */
+    color: #fff;
+    background-color: #475dc4;
+    border-color: #475dc4;
   }
   
   #update-logos-btn i {

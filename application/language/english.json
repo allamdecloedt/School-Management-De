@@ -1500,5 +1500,6 @@
     "school_phone": "School phone",
     "learner_email": "Learner email",
     "learner_admission": "Learner admission",
-    "learner_information": "Learner information"
+    "learner_information": "Learner information",
+    "password_can_not_be_empty": "Password can not be empty"
 }

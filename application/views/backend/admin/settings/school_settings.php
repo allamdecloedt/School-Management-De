@@ -83,7 +83,7 @@
                            </div>
 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="updateSchoolInfo()">
+                                <button type="submit" class="btn btn-primary btn-l px-4"id="update-logos-btn"id="update-logos-btn"  onclick="updateSchoolInfo()">
                                 <i class="mdi mdi-account-check"></i>
                                     <?php echo get_phrase('update_settings') ;?></button>
                             </div>
@@ -175,14 +175,13 @@ $(document).ready(function () {
                   location.reload();
                 }, 3500);// Attendre 3500ms avant de recharger la page
             } else {
-              error_notify('<?php echo get_phrase('action_not_allowed'); ?>')
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
                 
             }
         },
         error: function () {
-          error_notify('<?php echo get_phrase('an_error_occurred_during_submission'); ?>')
-        }  
-         
+            error_notify(<?= js_phrase('an_error_occurred_during_submission'); ?>)
+        }
         });
     });
 });
