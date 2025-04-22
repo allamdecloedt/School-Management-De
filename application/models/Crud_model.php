@@ -638,35 +638,38 @@ class Crud_model extends CI_Model {
 
 	//START EXAM section
 	public function exam_create()
-	{
-		$data['name'] = html_escape($this->input->post('exam_name'));
-		$data['starting_date'] = strtotime($this->input->post('starting_date'));
-		$data['ending_date'] = strtotime($this->input->post('ending_date'));
-		$data['school_id'] = $this->school_id;
-		$data['session'] = $this->active_session;
-		$this->db->insert('exams', $data);
+{
+    $data['name'] = html_escape($this->input->post('exam_name'));
+    $data['starting_date'] = strtotime($this->input->post('starting_date'));
+    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
+    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
+    $data['school_id'] = $this->school_id;
+    $data['session'] = $this->active_session;
 
-		$response = array(
-			'status' => true,
-			'notification' => get_phrase('exam_created_successfully')
-		);
-		return json_encode($response);
-	}
+    $this->db->insert('exams', $data);
 
-	public function exam_update($param1 = '')
-	{
-		$data['name'] = html_escape($this->input->post('exam_name'));
-		$data['starting_date'] = strtotime($this->input->post('starting_date'));
-		$data['ending_date'] = strtotime($this->input->post('ending_date'));
-		$this->db->where('id', $param1);
-		$this->db->update('exams', $data);
+    $response = array(
+        'status' => true,
+        'notification' => get_phrase('exam_created_successfully')
+    );
+    return json_encode($response);
+}
+public function exam_update($param1 = '')
+{
+    $data['name'] = html_escape($this->input->post('exam_name'));
+    $data['starting_date'] = strtotime($this->input->post('starting_date'));
+    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
+    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
 
-		$response = array(
-			'status' => true,
-			'notification' => get_phrase('exam_updated_successfully')
-		);
-		return json_encode($response);
-	}
+    $this->db->where('id', $param1);
+    $this->db->update('exams', $data);
+
+    $response = array(
+        'status' => true,
+        'notification' => get_phrase('exam_updated_successfully')
+    );
+    return json_encode($response);
+}
 
 	public function exam_delete($param1 = '')
 	{
@@ -683,8 +686,6 @@ class Crud_model extends CI_Model {
 	public function get_exam_by_id($exam_id = "") {
 		return $this->db->get_where('exams', array('id' => $exam_id))->row_array();
 	}
-	//END EXAM section
-
 
 	//START MARKS section
 	public function get_marks($class_id = "", $section_id = "", $exam_id = "", $school_id = "") {

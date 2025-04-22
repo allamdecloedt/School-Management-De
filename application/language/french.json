@@ -1450,5 +1450,22 @@
     "choose_your_answer": "Choose your answer",
     "librarian_deleted_successfully": "Librarian deleted successfully",
     "no_classes_found": "No classes found",
-    "phone_number_not_found": "Phone number not found"
+    "phone_number_not_found": "Phone number not found",
+    "no_class": "No class",
+    "no_section": "No section",
+    "manage_exam_questions": "Manage exam questions",
+    "provide_date_and_time": "Provide date and time",
+    "select_class": "Select class",
+    "no_sections_found": "No sections found",
+    "error_loading_sections": "Error loading sections",
+    "refresh": "Refresh",
+    "the_question_title_is_required": "The question title is required",
+    "number_of_options_must_be_greater_than_zero": "Number of options must be greater than zero",
+    "you_must_select_at_least_one_correct_answer": "You must select at least one correct answer",
+    "no_options.can_be_blank_and_there_has_to_be_atleast_one_answer": "No options.can be blank and there has to be atleast one answer",
+    "update_exam_question": "Update exam question",
+    "exam_question_deleted_successfully": "Exam question deleted successfully",
+    "error_deleting_question": "Error deleting question",
+    "error_sorting_questions": "Error sorting questions"
+
 }

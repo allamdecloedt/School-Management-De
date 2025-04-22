@@ -52,13 +52,41 @@ function rightModal(url, header)
 }
 
 
-function confirmModal(delete_url, param)
-{
-  jQuery('#alert-modal').modal('show', {backdrop: 'static'});
-  if(param){
-    callBackFunction = param;
-  }
-  document.getElementById('delete_form').setAttribute('action' , delete_url);
+function confirmModal(delete_url, callback) {
+    jQuery('#alert-modal').modal('show', {backdrop: 'static'});
+
+    // S'assurer que l'action du formulaire est correcte
+    jQuery('#delete_form').attr('action', delete_url);
+
+    // Gérer la soumission du formulaire
+    jQuery('#delete_form').off('submit').on('submit', function(e) {
+        e.preventDefault(); // Empêcher la soumission par défaut
+        var form = jQuery(this);
+        var url = form.attr('action'); // Utiliser l'URL définie dans l'action
+        var data = form.serialize(); // Inclut le jeton CSRF
+        jQuery.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                // Fermer le modal
+                jQuery('#alert-modal').modal('hide');
+                // Appeler le callback avec la réponse
+                if (callback && typeof callback === 'function') {
+                    callback(response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erreur AJAX : ', error);
+                console.error('Statut : ', status);
+                console.error('Réponse : ', xhr.responseText);
+                error_notify('Une erreur est survenue lors de la suppression.');
+                // Fermer le modal même en cas d'erreur
+                jQuery('#alert-modal').modal('hide');
+            }
+        });
+    });
 }
 
 function confirmModalRedirect(delete_url)
@@ -89,6 +117,52 @@ function reloadFunction(){
   window.location.reload();
 }
 
+function updateAjaxModal(url, header) {
+    // Afficher un chargeur pendant la requête
+    jQuery('#scrollable-modal .modal-body').html('<div style="text-align:center;margin-top:200px;"><img style="width: 100px; opacity: 0.4; " src="<?php echo base_url().'assets/backend/images/straight-loader.gif'; ?>" /></div>');
+    jQuery('#scrollable-modal .modal-title').html('...');
+
+    // Charger le contenu via AJAX
+    $.ajax({
+        url: url,
+        success: function(response) {
+            jQuery('#scrollable-modal .modal-body').html(response);
+            jQuery('#scrollable-modal .modal-title').html(header);
+        },
+        error: function(xhr, status, error) {
+            console.error('Erreur lors du chargement du contenu : ', error);
+            console.error('Statut : ', status);
+            console.error('Réponse : ', xhr.responseText);
+            error_notify('Erreur lors du rechargement de la liste des questions.');
+        }
+    });
+}
+
+function updateLargeModal(url, header) {
+    // S'assurer que le modal est visible
+    if (!jQuery('#large-modal').hasClass('show')) {
+        jQuery('#large-modal').modal('show', {backdrop: 'true'});
+    }
+
+    // Afficher un chargeur pendant la requête
+    jQuery('#large-modal .modal-body').html('<div style="text-align:center;margin-top:200px;"><img style="width: 100px; opacity: 0.4; " src="<?php echo base_url().'assets/backend/images/straight-loader.gif'; ?>" /></div>');
+    jQuery('#large-modal .modal-title').html('...');
+
+    // Charger le contenu via AJAX
+    $.ajax({
+        url: url,
+        success: function(response) {
+            jQuery('#large-modal .modal-body').html(response);
+            jQuery('#large-modal .modal-title').html(header);
+        },
+        error: function(xhr, status, error) {
+            console.error('Erreur lors du chargement du contenu : ', error);
+            console.error('Statut : ', status);
+            console.error('Réponse : ', xhr.responseText);
+            error_notify('Erreur lors du rechargement de la liste des questions.');
+        }
+    });
+}
 </script>
 
 
@@ -240,13 +314,13 @@ function reloadFunction(){
   }
 </script>
 
-<script>
+<!-- <script>
     jQuery(".ajaxDeleteForm").submit(function(e) {
 
         var form = $(this);
         ajaxSubmit(e, form, callBackFunction);
     });
-</script>
+</script> -->
 
 <script>
   function showAjaxModal(url, header)

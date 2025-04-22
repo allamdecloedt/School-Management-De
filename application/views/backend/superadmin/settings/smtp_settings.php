@@ -93,6 +93,7 @@
 
 
 <script type="text/javascript">
+
     $(document).ready(function () {
         var mail_sender = $('#mail_sender').val();
         showHideSMTPCredentials(mail_sender);
@@ -156,4 +157,54 @@ function getCsrfToken() {
       });
     });
   });
+
+$(document).ready(function() {
+    var mail_sender = $('#mail_sender').val();
+    showHideSMTPCredentials(mail_sender);
+    $('#smtpsettings').on('submit', function(e) {
+        e.preventDefault();
+       
+        var form = $(this);
+        var submitBtn = form.find('button[type="submit"]');
+        var originalText = submitBtn.html();
+       
+        // Afficher le spinner
+        submitBtn.html('<i class="mdi mdi-loading mdi-spin"></i> ' + originalText).prop('disabled', true);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if(response.status) {
+                    if(response.type == 'success') {
+                        success_notify(response.notification);
+                    } else {
+                        error_notify(response.notification);
+                    }
+                }
+            },
+            error: function(xhr) {
+                error_notify("<?php echo get_phrase('an_error_occurred'); ?>");
+                console.error(xhr.responseText);
+            },
+            complete: function() {
+                // Réinitialiser le bouton après 2 secondes
+                setTimeout(function() {
+                    submitBtn.html(originalText).prop('disabled', false);
+                }, 3300);
+            }
+        });
+    });
+});
+
+function showHideSMTPCredentials(mail_sender) {
+    if (mail_sender === "php_mailer") {
+        $("#php-mailer-visibility-div").slideDown();
+    } else {
+        $("#php-mailer-visibility-div").slideUp();
+    }
+}
+
 </script>
