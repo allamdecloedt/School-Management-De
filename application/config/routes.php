@@ -577,7 +577,9 @@ $route['api/FilterStudents/(:num)/(:num)'] = 'api/Admin/students_by_class_and_se
 
 
 
-
+$route['addons/exams/exam_questions/(:num)/(:any)/(:num)'] = 'courses/exam_questions/$1/$2/$3';
+$route['addons/exams/exam_questions/(:num)'] = 'courses/exam_questions/$1';
+$route['addons/exams/ajax_sort_question'] = 'courses/ajax_sort_question';
 
 
 
