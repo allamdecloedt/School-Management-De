@@ -1164,31 +1164,49 @@ class Superadmin extends CI_Controller
     }
   }
   //END STUDENT ADN ADMISSION section
+
+  public function get_csrf_token()
+{
+    $csrf = array(
+        'csrf_name' => $this->security->get_csrf_token_name(),
+        'csrf_hash' => $this->security->get_csrf_hash(),
+    );
+    echo json_encode($csrf);
+}
+
   public function get_sections_by_class()
-  {
-    $class_ids = $this->input->post('class_ids');
-    if (empty($class_ids)) {
-      echo json_encode([]);
-      return;
+{
+    // Vérifier si l'utilisateur est connecté
+    if ($this->session->userdata('superadmin_login') != 1) {
+        echo json_encode(['status' => 'error', 'message' => 'Session expired, please login again']);
+        return;
     }
 
-    $sections = [];
-    foreach ($class_ids as $class_id) {
-      $this->db->where('class_id', $class_id);
-      $result = $this->db->get('sections')->result_array();
-      $sections = array_merge($sections, $result);
+    $class_id = $this->input->post('class_id');
+    if (empty($class_id)) {
+        echo json_encode(['sections' => []]);
+        return;
     }
 
-         // Prepare a new CSRF token for the response
-         $csrf = array(
-          'csrfName' => $this->security->get_csrf_token_name(),
-          'csrfHash' => $this->security->get_csrf_hash(),
-      );
-  
-      // Return JSON response with the HTML content and new CSRF token
-      echo json_encode(array('sections' => $sections, 'csrf' => $csrf));
-    
-  }
+    // Vérifier si la classe existe et appartient à l'école
+    $class = $this->crud_model->get_classes($class_id);
+    if ($class->num_rows() == 0) {
+        echo json_encode(['sections' => [], 'message' => 'Class not found']);
+        return;
+    }
+
+    // Récupérer les sections en utilisant le modèle
+    $sections = $this->crud_model->get_section_details_by_id('class', $class_id)->result_array();
+
+    // Préparer un nouveau jeton CSRF pour la réponse
+    $csrf = array(
+        'csrfName' => $this->security->get_csrf_token_name(),
+        'csrfHash' => $this->security->get_csrf_hash(),
+    );
+
+    // Renvoyer la réponse JSON avec les sections et le nouveau jeton CSRF
+    echo json_encode(array('sections' => $sections, 'csrf' => $csrf));
+}
 
 
 
@@ -1243,7 +1261,7 @@ class Superadmin extends CI_Controller
     }
   }
   //END EXAM section
-
+  
   //START MARKS section
   public function mark($param1 = '', $param2 = '')
   {
