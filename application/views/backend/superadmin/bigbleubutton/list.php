@@ -209,6 +209,7 @@ function closeModal() {
 
    $(document).ready(function () {
         var calendar = $('#calendar').fullCalendar({
+            titleRangeSeparator: ' - ',
             header: {
                 left: 'prev,next today',
                 center: 'title',
