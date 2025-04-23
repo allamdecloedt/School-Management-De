@@ -14,10 +14,11 @@
 
         <ul class="list-unstyled topbar-menu float-end mb-0">
 
-          <?php if ($this->session->userdata('user_type') == 'superadmin'): ?>
+          <?php if ($this->session->userdata('user_type') == 'superadmin' || $this->session->userdata('user_type') == 'admin' || $this->session->userdata('user_type') == 'teacher'
+          || $this->session->userdata('user_type') == 'student'): ?>
               <li class="dropdown notification-list topbar-dropdown d-none d-lg-block">
                   <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" onclick="getLanguageList()">
-                      <i class="mdi mdi-translate noti-icon"></i> <?php echo ucfirst(get_settings('language')); ?>
+                      <i class="mdi mdi-translate noti-icon"></i> <?php echo ucfirst(get_user_language()); ?>
                   </a>
                   <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 

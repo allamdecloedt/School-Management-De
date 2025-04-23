@@ -43,7 +43,7 @@
 											<button type="button" class="btn btn-sm btn-icon btn-rounded btn-outline-secondary dropdown-btn dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></button>
 											<div class="dropdown-menu dropdown-menu-end">
 												<!-- item-->
-												<a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/event_calendar/edit/'.$event_calendar['id']); ?>', '<?php echo get_phrase('update_event'); ?>');"><?php echo get_phrase('edit'); ?></a>
+												<a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/event_calendar/edit/'.$event_calendar['id']); ?>',  &quot;<?php echo get_phrase('update_event'); ?>&quot;)"><?php echo get_phrase('edit'); ?></a>
 												<!-- item-->
 												<a href="javascript:void(0);" class="dropdown-item" onclick="confirmModal('<?php echo route('event_calendar/delete/'.$event_calendar['id']); ?>', showAllEvents)"><?php echo get_phrase('delete'); ?></a>
 											</div>

@@ -158,7 +158,7 @@ function enrollStudent(promotion_data, enroll_id) {
         $("#danger_"+enroll_id).hide();
         success_notify('<?php echo get_phrase('student_promoted_successfully'); ?>');
       }else{
-        toastr.error('<?php echo get_phrase('an_error_occured'); ?>');
+        toastr.error(<?= js_phrase(get_phrase('an_error_occured')); ?>)
       }
     }
   });
