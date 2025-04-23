@@ -164,6 +164,7 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
         $("#appointmentModal").modal("hide");
     }
         var calendar = $('#calendar').fullCalendar({
+            titleRangeSeparator: ' - ',
             header: {
                 left: 'prev,next today',
                 center: 'title',

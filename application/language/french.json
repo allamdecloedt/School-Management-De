@@ -1443,5 +1443,15 @@
     "update_exam_question": "Update exam question",
     "exam_question_deleted_successfully": "Exam question deleted successfully",
     "error_deleting_question": "Error deleting question",
-    "error_sorting_questions": "Error sorting questions"
+    "error_sorting_questions": "Error sorting questions",
+    "request_failed": "Request failed",
+    "an_error_occurred_please_try_again": "An error occurred please try again",
+    "some_of_the_emails_have_been_taken": "Some of the emails have been taken",
+    "back_to_student_list": "Back to student list",
+    "roomname": "Roomname",
+    "select_classe": "Select classe",
+    "create_room": "Create room",
+    "calendar": "Calendar",
+    "no_classes_found": "No classes found",
+    "réunions": "Réunions"
 }

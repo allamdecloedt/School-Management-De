@@ -1559,6 +1559,6 @@
     "error_adding_question": "Error adding question",
     "error_updating_question": "Error updating question",
     "quiz_question_deleted_successfully": "Quiz question deleted successfully",
-    "submitting...": "Submitting..."
-
+    "submitting...": "Submitting...",
+    "an_error_occurred_please_try_again": "An error occurred please try again"
 }
