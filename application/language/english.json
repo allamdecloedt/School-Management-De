@@ -1501,6 +1501,7 @@
     "learner_email": "Learner email",
     "learner_admission": "Learner admission",
     "learner_information": "Learner information",
+    "password_can_not_be_empty": "Password can not be empty",
     "resource_type": "Resource type",
     "select_resource_type": "Select resource type",
     "url": "Url",
@@ -1560,5 +1561,6 @@
     "error_updating_question": "Error updating question",
     "quiz_question_deleted_successfully": "Quiz question deleted successfully",
     "submitting...": "Submitting...",
-    "an_error_occurred_please_try_again": "An error occurred please try again"
+    "an_error_occurred_please_try_again": "An error occurred please try again",
+    "submitting...": "Submitting..."
 }

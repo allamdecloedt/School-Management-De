@@ -57,7 +57,7 @@ var refreshNoticeCalendar = function () {
         events: notice_calendar,
         displayEventTime: false,
         eventClick : function(info) {
-          rightModal('<?php echo site_url('modal/popup/noticeboard/edit/'); ?>'+info.id, '<?php echo get_phrase('edit_notice'); ?>')
+          rightModal(  `<?php echo site_url('modal/popup/noticeboard/edit/'); ?>${info.id}`,"<?php echo get_phrase('edit_notice'); ?>");
         },
         dayClick: function(date) {
             rightModal('<?php echo site_url('modal/popup/noticeboard/create/'); ?>'+date.format(), '<?php echo get_phrase('add_new_notice'); ?>')

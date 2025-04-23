@@ -2576,9 +2576,11 @@ class Superadmin extends CI_Controller
 
     // showing the list of language
     if ($param1 == 'active') {
-      $this->settings_model->update_system_language($param2);
+      $user_id = $this->session->userdata('user_id');
+      $this->settings_model->update_system_language($user_id, $param2);
       redirect(route('language'), 'refresh');
-    }
+  }
+  
 
     // showing the list of language
     if ($param1 == 'update_phrase') {

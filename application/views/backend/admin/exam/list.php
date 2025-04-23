@@ -41,7 +41,7 @@ if (count($exams) > 0): ?>
                     <div class="dropdown-menu dropdown-menu-end">
                         <a href="javascript::" class="dropdown-item" onclick="largeModal('<?php echo site_url('modal/popup/academy/exam_questions/'.$exam['id']); ?>', '<?php echo get_phrase('manage_exam_questions'); ?>')"><?php echo get_phrase('manage_exam_questions'); ?></a>
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/exam/edit/'.$exam['id'])?>', '<?php echo get_phrase('update_exam'); ?>');"><?php echo get_phrase('edit'); ?></a>
+						            <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/exam/edit/'.$exam['id'])?>',  &quot;<?php echo get_phrase('update_exam'); ?>&quot;)"><?php echo get_phrase('edit'); ?></a>
                         <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item" onclick="confirmModal('<?php echo route('exam/delete/'.$exam['id']); ?>', showAllExams)"><?php echo get_phrase('delete'); ?></a>
                     </div>

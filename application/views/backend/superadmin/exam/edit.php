@@ -1,3 +1,10 @@
+
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
+
+<?php $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); ?>
+<?php foreach($exams as $exam){ ?>
+  <form method="POST" class="d-block ajaxForm" action="<?php echo route('exam/update/'.$param1); ?>">
+
 <?php 
 $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); 
 $school_id = school_id();
@@ -6,10 +13,12 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 
 <?php foreach($exams as $exam): ?>
 <form method="POST" class="d-block ajaxForm" action="<?php echo route('exam/update/'.$param1); ?>">
+
     <!-- Champ caché pour le jeton CSRF -->
     <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" id="csrf_token" />
     
     <div class="form-row">
+
         <div class="form-group mb-1">
             <label for="exam_name"><?php echo get_phrase('exam_name'); ?><span class="required"> * </span></label>
             <input type="text" value="<?php echo $exam['name']; ?>" class="form-control" id="exam_name" name="exam_name" placeholder="name" required>
@@ -54,14 +63,26 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
         </div>
 
         <div class="form-group col-md-12">
-            <button class="btn btn-block btn-primary" type="submit"><?php echo get_phrase('update_exam'); ?></button>
+            <button class="btn btn-block btn-primary btn-l px-4 " id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_exam'); ?></button>
         </div>
+
     </div>
 </form>
 <?php endforeach; ?>
 
 <script>
-$(document).ready(function() {
+
+ $(document).ready(function() {
+
+  function getCsrfToken() {
+         // Récupérer le nom du token CSRF depuis le champ input caché
+          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
+         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
+           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+         // Retourner un objet contenant le nom du token et sa valeur
+         return { csrfName: csrfName, csrfHash: csrfHash };
+      }
+
     // Charger dynamiquement les sections lorsque la classe change
     $('#class_id').on('change', function() {
         var class_id = $(this).val();
@@ -70,7 +91,7 @@ $(document).ready(function() {
 
         if (class_id) {
             $.ajax({
-                url: '<?php echo site_url('superadmin/get_sections_by_class'); ?>',
+                url: '<?php echo site_url('admin/get_sections_by_class'); ?>',
                 type: 'POST',
                 data: {
                     class_id: class_id,
@@ -101,6 +122,8 @@ $(document).ready(function() {
                     $('#csrf_token').val(data.csrf.csrfHash);
                 },
                 error: function(xhr, status, error) {
+                    console.log('Erreur AJAX : ', status, error);
+                    console.log('Réponse serveur : ', xhr.responseText);
                     alert('Erreur lors du chargement des sections.');
                 }
             });
@@ -113,23 +136,78 @@ $(document).ready(function() {
     // Déclencher le changement initial pour charger les sections
     $('#class_id').trigger('change');
 
-    // Mettre à jour le jeton CSRF après chaque soumission AJAX
-    $(".ajaxForm").submit(function(e) {
-        var form = $(this);
-        ajaxSubmit(e, form, function() {
-            showAllExams();
-            // Mettre à jour le jeton CSRF après la soumission
-            $.ajax({
-                url: '<?php echo site_url('superadmin/get_csrf_token'); ?>',
-                type: 'GET',
-                success: function(response) {
-                    var data = JSON.parse(response);
-                    $('#csrf_token').val(data.csrf_hash);
-                }
-            });
-        });
-    });
+//     // Mettre à jour le jeton CSRF après chaque soumission AJAX
+//     $(".ajaxForm").submit(function(e) {
+//         var form = $(this);
+//         ajaxSubmit(e, form, function() {
+            
+           
+//     });
 
+ // Soumission du formulaire de logo
+ // ——— Nouvelle fonction ajaxSubmit ———
+  function ajaxSubmit(e, form, callback) {
+    e.preventDefault();
+
+    // désactivation du bouton
+    var btn = form.find('button[type="submit"]'),
+        updating = "<?= get_phrase('updating'); ?>...";
+    btn.prop('disabled', true)
+       .html('<i class="mdi mdi-loading mdi-spin"></i>' + updating);
+
+    // préparation des données
+    var csrf    = getCsrfToken(),
+        payload = new FormData(form[0]);
+
+    // appel AJAX principal
+    $.ajax({
+      url: form.attr('action'),
+      type: 'POST',
+      data: payload,
+      processData: false,
+      contentType: false,
+      dataType: 'json',
+      success: function(response) {
+        if (response.status) {
+          // mise à jour du token depuis la réponse
+          $('input[name="'+response.csrf.name+'"]').val(response.csrf.hash);
+
+          // **ici** on appelle ton callback (showAllExams)
+          if (typeof callback === 'function') {
+            callback();
+          }
+
+          // reload différé si tu le souhaites
+          setTimeout(function(){
+            location.reload();
+          }, 3500);// Attendre 3500ms avant de recharger la page
+
+            } else {
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
+                
+            }
+        },
+        error: function () {
+          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
+        }
+     
+   // Mettre à jour le jeton CSRF après la soumission
+       $.ajax({
+        url: '<?= site_url('admin/get_csrf_token'); ?>',
+        type: 'GET',
+        success: function(raw) {
+          var d = JSON.parse(raw);
+          $('#csrf_token').val(d.csrf_hash);
+        }
+      });
+    }
+
+
+  // ——— Binding : on utilise ajaxSubmit avec showAllExams ———
+  $(".ajaxForm").submit(function(e) {
+    ajaxSubmit(e, $(this), showAllExams);
+  });
+ 
     // Initialisation de la validation jQuery
     $(".ajaxForm").validate({});
 });

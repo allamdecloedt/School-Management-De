@@ -308,18 +308,19 @@ $(document).ready(function () {
             success: function(response) {
                 //console.log('AJAX Response:', response); // Log the entire response object
                 if (response.status){ // Vérifie si la mise à jour a réussi
-                success_notify(response.notification);
+                    success_notify(response.notification);
                 // Met à jour le token CSRF
                 $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
-                // Rafraîchit la page après 2 secondes (le temps de voir la notification)
+                
+                // Rafraîchit la page après 3 secondes (le temps de voir la notification)
                 setTimeout(function() {
-                            location.reload();
-                        }, 3500);
+                                location.reload();
+                            }, 3500);
                 // Mise à jour dynamique des images avec cache-buster (pour forcer le rechargement des images)
-                $('.preview-image').each(function() {
-                var originalSrc = $(this).attr('src').split('?')[0];// Récupère l'URL d'origine de l'image sans la chaîne de requête
-                // $(this).attr('src', originalSrc + '?v=' + Date.now());// Ajoute un timestamp pour éviter la mise en cache cette ligne affiche alt du l'image avant affichage du l'image apres update
-
+                 $('.preview-image').each(function() {
+                    var originalSrc = $(this).attr('src').split('?')[0];// Récupère l'URL d'origine de l'image sans la chaîne de requête
+                    // $(this).attr('src', originalSrc + '?v=' + Date.now());// Ajoute un timestamp pour éviter la mise en cache cette ligne affiche alt du l'image avant affichage du l'image apres update
+                
                 });
               
             } else {
@@ -327,14 +328,14 @@ $(document).ready(function () {
         
                 // Re-enable submit button
                 $('button[type="submit"]').prop('disabled', false)
-                .html('<i class="mdi mdi-account-check"></i> <?= get_phrase("update_student_information"); ?>'); 
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
             }
                     $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
                 },
              error: function(xhr) {
                 error_notify('<?= get_phrase("request_failed"); ?>: ' + xhr.statusText);
                 $('button[type="submit"]').prop('disabled', false)
-                .html('<i class="mdi mdi-account-check"></i> <?= get_phrase("update_student_information"); ?>'); 
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
             }
         });
     });

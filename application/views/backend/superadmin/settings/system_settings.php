@@ -98,7 +98,7 @@
             <?php endif; ?>
 
             <div class="text-center">
-              <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="updateSystemInfo($('#system_name').val())"><?php echo get_phrase('update_settings') ;?></button>
+            <button type="submit" class="btn btn-primary btn-l px-4" id="update-logos-btn" onclick="updateSystemInfo($('#system_name').val())"> <i class="mdi mdi-account-check"></i><?php echo get_phrase('update_settings') ;?></button>
             </div>
           </div>
         </form>
@@ -110,12 +110,16 @@
           <div class="card">
             <div class="card-body">
               <h4 class="header-title"><?php echo get_phrase('product_update') ;?></h4>
-              <form action="<?php echo site_url('updater/update'); ?>" method="post" enctype="multipart/form-data">
+              <form class="systemFileAjaxForm"action="<?php echo site_url('updater/update'); ?>" method="post" enctype="multipart/form-data">
                     <!-- Champ caché pour le jeton CSRF -->
                 <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
                 <label for="file_name"><?php echo get_phrase('file'); ?></label>
                 <input type="file" class="form-control" name="file_name" id="file_name">
-                <button class="btn btn-secondary mt-3 float-end"><?php echo get_phrase('update'); ?></button>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-primary px-3" id="update-logos-btn">
+                      <i class="mdi mdi-account-check"></i> <?php echo get_phrase('update'); ?>
+                    </button>
+                </div>
               </form>
             </div>
           </div>
@@ -222,7 +226,7 @@
               </div>
              
               <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg px-5" id="update-logos-btn" onclick="updateSystemLogo()">
+                <button type="submit" class="btn btn-primary btn-l px-4" id="update-logos-btn" onclick="updateSystemLogo()">
                   <i class="mdi mdi-account-check"></i> <?php echo get_phrase('update_logo') ;?>
                 </button>
               </div>
@@ -280,13 +284,15 @@ $(document).ready(function () {
 
 
  // Soumission du formulaire de logo
- $(".systemLogoAjaxForm").submit(function(e) {
+ $(".systemLogoAjaxForm,.systemAjaxForm,.systemFileAjaxForm").submit(function(e) {
     e.preventDefault();
 
-         // Obtenez le texte de mise à jour traduit
-          var updating_text = "<?php echo get_phrase('updating'); ?>...";
-         // Afficher un indicateur de chargement
-         $('button[type="submit"]').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
+           // Cible uniquement le bouton de ce formulaire
+        var submitButton = $(this).find('button[type="submit"]');
+        var updating_text = "<?php echo get_phrase('updating'); ?>...";
+        
+        // Désactive et met à jour uniquement ce bouton
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
          // Récupérer le token CSRF avant l'envoi
          var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
          const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
@@ -315,12 +321,12 @@ $(document).ready(function () {
                   location.reload();
                 }, 3500);// Attendre 3500ms avant de recharger la page
             } else {
-              error_notify('<?php echo get_phrase('action_not_allowed'); ?>')
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
                 
             }
         },
         error: function () {
-          error_notify('<?php echo get_phrase('an_error_occurred_during_submission'); ?>')
+          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
         }
       });
     });
