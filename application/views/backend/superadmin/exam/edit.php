@@ -1,10 +1,5 @@
 
 <link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
-
-<?php $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); ?>
-<?php foreach($exams as $exam){ ?>
-  <form method="POST" class="d-block ajaxForm" action="<?php echo route('exam/update/'.$param1); ?>">
-
 <?php 
 $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); 
 $school_id = school_id();
@@ -91,7 +86,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 
         if (class_id) {
             $.ajax({
-                url: '<?php echo site_url('admin/get_sections_by_class'); ?>',
+                url: '<?php echo site_url('superadmin/get_sections_by_class'); ?>',
                 type: 'POST',
                 data: {
                     class_id: class_id,
@@ -136,15 +131,6 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
     // Déclencher le changement initial pour charger les sections
     $('#class_id').trigger('change');
 
-//     // Mettre à jour le jeton CSRF après chaque soumission AJAX
-//     $(".ajaxForm").submit(function(e) {
-//         var form = $(this);
-//         ajaxSubmit(e, form, function() {
-            
-           
-//     });
-
- // Soumission du formulaire de logo
  // ——— Nouvelle fonction ajaxSubmit ———
   function ajaxSubmit(e, form, callback) {
     e.preventDefault();
@@ -190,10 +176,11 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
         error: function () {
           error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
         }
-     
+    });
+  
    // Mettre à jour le jeton CSRF après la soumission
        $.ajax({
-        url: '<?= site_url('admin/get_csrf_token'); ?>',
+        url: '<?= site_url('superadmin/get_csrf_token'); ?>',
         type: 'GET',
         success: function(raw) {
           var d = JSON.parse(raw);
@@ -201,14 +188,13 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
         }
       });
     }
-
-
   // ——— Binding : on utilise ajaxSubmit avec showAllExams ———
   $(".ajaxForm").submit(function(e) {
     ajaxSubmit(e, $(this), showAllExams);
   });
- 
+
     // Initialisation de la validation jQuery
     $(".ajaxForm").validate({});
 });
+
 </script>
