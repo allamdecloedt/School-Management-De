@@ -1,9 +1,5 @@
 
 <link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
-
-<?php $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); ?>
-<?php foreach($exams as $exam){ ?>
-  <form method="POST" class="d-block ajaxForm" action="<?php echo route('exam/update/'.$param1); ?>">
 <?php 
 $exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); 
 $school_id = school_id();
@@ -12,6 +8,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 
 <?php foreach($exams as $exam): ?>
 <form method="POST" class="d-block ajaxForm" action="<?php echo route('exam/update/'.$param1); ?>">
+
     <!-- Champ caché pour le jeton CSRF -->
     <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" id="csrf_token" />
     
@@ -61,7 +58,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
         </div>
 
         <div class="form-group col-md-12">
-            <button class="btn btn-block btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_exam'); ?></button>
+            <button class="btn btn-block btn-primary btn-l px-4 " id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_exam'); ?></button>
         </div>
 
     </div>
@@ -70,7 +67,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 
 <script>
 
-$(document).ready(function() {
+ $(document).ready(function() {
 
   function getCsrfToken() {
          // Récupérer le nom du token CSRF depuis le champ input caché
@@ -134,15 +131,6 @@ $(document).ready(function() {
     // Déclencher le changement initial pour charger les sections
     $('#class_id').trigger('change');
 
-//     // Mettre à jour le jeton CSRF après chaque soumission AJAX
-//     $(".ajaxForm").submit(function(e) {
-//         var form = $(this);
-//         ajaxSubmit(e, form, function() {
-            
-           
-//     });
-
- // Soumission du formulaire de logo
  // ——— Nouvelle fonction ajaxSubmit ———
   function ajaxSubmit(e, form, callback) {
     e.preventDefault();
@@ -188,7 +176,8 @@ $(document).ready(function() {
         error: function () {
           error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
         }
-     
+    });
+  
    // Mettre à jour le jeton CSRF après la soumission
        $.ajax({
         url: '<?= site_url('admin/get_csrf_token'); ?>',
@@ -199,15 +188,13 @@ $(document).ready(function() {
         }
       });
     }
-
-
   // ——— Binding : on utilise ajaxSubmit avec showAllExams ———
   $(".ajaxForm").submit(function(e) {
     ajaxSubmit(e, $(this), showAllExams);
   });
- 
+
     // Initialisation de la validation jQuery
     $(".ajaxForm").validate({});
 });
-</script>
 
+</script>
