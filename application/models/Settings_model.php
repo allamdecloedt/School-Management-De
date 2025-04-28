@@ -260,9 +260,7 @@ class Settings_model extends CI_Model
   );
 
   // Ajoutez ces lignes avant de retourner la réponse
-  header('Content-Type: application/json');
-  echo json_encode($response);
-  exit();
+  return json_encode($response);
   }
 
   // This function is responsible for retreving all the files and folder

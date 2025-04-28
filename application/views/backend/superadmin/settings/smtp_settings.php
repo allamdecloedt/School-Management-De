@@ -95,9 +95,6 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        var mail_sender = $('#mail_sender').val();
-        showHideSMTPCredentials(mail_sender);
-  
     function showHideSMTPCredentials(mail_sender) {
         if (mail_sender === "php_mailer") {
             $("#php-mailer-visibility-div").slideDown();
@@ -105,6 +102,8 @@
             $("#php-mailer-visibility-div").slideUp();
         }
     }
+    var mail_sender = $('#mail_sender').val();
+        showHideSMTPCredentials(mail_sender);
   // Fonction pour récupérer et retourner le token CSRF
 function getCsrfToken() {
          // Récupérer le nom du token CSRF depuis le champ input caché
@@ -119,9 +118,8 @@ function getCsrfToken() {
  // Soumission du formulaire de logo
  $(".smtpForm").submit(function(e) {
     e.preventDefault();
-
-           // Cible uniquement le bouton de ce formulaire
-        var submitButton = $(this).find('button[type="submit"]');
+         // Cible uniquement le bouton de ce formulaire
+         var submitButton = $(this).find('button[type="submit"]');
         var updating_text = "<?php echo get_phrase('updating'); ?>...";
         
         // Désactive et met à jour uniquement ce bouton
@@ -139,16 +137,15 @@ function getCsrfToken() {
         dataType: 'json',
         success: function (response) {
             if (response.status) { // Vérifie si la mise à jour a réussi
+                
                 // Met à jour le token CSRF
                 $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
-
                 // Rafraîchissement de la page après un léger délai pour s'assurer que les modifications sont appliquées
                 setTimeout(function() {
                   location.reload();
                 }, 3500);// Attendre 3500ms avant de recharger la page
             } else {
-              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
-                
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>') 
             }
         },
         error: function () {
@@ -157,54 +154,4 @@ function getCsrfToken() {
       });
     });
   });
-
-$(document).ready(function() {
-    var mail_sender = $('#mail_sender').val();
-    showHideSMTPCredentials(mail_sender);
-    $('#smtpsettings').on('submit', function(e) {
-        e.preventDefault();
-       
-        var form = $(this);
-        var submitBtn = form.find('button[type="submit"]');
-        var originalText = submitBtn.html();
-       
-        // Afficher le spinner
-        submitBtn.html('<i class="mdi mdi-loading mdi-spin"></i> ' + originalText).prop('disabled', true);
-
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if(response.status) {
-                    if(response.type == 'success') {
-                        success_notify(response.notification);
-                    } else {
-                        error_notify(response.notification);
-                    }
-                }
-            },
-            error: function(xhr) {
-                error_notify("<?php echo get_phrase('an_error_occurred'); ?>");
-                console.error(xhr.responseText);
-            },
-            complete: function() {
-                // Réinitialiser le bouton après 2 secondes
-                setTimeout(function() {
-                    submitBtn.html(originalText).prop('disabled', false);
-                }, 3300);
-            }
-        });
-    });
-});
-
-function showHideSMTPCredentials(mail_sender) {
-    if (mail_sender === "php_mailer") {
-        $("#php-mailer-visibility-div").slideDown();
-    } else {
-        $("#php-mailer-visibility-div").slideUp();
-    }
-}
-
 </script>

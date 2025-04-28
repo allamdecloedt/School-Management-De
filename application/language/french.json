@@ -1469,5 +1469,11 @@
     "error_sorting_questions": "Error sorting questions",
     "an_error_occurred_please_try_again": "An error occurred please try again",
     "some_of_the_emails_have_been_taken": "Some of the emails have been taken",
-    "exam_updated_successfully": "Exam updated successfully"
+    "exam_updated_successfully": "Exam updated successfully",
+    "an_error_occurred": "An error occurred",
+    "classroom_deleted_successfully": "Classroom deleted successfully",
+    "department_has_been_deleted_successfully": "Department has been deleted successfully",
+    "add_new_password": "Add new password",
+    "enter_your_new_password_to_access_account": "Enter your new password to access account",
+    "password_add_successful": "Password add successful"
 }
