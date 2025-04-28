@@ -69,7 +69,7 @@ class Email_model extends CI_Model {
 		$query			=	$this->db->get_where('users' , array('id' => $user_id))->row_array();
 		if(sizeof($query) > 0)
 		{
-
+			$systemEmail = get_settings('system_email');
 			$email_msg = <<<HTML
 		<!DOCTYPE html>
 		<html lang="fr">
@@ -131,10 +131,10 @@ class Email_model extends CI_Model {
 				<h2>Réinitialisation de votre mot de passe</h2>
 				<p>Bonjour {$query['name']},</p>
 				<p>Vous avez fait une demande de réinitialisation de votre mot de passe. Si vous êtes à l'origine de cette demande, veuillez cliquer sur le lien ci-dessous pour créer un nouveau mot de passe :</p>
-				<a href="$link" class="button">Réinitialiser mon mot de passe</a>
+				<a href="{$link}" class="button">Réinitialiser mon mot de passe</a>
 				<p>Ce lien est valide pendant 24 heures.</p>
 				<p>Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet e-mail. Votre mot de passe actuel restera inchangé et votre compte demeure sécurisé.</p>
-				<p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe support à l’adresse suivante : <a href="mailto:{get_settings('system_email')}">{get_settings('system_email')}</a>.</p>
+				<p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe support à l’adresse suivante : <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
 				<div class="footer">
 					<p>&copy; 2024. Tous droits réservés.</p>
 				</div>
@@ -175,7 +175,7 @@ class Email_model extends CI_Model {
 			<head>
 			<meta charset="UTF-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<title>Ajout de mot de passe</title>
+			<title>Password Reset</title>
 			</head>
 			<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
 			<div style="max-width: 600px; margin:20px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -196,7 +196,7 @@ class Email_model extends CI_Model {
 					border-radius: 5px;
 					"
 				>
-					Définir mon mot de passe
+					Password
 				</a>
 				</p>
 				<p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
