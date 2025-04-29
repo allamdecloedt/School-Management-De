@@ -11,7 +11,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // $config['bbb_url_old'] = 'https://solo-expanded-scales-li.trycloudflare.com:80/';
 // $config['bbb_secret'] = 'wroLdydZuKffH9f0maOUOrWf26nfgiXI635xacCXU';
 // version production
-$config['bbb_url'] = 'https://dfd23ceee6f9adf6cef04432d94b51e8.serveo.net/bigbluebutton/api/';
-$config['bbb_url_play'] = 'dfd23ceee6f9adf6cef04432d94b51e8.serveo.net';
-$config['bbb_url_old'] = 'https://dfd23ceee6f9adf6cef04432d94b51e8.serveo.net:80/';
+$config['bbb_url'] = 'https://f0b3428a8acbf2a46474083c7da3f152.serveo.net/bigbluebutton/api/';
+$config['bbb_url_play'] = 'f0b3428a8acbf2a46474083c7da3f152.serveo.net';
+$config['bbb_url_old'] = 'https://f0b3428a8acbf2a46474083c7da3f152.serveo.net:80/';
 $config['bbb_secret'] = 'wgVh7JyComkib7tNlmt92GYUmGnpfJ73AXXqp4g6U';
