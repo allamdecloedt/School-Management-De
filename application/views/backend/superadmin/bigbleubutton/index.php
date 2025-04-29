@@ -12,25 +12,7 @@
     </div> <!-- end card -->
   </div><!-- end col-->
 </div>
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="row mt-3">
-                <div class="col-md-1"></div>
-                <div class="col-md-4">
 
-                </div>
-
-                <div class="col-md-2">
-                    <!-- <button class="btn btn-block btn-secondary" onclick="startMeeting()"  ><?php //echo get_phrase('Démarrer'); ?></button> -->
-                    <!-- <button class="btn btn-block btn-secondary" onclick="startMeeting('moderator')">Rejoindre en tant que Modérateur</button> -->
-                    <!-- <button class="btn btn-block btn-secondary" onclick="startMeeting('attendee')">Rejoindre en tant que Participant</button> -->
-                </div>
-            </div>
-          
-        </div>
-    </div>
-</div>
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -77,74 +59,74 @@
     }
 
 
+  
 
 
 
 
 
-
-        // document.addEventListener("DOMContentLoaded", function () {
-        //     function checkActiveMeetings() {
-        //         fetch("<?php // echo base_url('bigbluebutton/get_active_meetings'); ?>")
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 console.log("Données reçues :", data);
+        document.addEventListener("DOMContentLoaded", function () {
+            function checkActiveMeetings() {
+                fetch("<?php  echo base_url('bigbluebutton/get_active_meetings'); ?>")
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Données reçues :", data);
                         
-        //                 if (!data.active_meetings || !Array.isArray(data.active_meetings)) {
-        //                     console.error("Format de données incorrect :", data);
-        //                     return;
-        //                 }
+                        if (!data.active_meetings || !Array.isArray(data.active_meetings)) {
+                            console.error("Format de données incorrect :", data);
+                            return;
+                        }
 
-        //                 data.active_meetings.forEach(meeting => {
-        //                     let roomID = meeting.room_id;
-        //                     let isRunning = meeting.running === "true";
-        //                     let participantCount = meeting.participant_count || 0;
-        //                     let meetingID = meeting.meeting_id;
+                        data.active_meetings.forEach(meeting => {
+                            let roomID = meeting.room_id;
+                            let isRunning = meeting.running === "true";
+                            let participantCount = meeting.participant_count || 0;
+                            let meetingID = meeting.meeting_id;
 
-        //                     let statusElement = document.getElementById(`status-${roomID}`);
-        //                     let startButton = document.getElementById(`start-btn-${roomID}`);
-        //                     let participantElement = document.getElementById(`participants-${roomID}`);
-        //                     let copyButton = document.getElementById(`copy-btn-${roomID}`);
+                            let statusElement = document.getElementById(`status-${roomID}`);
+                            let startButton = document.getElementById(`start-btn-${roomID}`);
+                            let participantElement = document.getElementById(`participants-${roomID}`);
+                            let copyButton = document.getElementById(`copy-btn-${roomID}`);
 
-        //                     if (statusElement) {
-        //                         statusElement.innerHTML = isRunning 
-        //                             ? `<span class="badge bg-success">En Cours</span>` 
-        //                             : `<span class="badge bg-danger">Non Démarrée</span>`;
-        //                     }
+                            if (statusElement) {
+                                statusElement.innerHTML = isRunning 
+                                    ? `<span class="badge bg-success">En Cours</span>` 
+                                    : `<span class="badge bg-danger">Non Démarrée</span>`;
+                            }
 
-        //                     if (startButton) {
-        //                         startButton.innerText = isRunning ? "Join" : "Start";
-        //                         startButton.href = isRunning 
-        //                             ? "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
-        //                             : "<?php // echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
-        //                     }
+                            if (startButton) {
+                                startButton.innerText = isRunning ? "Join" : "Start";
+                                startButton.href = isRunning 
+                                    ? "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
+                                    : "<?php // echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
+                            }
 
-        //                     if (participantElement) {
-        //                         participantElement.innerHTML = `👥 ${participantCount} participants`;
-        //                     }
+                            if (participantElement) {
+                                participantElement.innerHTML = `👥 ${participantCount} participants`;
+                            }
 
-        //                     // Vérifier si meetingID est bien défini avant de mettre à jour le bouton de copie
-        //                     if (copyButton) {
-        //                         if (meetingID) {
-        //                             let meetingLink = "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
-        //                             copyButton.setAttribute("data-url", meetingLink);
-        //                             copyButton.style.display = "inline-block"; // Afficher le bouton s'il y a un lien
-        //                         } else {
-        //                             console.warn("Aucun meetingID valide trouvé pour roomID :", roomID);
-        //                             copyButton.style.display = "none"; // Masquer le bouton s'il n'y a pas de meeting actif
-        //                         }
-        //                     }
-        //                 });
-        //             })
-        //             .catch(error => console.error("Erreur lors de la récupération des réunions :", error));
-        //     }
+                            // Vérifier si meetingID est bien défini avant de mettre à jour le bouton de copie
+                            if (copyButton) {
+                                if (meetingID) {
+                                    let meetingLink = "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID;
+                                    copyButton.setAttribute("data-url", meetingLink);
+                                    copyButton.style.display = "inline-block"; // Afficher le bouton s'il y a un lien
+                                } else {
+                                    console.warn("Aucun meetingID valide trouvé pour roomID :", roomID);
+                                    copyButton.style.display = "none"; // Masquer le bouton s'il n'y a pas de meeting actif
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error("Erreur lors de la récupération des réunions :", error));
+            }
 
-        //     // Vérification toutes les 5 secondes
-        //     setInterval(checkActiveMeetings, 100000);
-        //     checkActiveMeetings();
+            // Vérification toutes les 5 secondes
+            setInterval(checkActiveMeetings, 10000);
+            // checkActiveMeetings();
 
         
-        // });
+        });
 
         // document.addEventListener("DOMContentLoaded", function () { 
         //     let selectedRoomID = null;
