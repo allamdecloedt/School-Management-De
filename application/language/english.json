@@ -1496,6 +1496,16 @@
     "video_upload_failed": "Video upload failed",
     "invalid_attachment": "Invalid attachment",
     "invalid_lesson_url_and_duration": "Invalid lesson url and duration",
+
+    "recording": "Recording",
+    "meeting_name": "Meeting name",
+    "date_range": "Date range",
+    "clear": "Clear",
+    "room": "Room",
+    "start": "Start",
+    "appointment": "Appointment",
+    "select_an_appointment": "Select an appointment",
+
     "demo_request": "Demo request",
     "school_phone": "School phone",
     "learner_email": "Learner email",
@@ -1565,4 +1575,6 @@
     "session_has_been_deleted_successfully": "Session has been deleted successfully",
     "deleting": "Deleting",
     "creating": "Creating"
+    "submitting...": "Submitting..."
+
 }

@@ -48,5 +48,71 @@ class Meeting_model extends CI_Model
         ];
         return $this->db->insert('participants', $data);
     }
+
+     public function get_bbb_recording_by_appointment($appointment_id)
+    {
+        die('fettah');
+        if (empty($appointment_id)) {
+            return null;
+        }
+    
+        // 🔎 On récupère le meetingID lié à l'appointment
+        $appointment = $this->db->get_where('appointments', ['id' => $appointment_id])->row_array();
+    
+        if (!$appointment || empty($appointment['meeting_id'])) {
+            return null;
+        }
+    
+        $meetingID = $appointment['meeting_id'];
+    
+        // 🔐 Préparation de la requête BBB
+        $params = ['meetingID' => $meetingID];
+        $query = http_build_query($params);
+    
+        $bbb_url = $this->config->item('bbb_url');
+        $bbb_secret = $this->config->item('bbb_secret');
+        $checksum = sha1('getRecordings' . $query . $bbb_secret);
+        $url = $bbb_url . 'getRecordings?' . $query . '&checksum=' . $checksum;
+    
+        $xml = @simplexml_load_file($url);
+        if ($xml === false || (string)$xml->returncode !== 'SUCCESS') {
+            return null;
+        }
+    
+        if (!isset($xml->recordings->recording)) {
+            return null;
+        }
+    
+        $recordings = [];
+    
+        foreach ($xml->recordings->recording as $rec) {
+            if (isset($rec->published) && (string)$rec->published !== 'true') {
+                continue;
+            }
+    
+            $playback_url = '';
+            if (isset($rec->playback->format)) {
+                foreach ($rec->playback->format as $format) {
+                    if ((string)$format->type === 'presentation') {
+                        $playback_url = (string)$format->url;
+                        break;
+                    } elseif (empty($playback_url)) {
+                        $playback_url = (string)$format->url;
+                    }
+                }
+            }
+    
+            $recordings[] = [
+                'recordID'     => (string) $rec->recordID,
+                'meetingID'    => (string) $rec->meetingID,
+                'playback_url' => $playback_url,
+                'duration'     => isset($rec->startTime, $rec->endTime)
+                    ? round(((int)$rec->endTime - (int)$rec->startTime) / 60000) . ' min'
+                    : '—'
+            ];
+        }
+    
+        return !empty($recordings) ? $recordings : null;
+    }
     
 }
