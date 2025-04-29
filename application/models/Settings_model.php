@@ -48,114 +48,78 @@ class Settings_model extends CI_Model
   }
 
 
- public function update_system_logo()
-  {
-
+  public function update_system_logo() {
+    
+    // Définition du type MIME pour les fichiers SVG
     $svg_type = 'image/svg+xml';
 
-    if ($_FILES['dark_logo']['name'] != "") {
+    // Handle Dark Logo
+    if ($_FILES['dark_logo']['name'] != "") {// Vérifie si un fichier a été uploadé
+        $file_type = mime_content_type($_FILES['dark_logo']['tmp_name']); //Détecte le type MIME du fichier
+        $destination = 'uploads/system/logo/logo-dark';// Définition du chemin de stockage
 
-      $file_type = mime_content_type($_FILES['dark_logo']['tmp_name']);
+        // Si le fichier est un SVG
+        if ($file_type === $svg_type) {
+           // Supprime l'ancienne version PNG s'il existe
+            if (file_exists($destination . '.png')) unlink($destination . '.png');
+            // Sauvegarde le nouveau fichier en tant que SVG
+            move_uploaded_file($_FILES['dark_logo']['tmp_name'], $destination . '.svg');
 
-      if ($file_type === $svg_type) {
-        if (file_exists('uploads/system/logo/logo-dark.png')) {
-          unlink('uploads/system/logo/logo-dark.png');
-          move_uploaded_file($_FILES['dark_logo']['tmp_name'], 'uploads/system/logo/logo-dark.svg');
-        } else {
-          move_uploaded_file($_FILES['dark_logo']['tmp_name'], 'uploads/system/logo/logo-dark.png');
+        } else {// Si le fichier n'est pas un SVG (donc PNG par défaut)
+          // Supprime l'ancienne version SVG s'il existe
+            if (file_exists($destination . '.svg')) unlink($destination . '.svg');
+            // Sauvegarde le nouveau fichier en tant que PNG
+            move_uploaded_file($_FILES['dark_logo']['tmp_name'], $destination . '.png');
         }
-      }
-
-      if ($file_type !== $svg_type) {
-        if (file_exists('uploads/system/logo/logo-dark.svg')) {
-          unlink('uploads/system/logo/logo-dark.svg');
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-dark.png');
-        } else {
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-dark.png');
-        }
-      }
-
     }
 
+    // Handle Light Logo
     if ($_FILES['light_logo']['name'] != "") {
+        $file_type = mime_content_type($_FILES['light_logo']['tmp_name']);
+        $destination = 'uploads/system/logo/logo-light';
 
-      $file_type = mime_content_type($_FILES['light_logo']['tmp_name']);
-
-      if ($file_type === $svg_type) {
-        if (file_exists('uploads/system/logo/logo-light.png')) {
-          unlink('uploads/system/logo/logo-light.png');
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light.svg');
+        if ($file_type === $svg_type) {
+            if (file_exists($destination . '.png')) unlink($destination . '.png');
+            move_uploaded_file($_FILES['light_logo']['tmp_name'], $destination . '.svg');
         } else {
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light.svg');
+            if (file_exists($destination . '.svg')) unlink($destination . '.svg');
+            move_uploaded_file($_FILES['light_logo']['tmp_name'], $destination . '.png');
         }
-      }
-
-      if ($file_type !== $svg_type) {
-        if (file_exists('uploads/system/logo/logo-light.svg')) {
-          unlink('uploads/system/logo/logo-light.svg');
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light.png');
-        } else {
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light.png');
-        }
-      }
-
     }
 
-    if ($_FILES['small_logo']['name'] != '') {
+    // Handle Small Logo
+    if ($_FILES['small_logo']['name'] != "") {
+        $file_type = mime_content_type($_FILES['small_logo']['tmp_name']);
+        $destination = 'uploads/system/logo/logo-light-sm';
 
-      $file_type = mime_content_type($_FILES['small_logo']['tmp_name']);
-
-      if ($file_type === $svg_type) {
-        if (file_exists('uploads/system/logo/logo-light-sm.png')) {
-          unlink('uploads/system/logo/logo-light-sm.png');
-          move_uploaded_file($_FILES['small_logo']['tmp_name'], 'uploads/system/logo/logo-light-sm.svg');
+        if ($file_type === $svg_type) {
+            if (file_exists($destination . '.png')) unlink($destination . '.png');
+            move_uploaded_file($_FILES['small_logo']['tmp_name'], $destination . '.svg');
         } else {
-          move_uploaded_file($_FILES['small_logo']['tmp_name'], 'uploads/system/logo/logo-light-sm.svg');
+            if (file_exists($destination . '.svg')) unlink($destination . '.svg');
+            move_uploaded_file($_FILES['small_logo']['tmp_name'], $destination . '.png');
         }
-
-      }
-
-       if ($file_type !== $svg_type) {
-        if (file_exists('uploads/system/logo/logo-light-sm.svg')) {
-          unlink('uploads/system/logo/logo-light-sm.svg');
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light-sm.png');
-        } else {
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/logo-light-sm.png');
-        }
-      }
     }
 
+    // Handle Favicon
     if ($_FILES['favicon']['name'] != "") {
+        $file_type = mime_content_type($_FILES['favicon']['tmp_name']);
+        $destination = 'uploads/system/logo/favicon';
 
-      $file_type = mime_content_type($_FILES['favicon']['tmp_name']);
-
-      if ($file_type === $svg_type) {
-        if (file_exists('uploads/system/logo/favicon.png')) {
-          unlink('uploads/system/logo/favicon.png');
-          move_uploaded_file($_FILES['favicon']['tmp_name'], 'uploads/system/logo/favicon.svg');
+        if ($file_type === $svg_type) {
+            if (file_exists($destination . '.png')) unlink($destination . '.png');
+            move_uploaded_file($_FILES['favicon']['tmp_name'], $destination . '.svg');
         } else {
-          move_uploaded_file($_FILES['favicon']['tmp_name'], 'uploads/system/logo/favicon.svg');
+            if (file_exists($destination . '.svg')) unlink($destination . '.svg');
+            move_uploaded_file($_FILES['favicon']['tmp_name'], $destination . '.png');
         }
-
-      }
-        if ($file_type !== $svg_type) {
-        if (file_exists('uploads/system/logo/favicon.svg')) {
-          unlink('uploads/system/logo/favicon.svg');
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/favicon.png');
-        } else {
-          move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/logo/favicon.png');
-        }
-      }
-
     }
-
     $response = array(
-      'status' => true,
-      'notification' => get_phrase('logo_updated_successfully')
+        'status' => true,// Indique que l'opération a réussi
+        'notification' => get_phrase('logo_updated_successfully') // Message de confirmation
     );
-    return json_encode($response);
-  }
-
+    return json_encode($response);// Retourne la réponse au format JSON
+}
 
   // SCHOOL SETTINGS
   public function get_current_school_data()
@@ -291,9 +255,12 @@ class Settings_model extends CI_Model
 
     $response = array(
       'status' => true,
+      'type' => 'success',
       'notification' => get_phrase('smtp_settings_updated_successfully')
-    );
-    return json_encode($response);
+  );
+
+  // Ajoutez ces lignes avant de retourner la réponse
+  return json_encode($response);
   }
 
   // This function is responsible for retreving all the files and folder
@@ -384,14 +351,17 @@ class Settings_model extends CI_Model
     return json_encode($response);
   }
 
-  public function update_system_language($selected_language = "")
-  {
-    $data['language'] = $selected_language;
+ // Settings_model.php
+  public function update_system_language($user_id = "", $selected_language = "") {
+    if (!empty($user_id)) {
+        $this->db->where('id', $user_id);
+        $this->db->update('users', ['language' => $selected_language]);
 
-    $this->db->where('id', 1);
-    $this->db->update('settings', $data);
+    } else {
+        $this->db->where('id', 1);
+        $this->db->update('settings', ['language' => $selected_language]);
+    }
   }
-
   function get_currencies()
   {
     return $this->db->get('currencies')->result_array();

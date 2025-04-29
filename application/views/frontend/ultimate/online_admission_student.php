@@ -24,7 +24,6 @@
       src="<?php echo base_url('assets/frontend/ultimate/img/online admission/oa-img-top.jpg') ?>" alt="">
     <div class="general-container-ol"></div>
   </div>
-
   <!-- Admission Form Section -->
   <div class="container-fluid form-section pt-10">
     <!-- Display Error -->
@@ -34,36 +33,27 @@
             
         </div>
     <?php endif; ?>
-
     <!-- Display Success -->
     <?php if ($this->session->flashdata('success')): ?>
         <div class="alert alert-success">
             <?php echo $this->session->flashdata('success'); $this->session->unset_userdata('success'); ?>
         </div>
     <?php endif; ?>
-
     </div>
-
     <!-- Student Admission Form -->
-
     <form action="<?php echo site_url('admission/online_admission_student/submit/student'); ?>" method="post" id="studentform"
       class="js-validate studentform realtime-form container" enctype="multipart/form-data">
           <!-- Champ caché pour le jeton CSRF -->
      <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
-
       <div class="row justify-content-center">
         <h4 class="col h2 pb-11 text-uppercase d-flex justify-content-center form-title">
-          <?php echo get_phrase('student_admission'); ?>
+          <?php echo get_phrase('learner_admission'); ?>
         </h4>
         <p class="text-white h5 pb-5 text-uppercase d-flex justify-content-center form-label">
-          <?php echo get_phrase('student_information'); ?>
+          <?php echo get_phrase('learner_information'); ?>
         </p>
-
       </div>
-
-
       <div class="row justify-content-center">
-
         <!-- Input -->
         <div class="col-sm-4 col-11">
           <div class="js-form-message mb-5">
@@ -89,7 +79,6 @@
           </div>
         </div>
         <!-- End Input -->
-
         <!-- Input -->
         <div class="col-sm-4 col-11">
           <div class="js-form-message mb-5">
@@ -115,16 +104,13 @@
           </div>
         </div>
         <!-- End Input -->
-
       </div>
-
         <div class="row justify-content-center">
-
           <!-- Input -->
           <div class="col-sm-4 col-11">
             <div class="js-form-message mb-5">
               <label class="form-label text-white">
-                <?php echo get_phrase('student_email'); ?>
+                <?php echo get_phrase('learner_email'); ?>
                 <span class="text-danger">*</span>
               </label>
               <div class="input-group pt-1">
@@ -145,7 +131,6 @@
             </div>
           </div>
           <!-- End Input -->
-
           <!-- Input -->
           <div class="col-sm-4 col-11">
             <div class="js-form-message mb-5">
@@ -170,14 +155,7 @@
             </div>
           </div>
           <!-- End Input -->
-
         </div>
-
-
-
-
-    
-
       <div class="row justify-content-center">
         <!-- Input -->
         <div class="col-11 col-sm-4">
@@ -186,7 +164,6 @@
               <?php echo get_phrase('gender'); ?>
               <span class="text-danger">*</span>
             </label>
-
             <div class="input-group pt-1">
               <span class="input-group-text">
                 <svg class="m-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -205,14 +182,12 @@
           </div>
         </div>
         <!-- End Input -->
-
         <!-- Input -->
         <div class="col-sm-4 col-11">
           <div class="js-form-message mb-5">
             <label class="form-label text-white">
               <?php echo get_phrase('date_of_birth'); ?>
               <span class="text-danger">*</span>
-
             </label>
             <div class="input-group pt-1">
               <span class="input-group-text">
@@ -232,7 +207,6 @@
         </div>
         <!-- End Input -->
       </div>
-
       <div class="row justify-content-center">
         <!-- Input -->
         <div class="col-sm-8 col-11 ">
@@ -256,16 +230,13 @@
         </div>
         <!-- End Input -->
       </div>
-
       <div class="row justify-content-center">
-
         <!-- Input -->
         <div class="col-sm-4 col-11">
           <div class="js-form-message mb-5">
             <label class="form-label text-white">
               <?php echo get_phrase('password'); ?>
               <span class="text-danger">*</span>
-
             </label>
             <div class="input-group pt-1">
               <span class="input-group-text">
@@ -283,13 +254,11 @@
           </div>
         </div>
         <!-- End Input -->
-
         <div class="col-sm-4 col-11">
           <div class="js-form-message mb-5" id="password-repeat-div">
             <label class="form-label text-white">
               <?php echo get_phrase('repeat_password'); ?>
               <span class="text-danger">*</span>
-
             </label>
             <div class="input-group pt-1">
               <span class="input-group-text">
@@ -310,9 +279,7 @@
         </div>
         <!-- End Input -->
       </div>
-
       <div class="row justify-content-center mt-4">
-
         <!-- Input -->
         <div class="photo-modal display-none">
           <div class="modal-content">
@@ -330,20 +297,15 @@
             </div>
           </div>
         </div>
-
-
         <div class="col-11 col-sm-8 col-lg-4">
           <div class="js-form-message">
             <div class="mb-3">
               <p class="pb-3 form-label text-white " style="text-align: center;"><?php echo get_phrase('your_photo'); ?> 
-              
               </p>
               <div id="photo-preview" class="photo-preview">
                 <!-- L'image sélectionnée apparaîtra ici -->
                 <img src="<?php echo base_url() . 'uploads/users/placeholder.jpg' ?>" alt="Default Avatar" id="default-avatar">
-
               </div>
-              
               <label for="student_image" class="btn btn-sm button-label form-label text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                   class="bi bi-filetype-png" viewBox="0 0 16 16">
@@ -357,19 +319,10 @@
             </div>
           </div>
         </div>
-
         <!-- End Input -->
-
-
       </div>
-
       <div class="row ">
-
-
       </div>
-
-
-
       <?php if (get_common_settings('recaptcha_status')): ?>
         <div class="js-form-message mb-6">
           <div class="form-group">
@@ -377,42 +330,25 @@
           </div>
         </div>
       <?php endif; ?>
-
       <div class="text-center">
         <button type="submit" id="submitBtn"
           class="btn btn-wide mb-11 text-uppercase submit-button"><?php echo get_phrase('apply'); ?></button>
         <button type="reset" id="resetBtn" style="display: none;"></button>
       </div>
-
     </form>
     <!-- End Student Admission Form -->
-
-
-
-
-
-
-
   </div>
   </div>
   <!-- End Contact Form Section -->
-
   <div class="general-container g-0 container-fluid">
     <img class="ct-img rellax " data-rellax-speed="1.5"
       src="<?php echo base_url('assets/frontend/ultimate/img/online admission/oa-img-bot.jpg') ?>" alt="">
     <div class="general-container-ol-bot"></div>
-
   </div>
 
-
-
-
-
   <script>
-
   const studentform = document.getElementById("studentform");
-
-
+  
   if (studentform) {
     document.getElementById('submitBtn').addEventListener('click', function (event) {
    

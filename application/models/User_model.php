@@ -579,126 +579,175 @@ class User_model extends CI_Model
 
 
 	//START STUDENT AND ADMISSION section
-	public function single_student_create()
-	{
-		$user_data['name'] = html_escape($this->input->post('name'));
-		$user_data['email'] = html_escape($this->input->post('email'));
-		// $user_data['password'] = sha1(html_escape($this->input->post('password')));
-		$user_data['birthday'] = strtotime(html_escape($this->input->post('birthday')));
-		$user_data['gender'] = html_escape($this->input->post('gender'));
-		$user_data['address'] = html_escape($this->input->post('address'));
-		$user_data['phone'] = html_escape($this->input->post('phone'));
-		$user_data['role'] = 'student';
-		$user_data['school_id'] = $this->school_id;
-		$user_data['watch_history'] = '[]';
-		$user_data['status'] = '1';
+	public function single_student_create() {
 
-		// check email duplication
-		$duplication_status = $this->check_duplication('on_create', $user_data['email']);
-		if ($duplication_status) {
-			$this->db->insert('users', $user_data);
-			$user_id = $this->db->insert_id();
-
-			$student_data['code'] = student_code();
-			$student_data['user_id'] = $user_id;
-
-			$student_data['session'] = $this->active_session;
-			$student_data['school_id'] = $this->school_id;
-			$this->db->insert('students', $student_data);
-			$student_id = $this->db->insert_id();
-
-			$enroll_data['student_id'] = $student_id;
-			$enroll_data['class_id'] = html_escape($this->input->post('class_id'));
-			$enroll_data['section_id'] = html_escape($this->input->post('section_id'));
-			$enroll_data['session'] = $this->active_session;
-			$enroll_data['school_id'] = $this->school_id;
-			$this->db->insert('enrols', $enroll_data);
-
-			move_uploaded_file($_FILES['student_image']['tmp_name'], 'uploads/users/' . $user_id . '.jpg');
-			// Create the reset link
-			$reset_link = base_url("login/new_password_student?user_id=" . $user_id);
-
-			$this->email_model->password_send_add_student($reset_link,$user_id);
+		/*Une transaction est utilisée pour s'assurer que toutes les opérations de base de données sont exécutées avec succès. 
+		Si une erreur survient, tout est annulé.*/
+		$this->db->trans_start(); // Début de transaction
 	
+		try {
+			// // Vérification des champs obligatoires (email et image de l'étudiant)
+			// if (empty($_POST['email']) || empty($_FILES['student_image']['tmp_name'])) {
+			// 	$this->session->set_flashdata('error', get_phrase('required_fields_missing'));
+			// 	throw new Exception(get_phrase('required_fields_missing'));
+			// }
 
-			$this->session->set_flashdata('flash_message', get_phrase('student_added_successfully'));
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('student_added_successfully')
-			);
-		} else {
-
-			$this->session->set_flashdata('error_message', get_phrase('sorry_this_email_has_been_taken'));
-			$response = array(
-				'status' => false,
-				'notification' => get_phrase('sorry_this_email_has_been_taken')
-			);
-		}
-
-		return json_encode($response);
-	}
-
-	public function bulk_student_create()
-	{
-		$duplication_counter = 0;
-		$class_id = html_escape($this->input->post('class_id'));
-		$section_id = html_escape($this->input->post('section_id'));
-
-		$students_name = html_escape($this->input->post('name'));
-		$students_email = html_escape($this->input->post('email'));
-		$students_password = html_escape($this->input->post('password'));
-		$students_gender = html_escape($this->input->post('gender'));
-		$students_parent = html_escape($this->input->post('parent_id'));
-
-		foreach ($students_name as $key => $value):
-			// check email duplication
-			$duplication_status = $this->check_duplication('on_create', $students_email[$key]);
-			if ($duplication_status) {
-				$user_data['name'] = $students_name[$key];
-				$user_data['email'] = $students_email[$key];
-				$user_data['password'] = sha1($students_password[$key]);
-				$user_data['gender'] = $students_gender[$key];
-				$user_data['role'] = 'student';
-				$user_data['school_id'] = $this->school_id;
-				$user_data['watch_history'] = '[]';
-				$user_data['status'] = '1';
-				$this->db->insert('users', $user_data);
-				$user_id = $this->db->insert_id();
-
-				$student_data['code'] = student_code();
-				$student_data['user_id'] = $user_id;
-
-				$student_data['session'] = $this->active_session;
-				$student_data['school_id'] = $this->school_id;
-				$this->db->insert('students', $student_data);
-				$student_id = $this->db->insert_id();
-
-				$enroll_data['student_id'] = $student_id;
-				$enroll_data['class_id'] = $class_id;
-				$enroll_data['section_id'] = $section_id;
-				$enroll_data['session'] = $this->active_session;
-				$enroll_data['school_id'] = $this->school_id;
-				$this->db->insert('enrols', $enroll_data);
-			} else {
-				$duplication_counter++;
+	        // Préparation des données utilisateur
+			$user_data = [
+				'name' => html_escape($this->input->post('name')),
+				'email' => html_escape($this->input->post('email')),
+				//'birthday' => strtotime(html_escape($this->input->post('birthday'))),
+				'birthday' => date('Y-m-d', strtotime(html_escape($this->input->post('birthday')))),
+				'gender' => html_escape($this->input->post('gender')),
+				'address' => html_escape($this->input->post('address')),
+				'phone' => html_escape($this->input->post('phone')),
+				'role' => 'student',
+				'school_id' => $this->school_id,
+				'watch_history' => '[]',
+				'status' => '1'
+			];
+	
+			// Vérifier que l'email n'existe pas déjà pour éviter les doublons
+			if (!$this->check_duplication('on_create', $user_data['email'])) {
+				$this->session->set_flashdata('error', get_phrase('sorry_this_email_has_been_taken'));
+				throw new Exception(get_phrase('sorry_this_email_has_been_taken'));
 			}
-		endforeach;
+	
+			// Insertion utilisateur
+			if (!$this->db->insert('users', $user_data)) {
+				$this->session->set_flashdata('error', get_phrase('user_creation_failed'));
+				throw new Exception(get_phrase('user_creation_failed'));
+			}
+			$user_id = $this->db->insert_id();
+	
+			// Insertion étudiant
+			$student_data = [
+				'code' => student_code(),
+				'user_id' => $user_id,
+				'session' => $this->active_session,
+				'school_id' => $this->school_id
+			];
+			
+			// Insérer le profil étudiant
+			if (!$this->db->insert('students', $student_data)) {
+				$this->session->set_flashdata('error', get_phrase('student_profile_creation_failed'));
+				throw new Exception(get_phrase('student_profile_creation_failed'));
+			}
+			$student_id = $this->db->insert_id();// Récupérer l'ID de l'étudiant créé
+	
+			// Inscription à la classe
+			$enroll_data = [
+				'student_id' => $student_id,
+				'class_id' => html_escape($this->input->post('class_id')),
+				'section_id' => html_escape($this->input->post('section_id')),
+				'session' => $this->active_session,
+				'school_id' => $this->school_id
+			];
 
-		if ($duplication_counter > 0) {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('some_of_the_emails_have_been_taken')
-			);
-		} else {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('students_added_successfully')
-			);
+			// Insérer l'inscription de l'étudiant
+			if (!$this->db->insert('enrols', $enroll_data)) {
+				$this->session->set_flashdata('error', get_phrase('enrollment_failed'));
+				throw new Exception(get_phrase('enrollment_failed'));
+			}
+	
+			// Vérifier si une image a été envoyée avant de la sauvegarder
+			if (!empty($_FILES['student_image']['tmp_name'])) {
+				$upload_path = 'uploads/users/' . $user_id . '.jpg';
+
+				if (!move_uploaded_file($_FILES['student_image']['tmp_name'], $upload_path)) {
+					$this->session->set_flashdata('error', get_phrase('image_upload_failed'));
+					throw new Exception(get_phrase('image_upload_failed'));
+				}
+			}
+	
+			// Envoi d'email
+			$reset_link = base_url("login/new_password_student?user_id=".$user_id);
+			if (!$this->email_model->password_send_add_student($reset_link, $user_id)) {
+				log_message('error', 'Email sending failed for user: '.$user_id);
+			}
+	
+			//Tout s'est bien passé, valider la transaction
+			$this->db->trans_commit();
+			//$this->session->set_flashdata('flash_message', get_phrase('student_added_successfully'));
+			return true;
+
+		}  catch (Exception $e) {
+			 //En cas d'erreur, annuler toutes les modifications (rollback)
+			$this->db->trans_rollback();
+			return $e->getMessage(); // Return the error message, not just false
 		}
-
-		return json_encode($response);
 	}
-
+	
+	public function bulk_student_create()
+    {
+        $duplication_counter = 0;
+        $class_id = html_escape($this->input->post('class_id'));
+        $section_id = html_escape($this->input->post('section_id'));
+ 
+        $students_name = html_escape($this->input->post('name'));
+        $students_email = html_escape($this->input->post('email'));
+        //$students_password = html_escape($this->input->post('password'));
+        $students_gender = html_escape($this->input->post('gender'));
+        $students_parent = html_escape($this->input->post('parent_id'));
+ 
+        foreach ($students_name as $key => $value):
+            // check email duplication
+            $duplication_status = $this->check_duplication('on_create', $students_email[$key]);
+            if ($duplication_status) {
+                $user_data['name'] = $students_name[$key];
+                $user_data['email'] = $students_email[$key];
+             // $user_data['password'] = sha1($students_password[$key]);
+                $user_data['gender'] = $students_gender[$key];
+                $user_data['role'] = 'student';
+                $user_data['school_id'] = $this->school_id;
+                $user_data['watch_history'] = '[]';
+                $user_data['status'] = '1';
+                $this->db->insert('users', $user_data);
+                $user_id = $this->db->insert_id();
+ 
+                $student_data['code'] = student_code();
+                $student_data['user_id'] = $user_id;
+ 
+                $student_data['session'] = $this->active_session;
+                $student_data['school_id'] = $this->school_id;
+                $this->db->insert('students', $student_data);
+                $student_id = $this->db->insert_id();
+ 
+                $enroll_data['student_id'] = $student_id;
+                $enroll_data['class_id'] = $class_id;
+                $enroll_data['section_id'] = $section_id;
+                $enroll_data['session'] = $this->active_session;
+                $enroll_data['school_id'] = $this->school_id;
+                $this->db->insert('enrols', $enroll_data);
+				
+				// Envoi d'email de réinitialisation du mot de passe
+				$reset_link = base_url("login/new_password_student?user_id=" . $user_id);
+				if (!$this->email_model->password_send_add_student($reset_link, $user_id)) {
+					log_message('error', 'Email sending failed for user: ' . $user_id);
+				}
+            } else {
+                $duplication_counter++;
+            }
+        endforeach;
+	
+        if ($duplication_counter > 0) {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('some_of_the_emails_have_been_taken'),
+				'type'=>'error'
+            );
+        } else {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('students_added_successfully'),
+				'type'=>'success'
+            );
+        }
+ 
+		header('Content-Type: application/json');
+		echo json_encode($response);
+		exit(); 
+    }
 	public function excel_create()
 	{
 		$class_id = html_escape($this->input->post('class_id'));
@@ -735,9 +784,8 @@ class User_model extends CI_Model
 				if ($count > 0) {
 					$user_data['name'] = str_replace('"', '', trim($all_data[0]));
 					$user_data['email'] = html_escape($all_data[1]);
-					$user_data['password'] = sha1(trim($all_data[2]));
-					$user_data['phone'] = trim(html_escape($all_data[3]));
-					$user_data['gender'] = str_replace('"', '', trim($all_data[4]));
+					$user_data['phone'] = trim(html_escape($all_data[2]));
+					$user_data['gender'] = str_replace('"', '', trim($all_data[3]));
 					$user_data['role'] = $role;
 					$user_data['school_id'] = $school_id;
 					$user_data['watch_history'] = '[]';
@@ -762,6 +810,11 @@ class User_model extends CI_Model
 						$enroll_data['session'] = $session_id;
 						$enroll_data['school_id'] = $school_id;
 						$this->db->insert('enrols', $enroll_data);
+						// Envoi d'email de réinitialisation du mot de passe
+						$reset_link = base_url("login/new_password_student?user_id=" . $user_id);
+						if (!$this->email_model->password_send_add_student($reset_link, $user_id)) {
+							log_message('error', 'Email sending failed for user: ' . $user_id);
+						}
 					} else {
 						$duplication_counter++;
 					}
@@ -772,76 +825,145 @@ class User_model extends CI_Model
 		}
 
 		if ($duplication_counter > 0) {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('some_of_the_emails_have_been_taken')
-			);
-		} else {
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('students_added_successfully')
-			);
-		}
-
-		return json_encode($response);
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('some_of_the_emails_have_been_taken'),
+				'type'=>'error'
+            );
+        } else {
+            $response = array(
+                'status' => true,
+                'notification' => get_phrase('students_added_successfully'),
+				'type'=>'success'
+            );
+        }
+ 
+		header('Content-Type: application/json');
+		echo json_encode($response);
+		exit(); 
 	}
 
 	public function student_update($student_id = '', $user_id = '')
 	{
-
 		$user_data['name'] = html_escape($this->input->post('name'));
 		$user_data['email'] = html_escape($this->input->post('email'));
-		$user_data['birthday'] = strtotime(html_escape($this->input->post('birthday')));
+
+		//Avec strtotime(...) : Le format stocké sera un timestamp Unix, c'est-à-dire un entier représentant le nombre de secondes depuis le 1er janvier 1970 (ex. 1617513600).
+		//$user_data['birthday'] = strtotime(html_escape($this->input->post('birthday')));
+		//$user_data['birthday']=date('Y-m-d', strtotime(html_escape($this->input->post('birthday'))));
+
+
+		//birthday format
+		// Récupérer la date envoyée par l'utilisateur via le formulaire, et échapper les caractères spéciaux pour éviter les attaques XSS.
+		$posted_birthday = html_escape($this->input->post('birthday'));
+
+		// Convertir la chaîne de texte (date) en format 'Y-m-d' (année-mois-jour) pour une insertion dans la base de données
+		// - strtotime() convertit la date en timestamp Unix
+		// - date('Y-m-d', ...) formate ce timestamp en une date standardisée pour la base de données.
+		$user_data['birthday'] = date('Y-m-d', strtotime($posted_birthday));//Avec date('Y-m-d', strtotime(...)) : Le format stocké sera Y-m-d (ex. 2025-04-04), un format de date standard.
+		
 		$user_data['gender'] = html_escape($this->input->post('gender'));
 		$user_data['address'] = html_escape($this->input->post('address'));
 		$user_data['phone'] = html_escape($this->input->post('phone'));
+		
 		// Check Duplication
 		$duplication_status = $this->check_duplication('on_update', $user_data['email'], $user_id);
-		if ($duplication_status) {			
-			// Supprimer les anciennes classes de l'inscription de l'étudiant
-			$this->db->where('student_id', $student_id);
-			$this->db->delete('enrols');
+		
+		if ($duplication_status) {
+			// Start transaction
+			$this->db->trans_start();
 			
-			// Insérer les nouvelles classes sélectionnées
-			$class_ids = $this->input->post('class_id');
-			
-			if (!empty($class_ids)) {
-				foreach ($class_ids as $class_id) {
-					$sections = $this->input->post('section_id_'.$class_id);
-					$data = array(
-						'student_id' => $student_id,
-						'class_id' => html_escape($class_id),
-						'section_id' => $sections,
-						'session' => $this->active_session,
-						'school_id' => $this->school_id,
-					);
-					$this->db->insert('enrols', $data);
+			try {
+				// Delete old class enrollments
+				$this->db->where('student_id', $student_id);
+				$this->db->delete('enrols');
+				
+				// Insert new selected classes
+				$class_ids = $this->input->post('class_id');
+				
+				if (!empty($class_ids)) {
+					foreach ($class_ids as $class_id) {
+						$section_id = $this->input->post('section_id_'.$class_id);
+						
+						// Verify both class_id and section_id exist before inserting
+						if (!empty($class_id) && !empty($section_id)) {
+							$data = array(
+								'student_id' => $student_id,
+								'class_id' => html_escape($class_id),
+								'section_id' => $section_id,
+								'session' => $this->active_session,
+								'school_id' => $this->school_id,
+							);
+							$this->db->insert('enrols', $data);
+						}
+					}
 				}
+				
+				// Update user data
+				$this->db->where('id', $user_id);
+				$this->db->update('users', $user_data);
+				
+				// Upload image if provided
+				if (isset($_FILES['student_image']) && $_FILES['student_image']['size'] > 0) {
+					move_uploaded_file($_FILES['student_image']['tmp_name'], 'uploads/users/' . $user_id . '.jpg');
+				}
+				
+				// Complete transaction
+				$this->db->trans_complete();
+				
+				if ($this->db->trans_status() === FALSE) {
+					// Transaction failed
+					$error_message = $this->db->error();
+					log_message('error', 'Student update failed: ' . json_encode($error_message));
+					
+					$response = array(
+						'status' => false,
+						'notification' => get_phrase('database_error_occurred'),
+						'csrf' => array(
+							'name' => $this->security->get_csrf_token_name(),
+							'hash' => $this->security->get_csrf_hash()
+						)
+					);
+				} else {
+					// Transaction successful
+					$response = [
+						'status' => true,
+						'notification' => get_phrase('student_updated_successfully'),
+						'csrf' => [
+							'name' => $this->security->get_csrf_token_name(),
+							'hash' => $this->security->get_csrf_hash()
+						]
+					];
+				}
+			} catch (Exception $e) {
+				// Rollback transaction on exception
+				$this->db->trans_rollback();
+				
+				log_message('error', 'Exception in student_update: ' . $e->getMessage());
+				
+				$response = array(
+					'status' => false,
+					'notification' => get_phrase('error_updating_student') . ': ' . $e->getMessage(),
+					'csrf' => array(
+						'name' => $this->security->get_csrf_token_name(),
+						'hash' => $this->security->get_csrf_hash()
+					)
+				);
 			}
-
-
-			
-			// Mettre à jour les données de l'utilisateur
-			$this->db->where('id', $user_id);
-			$this->db->update('users', $user_data);
-
-			move_uploaded_file($_FILES['student_image']['tmp_name'], 'uploads/users/' . $user_id . '.jpg');
-
-			$response = array(
-				'status' => true,
-				'notification' => get_phrase('student_updated_successfully')
-			);
-
 		} else {
 			$response = array(
 				'status' => false,
-				'notification' => get_phrase('sorry_this_email_has_been_taken')
+				'notification' => get_phrase('sorry_this_email_has_been_taken'),
+				'csrf' => array(
+					'name' => $this->security->get_csrf_token_name(),
+					'hash' => $this->security->get_csrf_hash()
+				)
 			);
 		}
 
-		return json_encode($response);
+		echo json_encode($response);
+		exit();
 	}
-
 	public function delete_student($student_id, $user_id)
 	{
 
@@ -1102,6 +1224,7 @@ class User_model extends CI_Model
 	}
 	public function update_profile()
 	{
+		
 		$response = array();
 		$user_id = $this->session->userdata('user_id');
 		$data['name'] = htmlspecialchars($this->input->post('name'));
@@ -1126,8 +1249,15 @@ class User_model extends CI_Model
 				'notification' => get_phrase('sorry_this_email_has_been_taken')
 			);
 		}
-
-		return json_encode($response);
+		$csrf = array(
+			'csrfName' => $this->security->get_csrf_token_name(),
+			'csrfHash' => $this->security->get_csrf_hash(),
+		  );
+		
+		// Renvoyer la réponse avec un nouveau jeton CSRF
+		return json_encode(array('status' => json_encode($response), 'csrf' => $csrf));
+	
+		// return json_encode($response);si j'ai fait ca il va causé une error alert n'affiche pas
 	}
 
 	public function update_password()

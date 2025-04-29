@@ -728,7 +728,97 @@ class Teacher extends CI_Controller {
 			$this->load->view('backend/index', $page_data);
 		}
 	}
+  // LANGUAGE SETTINGS
+  public function language($param1 = "", $param2 = "")
+  {
+    // adding language
+    // if ($param1 == 'create') {
+    //   $response = $this->settings_model->create_language();
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
 
+    // update language
+    // if ($param1 == 'update') {
+    //   $response = $this->settings_model->update_language($param2);
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
+
+    // deleting language
+    // if ($param1 == 'delete') {
+    //   $response = $this->settings_model->delete_language($param2);
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
+
+    
+	if ($param1 == 'active') {
+		// 1) Mise à jour de la langue en base et en session
+		$user_id = $this->session->userdata('user_id');
+		$this->session->set_userdata('language', $param2);
+		$this->settings_model->update_system_language($user_id, $param2);
+	
+		// 2) Retourner à la page appelante
+		$referer = $this->input->server('HTTP_REFERER');
+		if ($referer) {
+			redirect($referer, 'refresh');
+		} else {
+			// Fallback : renvoyer vers la home du rôle
+			$role = $this->session->userdata('user_type');
+			redirect(site_url($role), 'refresh');
+		}
+	}
+
+    // showing the list of language
+    // if ($param1 == 'update_phrase') {
+    //   $current_editing_language = htmlspecialchars($this->input->post('currentEditingLanguage'));
+    //   $updatedValue = htmlspecialchars($this->input->post('updatedValue'));
+    //   $key = htmlspecialchars($this->input->post('key'));
+    //   saveJSONFile($current_editing_language, $key, $updatedValue);
+    //   $response =  $current_editing_language . ' ' . $key . ' ' . $updatedValue;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('response' => $response, 'csrf' => $csrf));
+    // }
+
+    // GET THE DROPDOWN OF LANGUAGES
+    if ($param1 == 'dropdown') {
+      $this->load->view('backend/teacher/language/dropdown');
+    }
+    // showing the index file
+    if (empty($param1)) {
+      $page_data['folder_name'] = 'language';
+      $page_data['page_title'] = 'languages';
+      $this->load->view('backend/index', $page_data);
+    }
+  }
 	public function class_wise_subject($class_id) {
 
 		// PROVIDE A LIST OF SUBJECT ACCORDING TO CLASS ID

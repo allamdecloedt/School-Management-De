@@ -29,7 +29,7 @@ if($check_data->num_rows() > 0):?>
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/teacher/permission_overview/'.$teacher['id'].'/'.$teacher['user_id']); ?>', '<?php echo get_phrase('assigned_permissions'); ?>')"><?php echo get_phrase('permissions'); ?></a>
                             <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/teacher/edit/'.$teacher['user_id']); ?>', '<?php echo get_phrase('update_teacher'); ?>')"><?php echo get_phrase('edit'); ?></a>
+                            <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/teacher/edit/'.$teacher['user_id']); ?>', &quot;<?php echo get_phrase('update_teacher'); ?>&quot;)"><?php echo get_phrase('edit'); ?></a>
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item" onclick="confirmModal('<?php echo route('teacher/delete/'.$teacher['user_id']); ?>', showAllTeachers )"><?php echo get_phrase('delete'); ?></a>
                         </div>

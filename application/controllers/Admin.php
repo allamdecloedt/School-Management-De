@@ -409,30 +409,48 @@ class Admin extends CI_Controller
 		$this->load->view('backend/index', $page_data);
 	}
 
-	public function get_sections_by_class()
-	{
-		$class_ids = $this->input->post('class_ids');
-		if (empty($class_ids)) {
-			echo json_encode([]);
-			return;
-		}
+	public function get_csrf_token()
+{
+    $csrf = array(
+        'csrf_name' => $this->security->get_csrf_token_name(),
+        'csrf_hash' => $this->security->get_csrf_hash(),
+    );
+    echo json_encode($csrf);
+}
 
-		$sections = [];
-		foreach ($class_ids as $class_id) {
-			$this->db->where('class_id', $class_id);
-			$result = $this->db->get('sections')->result_array();
-			$sections = array_merge($sections, $result);
-		}
+  public function get_sections_by_class()
+{
+    // Vérifier si l'utilisateur est connecté
+    if ($this->session->userdata('admin_login') != 1) {
+        echo json_encode(['status' => 'error', 'message' => 'Session expired, please login again']);
+        return;
+    }
 
-		         // Prepare a new CSRF token for the response
-				 $csrf = array(
-					'csrfName' => $this->security->get_csrf_token_name(),
-					'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-				// Return JSON response with the HTML content and new CSRF token
-				echo json_encode(array('sections' => $sections, 'csrf' => $csrf));
-	}
+    $class_id = $this->input->post('class_id');
+    if (empty($class_id)) {
+        echo json_encode(['sections' => []]);
+        return;
+    }
+
+    // Vérifier si la classe existe et appartient à l'école
+    $class = $this->crud_model->get_classes($class_id);
+    if ($class->num_rows() == 0) {
+        echo json_encode(['sections' => [], 'message' => 'Class not found']);
+        return;
+    }
+
+    // Récupérer les sections en utilisant le modèle
+    $sections = $this->crud_model->get_section_details_by_id('class', $class_id)->result_array();
+
+    // Préparer un nouveau jeton CSRF pour la réponse
+    $csrf = array(
+        'csrfName' => $this->security->get_csrf_token_name(),
+        'csrfHash' => $this->security->get_csrf_hash(),
+    );
+
+    // Renvoyer la réponse JSON avec les sections et le nouveau jeton CSRF
+    echo json_encode(array('sections' => $sections, 'csrf' => $csrf));
+}
 
 
 	//START CLASS secion
@@ -554,7 +572,102 @@ class Admin extends CI_Controller
 		}
 	  }
 
-	  
+	  // LANGUAGE SETTINGS
+	public function language($param1 = "", $param2 = "")
+	{
+		// adding language
+		// if ($param1 == 'create') {
+		// 	$response = $this->settings_model->create_language();
+		// 	// echo $response;
+		// 	// Préparer la réponse avec un nouveau jeton CSRF
+		// 	$csrf = array(
+		// 		'csrfName' => $this->security->get_csrf_token_name(),
+		// 		'csrfHash' => $this->security->get_csrf_hash(),
+		// 			);
+					
+		// 	// Renvoyer la réponse avec un nouveau jeton CSRF
+		// 	echo json_encode(array('status' => $response, 'csrf' => $csrf));
+		// }
+
+		// // update language
+		// if ($param1 == 'update') {
+		// 	$response = $this->settings_model->update_language($param2);
+		// 	// echo $response;
+		// 	// Préparer la réponse avec un nouveau jeton CSRF
+		// 	$csrf = array(
+		// 		'csrfName' => $this->security->get_csrf_token_name(),
+		// 		'csrfHash' => $this->security->get_csrf_hash(),
+		// 			);
+				
+		// 	// Renvoyer la réponse avec un nouveau jeton CSRF
+		// 	echo json_encode(array('status' => $response, 'csrf' => $csrf));
+		// }
+
+		// // deleting language
+		// if ($param1 == 'delete') {
+		// 	$response = $this->settings_model->delete_language($param2);
+		// 	// echo $response;
+		// 	// Préparer la réponse avec un nouveau jeton CSRF
+		// 	$csrf = array(
+		// 		'csrfName' => $this->security->get_csrf_token_name(),
+		// 		'csrfHash' => $this->security->get_csrf_hash(),
+		// 			);
+				
+		// 	// Renvoyer la réponse avec un nouveau jeton CSRF
+		// 	echo json_encode(array('status' => $response, 'csrf' => $csrf));
+		// 	}
+
+		// // showing the list of language
+		// if ($param1 == 'list') {
+		// 	$this->load->view('backend/admin/language/list');
+		// }
+
+		if ($param1 == 'active') {
+			// 1) Mise à jour de la langue en base et en session
+			$user_id = $this->session->userdata('user_id');
+			$this->session->set_userdata('language', $param2);
+			$this->settings_model->update_system_language($user_id, $param2);
+		
+			// 2) Retourner à la page appelante
+			$referer = $this->input->server('HTTP_REFERER');
+			if ($referer) {
+				redirect($referer, 'refresh');
+			} else {
+				// Fallback : renvoyer vers la home du rôle
+				$role = $this->session->userdata('user_type');
+				redirect(site_url($role), 'refresh');
+			}
+		}
+  
+
+		// // showing the list of language
+		// if ($param1 == 'update_phrase') {
+		// 	$current_editing_language = htmlspecialchars($this->input->post('currentEditingLanguage'));
+		// 	$updatedValue = htmlspecialchars($this->input->post('updatedValue'));
+		// 	$key = htmlspecialchars($this->input->post('key'));
+		// 	saveJSONFile($current_editing_language, $key, $updatedValue);
+		// 	$response =  $current_editing_language . ' ' . $key . ' ' . $updatedValue;
+		// 	// Préparer la réponse avec un nouveau jeton CSRF
+		// 	$csrf = array(
+		// 		'csrfName' => $this->security->get_csrf_token_name(),
+		// 		'csrfHash' => $this->security->get_csrf_hash(),
+		// 			);
+					
+		// 	// Renvoyer la réponse avec un nouveau jeton CSRF
+		// 	echo json_encode(array('response' => $response, 'csrf' => $csrf));
+		// }
+
+		// GET THE DROPDOWN OF LANGUAGES
+		if ($param1 == 'dropdown') {
+		    $this->load->view('backend/admin/language/dropdown');
+		}
+		// showing the index file
+		if (empty($param1)) {
+			$page_data['folder_name'] = 'language';
+			$page_data['page_title'] = 'languages';
+			$this->load->view('backend/index', $page_data);
+		}
+	}
 	//	SECTION STARTED
 	public function section($action = "", $id = "")
 	{
@@ -1231,21 +1344,41 @@ class Admin extends CI_Controller
 			}
 		}
 
-		//create to database
-		if ($param1 == 'create_single_student') {
-			if ($param2 == "submit") {
+	  //create to database
+	  if ($param1 == 'create_single_student') {
 
-				$response = $this->user_model->single_student_create();
-				$page_data['class_id'] = html_escape($this->input->post('class_id'));
-				$page_data['section_id'] = html_escape($this->input->post('section_id'));
-				$page_data['working_page'] = 'filter';
-				$page_data['folder_name'] = 'student';
-				$page_data['page_title'] = 'student_list';
-				$this->load->view('backend/index', $page_data);
-			} else {
-				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-			}
-		}
+		if ($param2 == "submit") {
+		  header('Content-Type: application/json'); // Force le retour JSON
+		  $response_from_model = $this->user_model->single_student_create();
+		  $status = ($response_from_model === true); // Check if the model returned true for success
+		  //$this->session->set_flashdata('flash_message', get_phrase('student_added_successfully'));
+		  // Ajoute le token CSRF à la réponse
+		  $response = [
+			'status' => $status,
+			'message' => $status ? get_phrase('student_added_successfully') : $this->session->flashdata('error'),
+			'redirect' => site_url('admin/student'),
+			'csrf' => [
+				'name' => $this->security->get_csrf_token_name(),
+				'hash' => $this->security->get_csrf_hash()
+			]
+		];
+  
+		echo json_encode($response);
+		exit;
+	  } else {
+		  // Load the view with filtered data
+		  $page_data['class_id'] = html_escape($this->input->post('class_id'));
+		  $page_data['section_id'] = html_escape($this->input->post('section_id'));
+		  $page_data['working_page'] = 'filter';
+		  $page_data['folder_name'] = 'student';
+		  $page_data['page_title'] = 'student_list';
+  
+		  $this->load->view('backend/index', $page_data);
+	  }
+	}else {
+		// Nouveau else ajouté pour la condition parente
+		$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+	  }
 
 		if ($param1 == 'create_bulk_student') {
 			$response = $this->user_model->bulk_student_create();
@@ -1281,17 +1414,7 @@ class Admin extends CI_Controller
 			$page_data['page_title'] = 'update_student_information';
 			$this->load->view('backend/index', $page_data);
 
-
-			// // Charger la vue mise à jour
-			// $response_html = $this->load->view('backend/index', $page_data, TRUE);
-			// // Préparer le nouveau jeton CSRF
-			// $csrf = array(
-			//  'csrfName' => $this->security->get_csrf_token_name(),
-			//  'csrfHash' => $this->security->get_csrf_hash(),
-			// );
-
-			// // Renvoyer la réponse JSON avec le HTML mis à jour et le nouveau jeton CSRF
-			// echo json_encode(array('status' => $response_html, 'csrf' => $csrf));			
+	
 		}
 
 		if ($param1 == 'status') {

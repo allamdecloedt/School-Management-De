@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/smtp-settings.css">
 <div class="row justify-content-md-center">
     <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
         <div class="card">
@@ -79,8 +80,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-secondary col-xl-4 col-lg-6 col-md-12 col-sm-12" onclick="updateSmtpInfo()"><?php echo get_phrase('update_SMTP_settings') ; ?></button>
+                        <div class="text-md-center">
+                            <button type="submit" class="btn btn-primary btn-l px-4" id="update-btn" onclick="updateSmtpInfo()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_SMTP_settings') ; ?></button>
                         </div>
                     </div>
                 </form>
@@ -92,10 +93,8 @@
 
 
 <script type="text/javascript">
+
     $(document).ready(function () {
-        var mail_sender = $('#mail_sender').val();
-        showHideSMTPCredentials(mail_sender);
-    });
     function showHideSMTPCredentials(mail_sender) {
         if (mail_sender === "php_mailer") {
             $("#php-mailer-visibility-div").slideDown();
@@ -103,4 +102,56 @@
             $("#php-mailer-visibility-div").slideUp();
         }
     }
+    var mail_sender = $('#mail_sender').val();
+        showHideSMTPCredentials(mail_sender);
+  // Fonction pour récupérer et retourner le token CSRF
+function getCsrfToken() {
+         // Récupérer le nom du token CSRF depuis le champ input caché
+          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
+         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
+           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+         // Retourner un objet contenant le nom du token et sa valeur
+         return { csrfName: csrfName, csrfHash: csrfHash };
+      }
+
+
+ // Soumission du formulaire de logo
+ $(".smtpForm").submit(function(e) {
+    e.preventDefault();
+         // Cible uniquement le bouton de ce formulaire
+         var submitButton = $(this).find('button[type="submit"]');
+        var updating_text = "<?php echo get_phrase('updating'); ?>...";
+        
+        // Désactive et met à jour uniquement ce bouton
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
+         // Récupérer le token CSRF avant l'envoi
+         var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
+         const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function (response) {
+            if (response.status) { // Vérifie si la mise à jour a réussi
+                
+                // Met à jour le token CSRF
+                $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+                // Rafraîchissement de la page après un léger délai pour s'assurer que les modifications sont appliquées
+                setTimeout(function() {
+                  location.reload();
+                }, 3500);// Attendre 3500ms avant de recharger la page
+            } else {
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>') 
+            }
+        },
+        error: function () {
+          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
+        }
+      });
+    });
+  });
 </script>

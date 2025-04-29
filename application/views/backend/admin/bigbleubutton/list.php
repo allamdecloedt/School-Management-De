@@ -217,6 +217,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 
     $(document).ready(function () {
         var calendar = $('#calendar').fullCalendar({
+            titleRangeSeparator: ' - ',
             header: {
                 left: 'prev,next today',
                 center: 'title',

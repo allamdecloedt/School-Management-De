@@ -1,0 +1,302 @@
+/* === Digital Security Lock with Orange Theme === */
+:root {
+    --gradient-1: rgba(210, 130, 45, 0.937);
+    --gradient-2: #b4691f;
+    --accent: #ff7e21;
+    --accent-glow: rgba(255, 126, 33, 0.5);
+    --lock-primary: #8B4000;
+    --lock-secondary: #5d2a00;
+    --text-primary: #fff5eb;
+    --text-secondary: #ffead1;
+    --glass: rgba(255, 255, 255, 0.15);
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+  }
+  
+  .container {
+    text-align: center;
+    padding: 3rem;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    animation: fadeIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  /* Digital Lock */
+  .lock-container {
+    position: relative;
+    width: 120px;
+    height: 140px;
+    margin: -20px auto 30px;
+    perspective: 1200px;
+  }
+  
+  .lock {
+    position: absolute;
+    width: 80px;
+    height: 70px;
+    bottom: 0;
+    left: 50%;
+    transform-style: preserve-3d;
+    transform: translateX(-50%) rotateY(0deg);
+    background: linear-gradient(145deg, 
+      var(--lock-primary),
+      var(--lock-secondary)
+    );
+    border-radius: 12px;
+    box-shadow: 
+      0 10px 20px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: lockRotate 6s ease-in-out infinite;
+  }
+  
+  /* Digital Display */
+  .lock::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 15px;
+    background: var(--accent);
+    border-radius: 4px;
+    box-shadow: 0 0 15px var(--accent-glow);
+    animation: displayPulse 2s ease-in-out infinite;
+  }
+  
+  /* Lock Shackle */
+  .lock::after {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45px;
+    height: 40px;
+    border: 6px solid var(--lock-primary);
+    border-bottom: none;
+    border-radius: 25px 25px 0 0;
+    box-shadow: 
+      0 -5px 10px rgba(0, 0, 0, 0.15),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Scanner Effect */
+  .scanner {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+    box-shadow: 0 0 10px 2px var(--accent-glow);
+    opacity: 0.8;
+    animation: scan 1.5s ease-in-out infinite;
+  }
+  
+  /* Keypad */
+  .keypad {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(3, 8px);
+    grid-template-rows: repeat(3, 8px);
+    gap: 4px;
+  }
+  
+  .key {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+  
+  .key:nth-child(odd) {
+    animation: keyGlow 3s var(--delay, 0s) infinite;
+  }
+  
+  .key:nth-child(1) { --delay: 0s; }
+  .key:nth-child(3) { --delay: 0.2s; }
+  .key:nth-child(5) { --delay: 0.4s; }
+  .key:nth-child(7) { --delay: 0.6s; }
+  .key:nth-child(9) { --delay: 0.8s; }
+  
+  /* Error Message Elements */
+  .error-number {
+    font-size: 7rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(45deg, #fff3e0, #ffd8a8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    letter-spacing: -3px;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    color: var(--text-primary);
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 400px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+  
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: rgba(210, 130, 45, 0.937);
+    color: #2c1a0a;
+    border: 2px solid #8B4000;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(139, 64, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+  }
+  
+  .button:hover {
+    background: var(--gradient-2);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(139, 64, 0, 0.4);
+  }
+  
+  .button:hover::before {
+    left: 100%;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+  
+  @keyframes lockRotate {
+    0%, 100% { transform: translateX(-50%) rotateY(0deg); }
+    50% { transform: translateX(-50%) rotateY(180deg); }
+  }
+  
+  @keyframes displayPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 15px var(--accent-glow); }
+    50% { opacity: 0.7; box-shadow: 0 0 5px var(--accent-glow); }
+  }
+  
+  @keyframes scan {
+    0%, 100% { top: 15px; height: 4px; opacity: 0.8; }
+    50% { top: 45px; height: 2px; opacity: 0.5; }
+  }
+  
+  @keyframes keyGlow {
+    0%, 100% { background: rgba(255, 255, 255, 0.2); }
+    50% { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+  }
+  
+  /* HTML Structure (for reference)
+  <div class="container">
+    <div class="lock-container">
+      <div class="lock"></div>
+      <div class="scanner"></div>
+      <div class="keypad">
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+        <div class="key"></div>
+      </div>
+    </div>
+    <h2 class="error-number">403</h2>
+    <h1>Access Denied</h1>
+    <p>You don't have permission to access this resource. Please check your credentials or contact support.</p>
+    <a href="#" class="button">Return to Homepage</a>
+  </div>
+  */
+  
+  /* Responsive Adjustments */
+  @media (max-width: 640px) {
+    .container {
+      padding: 2rem 1.5rem;
+      margin: 1rem;
+      border-radius: 16px;
+    }
+  
+    .error-number {
+      font-size: 5rem;
+    }
+  
+    .lock-container {
+      width: 100px;
+      height: 120px;
+    }
+    
+    .lock {
+      width: 70px;
+      height: 60px;
+    }
+    
+    .lock::before {
+      width: 50px;
+      height: 12px;
+    }
+    
+    .lock::after {
+      top: -35px;
+      width: 40px;
+      height: 35px;
+    }
+    
+    .scanner {
+      width: 40px;
+    }
+  }
+

@@ -41,7 +41,7 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <?php if (!$book_issue['status']): ?>
                                     <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/book_issue/edit/'.$book_issue['id'])?>', '<?php echo get_phrase('update_book_issue_information'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a href="javascript:void(0);" class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/book_issue/edit/'.$book_issue['id'])?>', &quot;<?php echo get_phrase('update_book_issue_information'); ?>&quot;)"><?php echo get_phrase('edit'); ?></a>
                                     <!-- item-->
                                     <a href="javascript:void(0);" class="dropdown-item" onclick="confirmModal('<?php echo route('book_issue/return/'.$book_issue['id']); ?>', showAllBookIssues )"><?php echo get_phrase('return_this_book'); ?></a>
                                 <?php endif; ?>

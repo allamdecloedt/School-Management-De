@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/imageProfile.css">
+
 <!--title-->
 <div class="row">
     <div class="col-12">
@@ -72,8 +74,6 @@
                                         echo '<option value="' . $class['id'] . '"' . $selected . '   data-class-name="' . $class['name']. '">' . $class['name'] . '</option>';
                                     }
                                     ?>
-
-
                                         
                                     </select>
 
@@ -113,7 +113,7 @@
                     <div class="form-group row mb-3">
                         <label class="col-md-3 col-form-label" for="birthdatepicker"><?php echo get_phrase('birthday'); ?></label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control date" id="birthdatepicker" data-bs-toggle="date-picker" data-single-date-picker="true" name = "birthday"  value="<?php echo date('m/d/Y', $this->user_model->get_user_details($student['user_id'], 'birthday')); ?>" required>
+                            <input type="text" class="form-control date" id="birthdatepicker" data-bs-toggle="date-picker" data-single-date-picker="true" name = "birthday"  value="<?php echo date('m/d/Y', strtotime($this->user_model->get_user_details($student['user_id'], 'birthday'))); ?>"required>
                         </div>
                     </div>
 
@@ -142,101 +142,205 @@
                             <input type="text" id="phone" name="phone" class="form-control" value="<?php echo $this->user_model->get_user_details($student['user_id'], 'phone'); ?>" placeholder="phone" required>
                         </div>
                     </div>
-
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label" for="example-fileinput"><?php echo get_phrase('student_profile_image'); ?></label>
-                        <div class="col-md-9 custom-file-upload">
-                            <div class="wrapper-image-preview" style="margin-left: -6px;">
-                                <div class="box" style="width: 250px;">
-                                    <div class="js--image-preview" style="background-image: url(<?php echo $this->user_model->get_user_image($student['user_id']); ?>); background-color: #F5F5F5;"></div>
-                                    <div class="upload-options">
-                                        <label for="student_image" class="btn"> <i class="mdi mdi-camera"></i> <?php echo get_phrase('upload_an_image'); ?> </label>
-                                        <input id="student_image" style="visibility:hidden;" type="file" class="image-upload" name="student_image" accept="image/*">
-                                    </div>
+                        <div class="form-group row mb-3">
+                                <label class="col-md-3 col-form-label" for="example-fileinput"><?php echo get_phrase('student_profile_image'); ?></label>
+                                <div class="col-md-5 logo-upload-container">
+                                        <div class="logo-card">
+                                            <div class="logo-header">
+                                                <h5><?php echo get_phrase('student_profile_image'); ?></h5>
+                                            </div>
+                                            <div class="logo-preview" id="student-image-preview">
+                                                    <img src="<?php echo $this->user_model->get_user_image($student['user_id']). '?v=' . time(); ?>" alt="Student Profile Image" class="preview-image">
+                                                    <div class="logo-overlay">
+                                                        <i class="fas fa-camera"></i>
+                                                    </div>
+                                            </div>
+                                            <div class="logo-upload-btn">
+                                                <label for="student_image">
+                                                    <i class="mdi mdi-cloud-upload"></i> 
+                                                    <?php echo get_phrase('upload_an_image'); ?>
+                                                </label>
+                                                <input id="student_image" type="file" class="image-upload" name="student_image" accept="image/*" data-preview="student-image-preview">
+                                            </div>
+                                        </div>
                                 </div>
-                            </div>
                         </div>
-                    </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-secondary col-md-4 col-sm-12 mb-4"><?php echo get_phrase('update_student_information'); ?></button>
-                    </div>
+
+                    <div class="button-container">
+                                
+                            <a href="<?php echo site_url("teacher/student"); ?>" class="action-btn btn-back col-md-4 col-sm-12">
+                                    <i class="mdi mdi-arrow-left-bold"></i>
+                                    <span class="btn-text"><?php echo get_phrase('back_to_student_list'); ?></span>
+                            </a>    
+                                
+                          <button type="submit" class="action-btn btn-update col-md-4 col-sm-12">
+                                <i class="mdi mdi-account-check"></i>
+                                    <span class="btn-text"><?php echo get_phrase('update_student_information'); ?></span>
+                         </button>                     
+                    </div>              
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<script>
-var form;
-$(".ajaxForm").submit(function(e) {
-    form = $(this);
-    ajaxSubmit(e, form, refreshForm);
-});
-var refreshForm = function () {
+<script type="text/javascript">
+// var form;
+// $(".ajaxForm").submit(function(e) {
+//     form = $(this);
+//     ajaxSubmit(e, form, refreshForm);
+// });
+// var refreshForm = function () {
 
-}
+// }
 
 function classWiseSectionOnStudentEdit() {
-            var classIds = $('#class_id').val(); // Récupère les IDs des classes sélectionnées
-        
-            var sectionContainer = $('#section_selects_container');
-             sectionContainer.empty(); // Vider le conteneur des selects de section
+        var classIds = $('#class_id').val();
+        var sectionContainer = $('#section_selects_container');
+        sectionContainer.empty();
 
-               // Récupérer le nom et la valeur du jeton CSRF depuis l'input caché
-                var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
-                var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+        var csrf = getCsrfToken();
 
-            if (classIds.length > 0) {
-                classIds.forEach(function(classId) {
-                    var className = $('#class_id option[value="' + classId + '"]').data('class-name'); // Récupère le nom de la classe
-                   
-                    $.ajax({
-                        url: "<?php echo site_url('teacher/get_sections_by_class'); ?>",
-                        type: 'POST',
-                        data: {class_ids: [classId] , [csrfName]: csrfHash}, // Passer un tableau contenant un seul ID de classe
-                        dataType: 'json',
-                        success: function(response) {                     
-                            var sections = response.sections;
-                            var selectedSections = <?php echo json_encode($selected_section_ids); ?>;
-                            sectionOptions = '<option value=""><?php echo get_phrase('select_a_section'); ?></option>';
+        if (classIds.length > 0) {
+            classIds.forEach(function(classId) {
+                var className = $('#class_id option[value="' + classId + '"]').data('class-name');
 
-                            // Mettre à jour le jeton CSRF avec le nouveau jeton renvoyé dans la réponse
-                            var newCsrfName = response.csrf.csrfName;
-                            var newCsrfHash = response.csrf.csrfHash;
-                            $('input[name="' + newCsrfName + '"]').val(newCsrfHash); // Mise à jour du token CSRF
-                      
-                             if (sections.length > 0) {
-                                sections.forEach(function(section) {
-                                    var selected = (selectedSections[classId] && selectedSections[classId].includes(section.id)) ? 'selected' : '';
-                                    sectionOptions += '<option value="' + section.id + '" ' + selected + ' >' + section.name + '</option>';
-                                });
-                            } else {
-                                sectionOptions += '<option value="" disabled><?php echo get_phrase('no_section_found'); ?></option>';
-                            }
-                          
-                            
-                           
+                $.ajax({
+                    url: "<?php echo site_url('superadmin/get_sections_by_class'); ?>",
+                    type: 'POST',
+                    data: { class_ids: [classId], [csrf.csrfName]: csrf.csrfHash },
+                    dataType: 'json',
+                    success: function(response) {
+                        var sections = response.sections;
+                        var selectedSections = <?php echo json_encode($selected_section_ids); ?>;
+                        var sectionOptions = '<option value=""><?php echo get_phrase('select_a_section'); ?></option>';
+                        
+                        csrf = getCsrfToken();
+                        $('input[name="' + csrf.csrfName + '"]').val(csrf.csrfHash);
 
-                            var sectionSelect = `
-                                <div class="form-group row mb-3 section-select" id="${classId}">
-                                    <label class="col-md-3 col-form-label"><?php echo get_phrase('section_for_class'); ?> ${className}<span class="required"> * </span></label>
-                                    <div class="col-md-9">
-                                        <select name="section_id_${classId}" id="section_id_${classId}" class=" form-control" required>
-                                           ${sectionOptions}
-                                        </select>
-                                    </div>
-                                </div>
-                            `;
-                         
-                            sectionContainer.append(sectionSelect);
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Erreur pour la classe ", classId, ": ", error);
+                        if (sections.length > 0) {
+                            sections.forEach(function(section) {
+                                var selected = (selectedSections[classId] && selectedSections[classId].includes(section.id)) ? 'selected' : '';
+                                sectionOptions += '<option value="' + section.id + '" ' + selected + '>' + section.name + '</option>';
+                            });
+                        } else {
+                            sectionOptions += '<option value="" disabled><?php echo get_phrase('no_section_found'); ?></option>';
                         }
-                    });
+
+                        var sectionSelect = `
+                            <div class="form-group row mb-3 section-select" id="${classId}">
+                                <label class="col-md-3 col-form-label"><?php echo get_phrase('section_for_class'); ?> ${className}<span class="required"> * </span></label>
+                                <div class="col-md-9">
+                                    <select name="section_id_${classId}" id="section_id_${classId}" class="form-control" required>
+                                        ${sectionOptions}
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        sectionContainer.append(sectionSelect);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Erreur pour la classe ", classId, ": ", error);
+                    }
                 });
+            });
+        }
+    }
+// Fonction pour récupérer et retourner le token CSRF
+function getCsrfToken() {
+         // Récupérer le nom du token CSRF depuis le champ input caché
+          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
+         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
+           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+         // Retourner un objet contenant le nom du token et sa valeur
+         return { csrfName: csrfName, csrfHash: csrfHash };
+      }
+
+$(document).ready(function () {
+    // Gestionnaire de prévisualisation d'image
+       // Image preview handlers
+  $('.image-upload').each(function() {
+    const input = $(this); // Sélectionne chaque champ d'upload d'image individuellement
+    const previewId = input.data('preview'); // Récupère l'ID du conteneur de prévisualisation depuis l'attribut data-preview
+    
+    input.on('change', function() { // Ajoute un événement de changement lorsque l'utilisateur sélectionne un fichier
+      const file = this.files[0]; // Récupère le premier fichier sélectionné
+      if (file) {
+        const reader = new FileReader(); // Crée un objet FileReader pour lire le fichier
+        const previewContainer = $('#' + previewId); // Sélectionne le conteneur de prévisualisation
+        const previewImage = previewContainer.find('.preview-image'); // Sélectionne l'image de prévisualisation à l'intérieur du conteneur
+        
+        reader.onload = function(e) { // Exécute cette fonction lorsque le fichier est lu avec succès
+          previewImage.attr('src', e.target.result); // Met à jour la source de l'image avec l'URL du fichier chargé
+          
+          // Ajoute un effet d'animation visuelle pour signaler l'upload
+          previewContainer.addClass('upload-highlight'); 
+          setTimeout(function() {
+            previewContainer.removeClass('upload-highlight'); // Supprime l'effet après 1,5 seconde
+          }, 1500);
+        };
+        
+        reader.readAsDataURL(file); // Lit le fichier sous forme d'URL de données (base64)
+      }
+    });
+});
+
+    $(".ajaxForm").submit(function(e) {
+        e.preventDefault();
+       var form = $(this);
+        // Obtenez le texte de mise à jour traduit
+        var updating_text = "<?php echo get_phrase('updating'); ?>";
+         // Afficher un indicateur de chargement
+         $('button[type="submit"]').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
+         // Récupérer le token CSRF avant l'envoi
+         var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
+         const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
+
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                //console.log('AJAX Response:', response); // Log the entire response object
+                if (response.status){ // Vérifie si la mise à jour a réussi
+                    success_notify(response.notification);
+                // Met à jour le token CSRF
+                $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+                
+                // Rafraîchit la page après 3 secondes (le temps de voir la notification)
+                setTimeout(function() {
+                                location.reload();
+                            }, 3500);
+                // Mise à jour dynamique des images avec cache-buster (pour forcer le rechargement des images)
+                 $('.preview-image').each(function() {
+                    var originalSrc = $(this).attr('src').split('?')[0];// Récupère l'URL d'origine de l'image sans la chaîne de requête
+                    // $(this).attr('src', originalSrc + '?v=' + Date.now());// Ajoute un timestamp pour éviter la mise en cache cette ligne affiche alt du l'image avant affichage du l'image apres update
+                
+                });
+              
+            } else {
+                error_notify(response.notification);
+        
+                // Re-enable submit button
+                $('button[type="submit"]').prop('disabled', false)
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
             }
-}
+                    $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+                },
+             error: function(xhr) {
+                error_notify('<?= get_phrase("request_failed"); ?>: ' + xhr.statusText);
+                $('button[type="submit"]').prop('disabled', false)
+              .html(`<i class="mdi mdi-account-check"></i> <?= js_phrase("update_student_information"); ?>`);
+            }
+        });
+    });
+
+   
+});
+
 </script>

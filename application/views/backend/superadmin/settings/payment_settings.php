@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/payment-settings.css">
 <?php
   $paypal = json_decode(get_payment_settings('paypal_settings'));
   $stripe = json_decode(get_payment_settings('stripe_settings'));
@@ -43,7 +43,7 @@
 
           <div class="row justify-content-md-center">
             <div class="form-group col-md-4">
-              <button class="btn btn-block btn-secondary" type="submit" onclick="updateSystemCurrencyInfo()"><?php echo get_phrase('update_system_currency'); ?></button>
+              <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit" onclick="updateSystemCurrencyInfo()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_system_currency'); ?></button>
             </div>
           </div>
         </div>
@@ -111,9 +111,10 @@
               <input type="text" id="paypal_client_id_production" name="paypal_client_id_production" class="form-control"  value="<?php echo $paypal[0]->paypal_client_id_production;?>" required>
             </div>
           </div>
-
-          <div class="text-center">
-            <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="updatePaypalInfo()"><?php echo get_phrase('update_paypal_settings') ;?></button>
+          <div class="row justify-content-md-center">
+              <div class="form-group col-md-4">
+                <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"  onclick="updatePaypalInfo()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_paypal_settings') ;?></button>
+              </div>
           </div>
         </div>
       </form>
@@ -193,10 +194,12 @@
               <input type="text" id="stripe_live_public_key" name="stripe_live_public_key" class="form-control"  value="<?php echo $stripe[0]->stripe_live_public_key;?>" required>
             </div>
           </div>
-
-          <div class="text-center">
-            <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="updateStripeInfo()"><?php echo get_phrase('update_stripe_settings') ;?></button>
-          </div>
+           <div class="row justify-content-md-center">
+            <div class="form-group col-md-4">
+              <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit" onclick="updateStripeInfo()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_stripe_settings') ;?></button>
+            </div>
+           </div>         
+          
         </div>
       </form>
     </div> <!-- end card body-->
@@ -215,5 +218,57 @@
 $(document).ready(function() {
   $('select.select2:not(.normal)').each(function () { $(this).select2({ dropdownParent: '#right-modal' }); }); //initSelect2(['#paypal_active', '#paypal_mode', '#stripe_active', '#stripe_mode', '#paypal_currency', '#stripe_currency', '#system_currency', '#payment_settings_type']);
   $('#date').daterangepicker();
-});
+
+// Fonction pour récupérer et retourner le token CSRF
+function getCsrfToken() {
+         // Récupérer le nom du token CSRF depuis le champ input caché
+          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
+         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
+           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+         // Retourner un objet contenant le nom du token et sa valeur
+         return { csrfName: csrfName, csrfHash: csrfHash };
+      }
+
+
+ // Soumission du formulaire de logo
+ $(".paypalAjaxForm,.systemAjaxForm,.stripeAjaxForm").submit(function(e) {
+    e.preventDefault();
+
+           // Cible uniquement le bouton de ce formulaire
+        var submitButton = $(this).find('button[type="submit"]');
+        var updating_text = "<?php echo get_phrase('updating'); ?>...";
+        
+        // Désactive et met à jour uniquement ce bouton
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
+         // Récupérer le token CSRF avant l'envoi
+         var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
+         const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function (response) {
+            if (response.status) { // Vérifie si la mise à jour a réussi
+                // Met à jour le token CSRF
+                $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+
+                // Rafraîchissement de la page après un léger délai pour s'assurer que les modifications sont appliquées
+                setTimeout(function() {
+                  location.reload();
+                }, 3500);// Attendre 3500ms avant de recharger la page
+            } else {
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
+                
+            }
+        },
+        error: function () {
+          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
+        }
+      });
+    });
+  });
 </script>

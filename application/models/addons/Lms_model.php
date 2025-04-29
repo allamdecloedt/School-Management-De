@@ -773,4 +773,118 @@ class Lms_model extends CI_Model {
         return $class_id = $this->db->get_where('enrols', array('student_id' => $student_id,  'session' => active_session()))->row('class_id');
     }
 
+    public function get_exams($type = "", $id = "") {
+        $this->db->order_by("id", "asc"); // Tri par "id" au lieu de "order"
+        if ($type == "exam") {
+            $query = $this->db->get_where('exams', array('id' => $id));
+            if ($query === FALSE) {
+                log_message('error', 'Erreur lors de la récupération de l\'examen : ' . $this->db->last_query());
+                return FALSE;
+            }
+            return $query;
+        } else {
+            $query = $this->db->get('exams');
+            if ($query === FALSE) {
+                log_message('error', 'Erreur lors de la récupération des examens : ' . $this->db->last_query());
+                return FALSE;
+            }
+            return $query;
+        }
+    }
+    
+    public function get_exam_questions($exam_id) {
+        $this->db->order_by("order", "asc");
+        $this->db->where('exam_id', $exam_id);
+        return $this->db->get('exam_questions');
+    }
+    
+    public function get_exam_question_by_id($question_id) {
+        $this->db->order_by("order", "asc");
+        $this->db->where('id', $question_id);
+        return $this->db->get('exam_questions');
+    }
+    
+    public function add_exam_questions($exam_id) {
+        $question_type = $this->input->post('question_type');
+        if ($question_type == 'mcq') {
+            $response = $this->add_multiple_choice_exam_question($exam_id);
+            return $response;
+        }
+    }
+    
+    public function add_multiple_choice_exam_question($exam_id) {
+        if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+            return false;
+        }
+        foreach ($this->input->post('options') as $option) {
+            if ($option == "") {
+                return false;
+            }
+        }
+        if (sizeof($this->input->post('correct_answers')) == 0) {
+            $correct_answers = [""];
+        } else {
+            $correct_answers = $this->input->post('correct_answers');
+        }
+        $data['exam_id']            = $exam_id;
+        $data['title']              = html_escape($this->input->post('title'));
+        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+        $data['type']               = 'multiple_choice';
+        $data['options']            = json_encode($this->input->post('options'));
+        $data['correct_answers']    = json_encode($correct_answers);
+        $this->db->insert('exam_questions', $data);
+        return true;
+    }
+    
+    public function update_exam_questions($question_id) {
+        $question_type = $this->input->post('question_type');
+        if ($question_type == 'mcq') {
+            $response = $this->update_multiple_choice_exam_question($question_id);
+            return $response;
+        }
+    }
+    
+    public function update_multiple_choice_exam_question($question_id) {
+        if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+            return false;
+        }
+        foreach ($this->input->post('options') as $option) {
+            if ($option == "") {
+                return false;
+            }
+        }
+    
+        if (sizeof($this->input->post('correct_answers')) == 0) {
+            $correct_answers = [""];
+        } else {
+            $correct_answers = $this->input->post('correct_answers');
+        }
+    
+        $data['title']              = html_escape($this->input->post('title'));
+        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+        $data['type']               = 'multiple_choice';
+        $data['options']            = json_encode($this->input->post('options'));
+        $data['correct_answers']    = json_encode($correct_answers);
+        $this->db->where('id', $question_id);
+        $this->db->update('exam_questions', $data);
+        return true;
+    }
+    
+    public function delete_exam_question($question_id) {
+        $this->db->where('id', $question_id);
+        $this->db->delete('exam_questions');
+        return $this->db->affected_rows() > 0;
+    }
+
+    // Dans models/Lms_model.php
+    public function sort_exam_question($question_json) {
+        $questions = json_decode($question_json);
+        foreach ($questions as $key => $value) {
+            $updater = array(
+                'order' => $key + 1
+            );
+            $this->db->where('id', $value);
+            $this->db->update('exam_questions', $updater);
+        }
+}
 }

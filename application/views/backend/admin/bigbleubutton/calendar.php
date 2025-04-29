@@ -106,6 +106,7 @@
             $("#appointmentModal").modal("hide");
         }
         var calendar = $('#calendar').fullCalendar({
+            titleRangeSeparator: ' - ',
             header: {
                 left: 'prev,next today',
                 center: 'title',
