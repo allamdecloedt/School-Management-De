@@ -598,16 +598,21 @@ class Teacher extends CI_Controller {
 	public function syllabus($param1 = '', $param2 = '', $param3 = ''){
 
 		if($param1 == 'create'){
-			$response = $this->crud_model->syllabus_create();
-			// echo $response;
-			       // Préparer la réponse avec un nouveau jeton CSRF
-				   $csrf = array(
-					'csrfName' => $this->security->get_csrf_token_name(),
-					'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-				// Renvoyer la réponse avec un nouveau jeton CSRF
-				echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			$modelResponse = $this->crud_model->syllabus_create();
+			// Préparer la réponse avec un nouveau jeton CSRF
+			$csrf = array(
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if($param1 == 'delete'){
@@ -698,16 +703,21 @@ class Teacher extends CI_Controller {
 	public function attendance($param1 = '', $param2 = '', $param3 = ''){
 
 		if($param1 == 'take_attendance'){
-			$response = $this->crud_model->take_attendance();
-			// echo $response;
-		   // Préparer la réponse avec un nouveau jeton CSRF
-		   $csrf = array(
-		    'csrfName' => $this->security->get_csrf_token_name(),
-			'csrfHash' => $this->security->get_csrf_hash(),
-			);
-				 
-		   // Renvoyer la réponse avec un nouveau jeton CSRF
-		   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			$modelResponse = $this->crud_model->take_attendance();
+			// Préparer la réponse avec un nouveau jeton CSRF
+			$csrf = array(
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if($param1 == 'filter'){

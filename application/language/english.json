@@ -1562,5 +1562,7 @@
     "quiz_question_deleted_successfully": "Quiz question deleted successfully",
     "submitting...": "Submitting...",
     "an_error_occurred_please_try_again": "An error occurred please try again",
-    "submitting...": "Submitting..."
+    "session_has_been_deleted_successfully": "Session has been deleted successfully",
+    "deleting": "Deleting",
+    "creating": "Creating"
 }

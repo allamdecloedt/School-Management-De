@@ -266,18 +266,18 @@ class User_model extends CI_Model
 				move_uploaded_file($_FILES['image_file']['tmp_name'], 'uploads/users/' . $teacher_id . '.jpg');
 			}
 
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('teacher_added_successfully')
 			);
 		} else {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('sorry_this_email_has_been_taken')
 			);
 		}
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_teacher($param1 = '')
