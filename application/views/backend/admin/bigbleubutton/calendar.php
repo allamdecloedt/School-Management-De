@@ -120,11 +120,30 @@
 
             // 👉 Ouvrir la popup quand on clique sur une date
             select: function (start, end, allDay) {
-                $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
-                $('#appointmentId').val(""); // Vide l'ID
-                $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
+                let now = moment(); // Maintenant
+                let clicked = moment(start); // Date cliquée
+
+                // Vérifier que la date n'est pas dans le passé
+                if (clicked.isBefore(now, 'day')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Date invalide',
+                        text: 'Impossible d’ajouter un rendez-vous à une date passée.',
+                        confirmButtonText: 'OK'
+                    });
+                    $('#calendar').fullCalendar('unselect');
+                    return;
+                }
+
+                // 👉 Pas de contrôle sur l'heure ici
+
+                // Ouvrir le formulaire normalement
+                $('#appointmentForm')[0].reset();
+                $('#appointmentId').val("");
+                $('#appointmentDate').val(clicked.format('YYYY-MM-DD HH:mm')); // tu proposes l'heure actuelle
                 $('#appointmentModal').modal('show');
             },
+
 
             eventRender: function(event, element) {
                 let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
@@ -224,8 +243,20 @@
             var start = $('#appointmentDate').val();
             var description = $('#appointmentDescription').val();
             var classe_id = $('#classe_id').val();
-            var sections = $('#section').val();
+            var section = $('#section').val();
             var room_id = $('#room_id').val();
+            var selected = moment(start);
+
+            // 📅 Bloquer si heure sélectionnée est avant maintenant
+            if (selected.isBefore(now)) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Heure invalide',
+                text: 'Impossible de programmer un rendez-vous dans le passé.',
+                confirmButtonText: 'OK'
+            });
+            return; // Ne pas envoyer l'Ajax
+            }
             // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
             if (Array.isArray(section)) {
                 sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"

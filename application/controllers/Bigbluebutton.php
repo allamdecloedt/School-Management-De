@@ -51,7 +51,7 @@ class Bigbluebutton extends CI_Controller {
 
         $schoolID = school_id();
         $user_ID = $this->session->userdata('user_id');
-        $meetingID = "metting-" . rand(100000, 999999);
+        $meetingID = "meeting-" . rand(100000, 999999);
         $meetingName = urlencode($meetingID);
         $attendeePW = "ap";
         $moderatorPW = "mp";
@@ -166,7 +166,7 @@ class Bigbluebutton extends CI_Controller {
         $room = $this->db->get_where('rooms', ['id' => $roomID])->row_array();
 
         $user_ID = $this->session->userdata('user_id');
-        $meetingID = "metting-" . rand(100000, 999999);
+        $meetingID = "meeting-" . rand(100000, 999999);
          $meetingName = urlencode($meetingID);
         $attendeePW = "ap";
         $moderatorPW = "mp";
