@@ -731,15 +731,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->user_model->accountant_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->user_model->accountant_create();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -785,15 +791,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->user_model->librarian_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->user_model->librarian_create();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
