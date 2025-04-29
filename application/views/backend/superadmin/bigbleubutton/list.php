@@ -97,18 +97,24 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                 <a href="<?php echo route('Calendar/').$room['class_id'].'/'.$room['id']; ?>"><i class="mdi mdi-calendar">Calendar</i></a>
 
                 <div class="d-flex justify-content-between align-items-center mt-2">
-                    <a href="<?php echo base_url('bigbluebutton/start_meeting/' . $room['id']); ?>"
+                    <!-- <a href="<?php //echo base_url('bigbluebutton/start_meeting/' . $room['id']); ?>"
                     target="_blank" 
                     class="btn btn-success meeting-btn join-btn"
-                    id="start-btn-<?php echo $room['id']; ?>"
-                    data-meeting-id="<?php echo $room['id']; ?>">
+                    id="start-btn-<?php //echo $room['id']; ?>"
+                    data-meeting-id="<?php //echo $room['id']; ?>">
                         Start
-                    </a>
-
+                    </a> -->
+                    <!-- Bouton de copie du lien -->
+                    <button  class="btn btn-success meeting-btn join-btn" onclick="rightModal('<?php echo site_url('modal/popup/bigbleubutton/apointement/'.$room['id']); ?>', '<?php echo get_phrase('appointment'); ?>')" class="btn btn-outline-secondary " 
+                           id="copy-btn-<?php echo $room['id']; ?>"
+                           >
+                           <?php echo get_phrase('start'); ?>
+                         
+                    </button>
                     <!-- Bouton de copie du lien -->
                     <button onclick="rightModal('<?php echo site_url('modal/popup/bigbleubutton/edit/'.$room['id']); ?>', '<?php echo get_phrase('update_room'); ?>')" class="btn btn-outline-secondary " 
                            id="copy-btn-<?php echo $room['id']; ?>"
-                            title="Copier le lien">
+                            >
                       
                          <i class="dripicons-pencil"></i>
                     </button>

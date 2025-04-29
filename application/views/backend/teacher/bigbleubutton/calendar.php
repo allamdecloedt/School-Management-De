@@ -1,12 +1,14 @@
 
+  
+
     <!-- SweetAlert2 (popup moderne) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 
 
-    <style>
-         #calendar {
+    <style>   
+     #calendar {
             max-width: 100%;
             margin: auto;
             background: white;
@@ -14,6 +16,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
     </style>
 
 
@@ -28,7 +31,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
             </div>
             <div class="modal-body">
                 <form id="appointmentForm">
@@ -50,13 +52,15 @@
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
-                        <select class="form-control" name="section" id="section">
+                      
+                        <select class="form-control" name="section[]" id="section" multiple>
                             <?php 
                             $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
                             foreach ($sections as $section): ?>
                                 <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
                             <?php endforeach; ?>
                         </select>
+
                     </div>
                     <div class="form-group mt-2 col-md-12">
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
@@ -116,7 +120,7 @@
             selectHelper: true,
             editable: true,
             eventLimit: true,
-            events: "<?= base_url('superadmin/get_appointments'); ?>", // Charge les rendez-vous
+            events: "<?= base_url('teacher/get_appointments'); ?>", // Charge les rendez-vous
 
             // 👉 Ouvrir la popup quand on clique sur une date
             select: function (start, end, allDay) {
@@ -139,7 +143,7 @@
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                // $('#section').val("");
+               
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
   
@@ -231,7 +235,7 @@
                 sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
             }
 
-            var url = id ? "<?= base_url('teacher/update_appointment'); ?>" : "<?= base_url('superadmin/add_appointment'); ?>";
+            var url = id ? "<?= base_url('teacher/update_appointment'); ?>" : "<?= base_url('teacher/add_appointment'); ?>";
             var successMessage = id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté avec succès !";
 
 
@@ -240,8 +244,7 @@
                 type: "POST",
                 data: { id: id, title: title, start: start, description: description, classe_id: classe_id, sections: sections, room_id: room_id },
                 success: function () {
-
-                  
+                 
                     $('#appointmentModal').modal('hide');
                     $('#calendar').fullCalendar('refetchEvents'); // Rafraîchir le calendrier
                     // alert(id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté !");

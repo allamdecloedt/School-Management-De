@@ -2,6 +2,17 @@
 
 class Room_model extends CI_Model {
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+        $this->load->config('bigbluebutton');
+        $this->bbb_url = $this->config->item('bbb_url');
+        $this->bbb_secret = $this->config->item('bbb_secret');
+        $this->bbb_url_old = $this->config->item('bbb_url_old');
+        $this->bbb_url_play = $this->config->item('bbb_url_play');
+    }
+
     public function create_room()
     {
         try {
@@ -100,6 +111,7 @@ class Room_model extends CI_Model {
             appointments.sections_id AS section, 
             appointments.classe_id, 
             appointments.room_id, 
+            rooms.name, 
 
         ');
         $this->db->from('appointments');
@@ -202,4 +214,184 @@ class Room_model extends CI_Model {
 		$this->db->where('id', $roomID);
 		return $this->db->update('rooms', $rooms);
     }
+
+
+
+        public function get_bbb_recording_by_appointment($appointment_id)
+        {
+            if (empty($appointment_id)) {
+                return null;
+            }
+
+            // 🔎 Récupération de l'appointment et du meetingID
+            $appointment = $this->db->get_where('appointments', ['id' => $appointment_id])->row_array();
+            if (!$appointment || empty($appointment['meeting_id'])) {
+                return null;
+            }
+
+            $meetingID = $appointment['meeting_id'];
+
+            // 📡 Construction de la requête getRecordings
+            $params = ['meetingID' => $meetingID];
+            $query = http_build_query($params);
+            $checksum = sha1('getRecordings' . $query . $this->bbb_secret);
+            $url = $this->bbb_url . 'getRecordings?' . $query . '&checksum=' . $checksum;
+
+            // 🔁 Appel de l'API BBB
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $xml = @simplexml_load_string($response);
+            if ($xml === false || (string)$xml->returncode !== 'SUCCESS') {
+                return null;
+            }
+
+            if (!isset($xml->recordings->recording)) {
+                return null;
+            }
+
+            $recordings = [];
+
+            foreach ($xml->recordings->recording as $rec) {
+                if ((string)$rec->published !== 'true') {
+                    continue;
+                }
+
+                $recordID = (string)$rec->recordID;
+                $playback_url = '';
+                $download_url = '';
+
+                // 🔍 Recherche du format de playback
+                if (isset($rec->playback->format)) {
+                    foreach ($rec->playback->format as $format) {
+                        $url = (string)$format->url;
+                        $type = (string)$format->type;
+
+                        // Préférence pour "presentation"
+                        if ($type === 'presentation' && empty($playback_url)) {
+                            $playback_url = $url;
+                        }
+
+                        // Si un format vidéo téléchargeable est détecté
+                        if ($type === 'video' || str_ends_with($url, '.mp4')) {
+                            $download_url = $url;
+                        }
+                    }
+                }
+
+                // 🛠 Correction du playback_url si mal généré
+                // $parsed = parse_url($playback_url);
+                // if (isset($parsed['host']) && ($parsed['host'] === 'http' || $parsed['host'] === 'playback')) {
+                //     $playback_url = str_replace('http://'.$parsed['host'], $this->bbb_url_play, $playback_url);
+                // }
+                $parsed = parse_url($playback_url);
+                if (isset($parsed['host']) && strpos($parsed['host'], '192.168.') !== false) {
+                    $playback_url = str_replace($parsed['host'], $this->bbb_url_play, $playback_url);
+                }
+
+                // 📥 Fallback download_url si aucune URL MP4 trouvée
+                if (empty($download_url)) {
+                    $download_url = str_replace('/playback/', '/download/', $playback_url);
+                }
+
+                // 🔗 Liens HTML prêts à afficher
+                $playback_link = '<a href="' . $playback_url . '" target="_blank" class="btn btn-success">📹 Voir la vidéo</a>';
+                $download_link = '<a href="' . $download_url . '" target="_blank" class="btn btn-primary">⬇️ Télécharger</a>';
+
+                $recordings[] = [
+                    'recordID'            => $recordID,
+                    'meetingID'           => (string)$rec->meetingID,
+                    'playback_url'        => $playback_url,
+                    'download_url'        => $download_url,
+                    'playback_html'       => $playback_link,
+                    'download_html'       => $download_link,
+                    'duration'            => isset($rec->startTime, $rec->endTime)
+                        ? round(((int)$rec->endTime - (int)$rec->startTime) / 60000) . ' min'
+                        : '—',
+                    'endTime'             => (string)$rec->endTime
+                ];
+            }
+
+            return !empty($recordings) ? $recordings : null;
+        }
+
+  
+          
+       
+
+            public function delete_bbb_recording_by_appointment($appointment_id)
+                {
+                    // if (empty($appointment_id)) {
+                    //     return false;
+                    // }
+                   
+                    // Récupération de l'appointment
+                    $appointment = $this->db->get_where('appointments', ['id' => $appointment_id])->row_array();
+                    if (!$appointment || empty($appointment['meeting_id'])) {
+                        return false;
+                    }
+                    die('true');
+                    $meetingID = $appointment['meeting_id'];
+
+                    // Récupération des enregistrements liés via l'API BBB
+                    $params = ['meetingID' => $meetingID];
+                    $query = http_build_query($params);
+                    $checksum = sha1('getRecordings' . $query . $this->bbb_secret);
+                    $url = $this->bbb_url . 'getRecordings?' . $query . '&checksum=' . $checksum;
+                    // 🔁 Appel de l'API BBB
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $url);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                        $response = curl_exec($ch);
+                        curl_close($ch);
+                    // $response = file_get_contents($url);
+                    $xml = @simplexml_load_string($response);
+                   
+                    if ($xml && $xml->returncode == 'SUCCESS' && isset($xml->recordings->recording)) {
+                        foreach ($xml->recordings->recording as $rec) {
+                            $recordID = (string)$rec->recordID;
+                            //  die($recordID);
+                            // Suppression via API
+                            $deleteParams = ['recordID' => $recordID];
+                            $deleteQuery = http_build_query($deleteParams);
+                            $deleteChecksum = sha1('deleteRecordings' . $deleteQuery . $this->bbb_secret);
+                            $deleteUrl = $this->bbb_url . 'deleteRecordings?' . $deleteQuery . '&checksum=' . $deleteChecksum;
+
+                            // file_get_contents($deleteUrl);
+                                 // 🔁 Appel de l'API BBB
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $deleteUrl);
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                                $response01 = curl_exec($ch);
+                                curl_close($ch);
+                                $xml01 = @simplexml_load_string($response01);
+                                if ($xml && $xml01->returncode == 'SUCCESS') {
+                                    echo "Les métadonnées de l'enregistrement {$recordID} ont été supprimées avec succès.\n";
+                                } else {
+                                    echo "Erreur lors de la suppression des métadonnées : " . ($xml01->messageKey ?? 'Inconnue') . "\n";
+                                }
+                                // var_dump($xml01);
+                                // die;
+                                // die($xml01->returncode);
+                           
+                        }
+                    }
+
+                    // Suppression de l'appointment dans la base de données
+                    $this->db->where('id', $appointment_id);
+                    $this->db->delete('appointments');
+               
+                    return true;
+                }
+
+
 }

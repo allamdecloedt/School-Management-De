@@ -622,7 +622,8 @@ class Superadmin extends CI_Controller
     }
     //END TEACHER Create_Join bigbleubutton 
   
-    public function Calendar($class_id = null , $room_id = null){
+    public function Calendar($class_id = null , $room_id = null)
+    {
       if ($class_id === null || $room_id === null ) {
         show_404(); // Erreur 404 si aucun ID n'est fourni
        }
@@ -634,9 +635,10 @@ class Superadmin extends CI_Controller
 
     }
 
-    public function get_appointments() {
-      $appointments = $this->room_model->get_all_appointments();
-      echo json_encode($appointments);
+      public function get_appointments() 
+      {
+        $appointments = $this->room_model->get_all_appointments();
+        echo json_encode($appointments);
       }
       
       public function add_appointment() {
@@ -675,7 +677,8 @@ class Superadmin extends CI_Controller
         }
       }
     
-      public function update_appointment() {
+      public function update_appointment()
+      {
         $id = $this->input->post('id');
         // die( $id);
     
@@ -691,41 +694,243 @@ class Superadmin extends CI_Controller
         $this->db->where('id', $id);
         $this->db->update('appointments', $data);
         echo json_encode(["status" => "updated"]);
-    }
-    
-    public function delete_appointment() {
-        $id = $this->input->post('id');
-
-        $appointments ['Etat'] = 0;
-
-        $this->db->where('id', $id);
-         $this->db->update('appointments', $appointments);
-    
-    
-        // $this->db->where('id', $id);
-        // $this->db->delete('appointments');
-        echo json_encode(["status" => "deleted"]);
-    }
-    public function get_sections() {
-      $classe_id = $this->input->post('classe_id');
-  
-      if (!empty($classe_id)) {
-          $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
-      } else {
-          $sections = [];
       }
-  
-      echo json_encode($sections);
-  }
-  public function delete_room()
-  {
-      $data = json_decode(file_get_contents("php://input"), true);
-      $roomID = $data['selectedRoomID'];
-      // $this->db->delete("rooms", ["id" => $roomID]);
-      $this->room_model->update_room_by_id($roomID);
-      echo json_encode(["status" => "success", "message" => "Room supprimée avec succès !"]);
-  }
+    
+      public function delete_appointment() {
+          $id = $this->input->post('id');
 
+          $appointments ['Etat'] = 0;
+
+          $this->db->where('id', $id);
+          $this->db->update('appointments', $appointments);
+      
+      
+          // $this->db->where('id', $id);
+          // $this->db->delete('appointments');
+          echo json_encode(["status" => "deleted"]);
+      }
+      public function get_sections() 
+      {
+        $classe_id = $this->input->post('classe_id');
+    
+        if (!empty($classe_id)) {
+            $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
+        } else {
+            $sections = [];
+        }
+    
+        echo json_encode($sections);
+      }
+      public function delete_room()
+      {
+          $data = json_decode(file_get_contents("php://input"), true);
+          $roomID = $data['selectedRoomID'];
+          // $this->db->delete("rooms", ["id" => $roomID]);
+          $this->room_model->update_room_by_id($roomID);
+          echo json_encode(["status" => "success", "message" => "Room supprimée avec succès !"]);
+      }
+
+
+      //START TEACHER Create_Join bigbleubutton 
+      public function Recording($param1 = '', $param2 = '', $param3 = '')
+      {
+    
+        $school_id = school_id();
+
+        // Récupère les données nécessaires
+        $page_data['appointments'] = $this->room_model->get_all_appointments();
+        $page_data['classes'] = $this->db->get_where('classes', array('school_id' => $school_id))->result_array();
+        $page_data['rooms'] = $this->db->get_where('rooms', array('school_id' => $school_id, 'Etat' => 1))->result_array();
+
+        // Récupère les enregistrements pour chaque rendez-vous
+        foreach ($page_data['appointments'] as &$appointment) {
+            $appointment['recordings'] = $this->room_model->get_bbb_recording_by_appointment($appointment['id']);
+           
+        }
+        unset($appointment); // Nettoie la référence
+    
+  
+        $page_data['page_name'] = 'bigbleubutton/Recording';
+        $page_data['page_title'] = 'Recording';
+
+        $this->load->view('backend/index', $page_data);
+
+   
+      }
+      //END TEACHER Create_Join bigbleubutton
+
+    
+    
+      public function delete_appointment_and_recording($appointment_id)
+      {
+    
+    
+          if (empty($appointment_id)) {
+              $this->session->set_flashdata('error_message', "ID de l'appointment invalide.");
+              redirect(site_url('superadmin/Recording'), 'refresh');
+              return;
+          }
+
+          // Appel à la méthode de suppression dans le modèle
+          $success = $this->room_model->delete_bbb_recording_by_appointment($appointment_id);
+          die($success);
+          // Vérification du succès de la suppression
+          if ($success) {
+              $this->session->set_flashdata('success_message', 'Appointment et enregistrements supprimés avec succès.');
+          } else {
+              $this->session->set_flashdata('error_message', "Erreur lors de la suppression de l'enregistrement ou de l'appointment.");
+          }
+
+          // Redirection vers la liste des enregistrements
+          redirect(site_url('superadmin/Recording'), 'refresh');
+      }
+
+    
+      
+      public function filter_recordings()
+      {
+          $this->load->config('bigbluebutton');
+          $bbbUrl = $this->config->item('bbb_url');
+          $bbbSecret = $this->config->item('bbb_secret');
+      
+          $meeting_name = $this->input->post('meeting_name', true);
+          $date_range = $this->input->post('date_range', true);
+      
+          // $this->db->select('*')->from('appointments');
+          $schoolID = school_id();
+          // die($schoolID);
+          // Sélection des colonnes nécessaires
+
+          $this->db->select('
+              appointments.id, 
+              appointments.title, 
+              appointments.start_date AS start, 
+            
+              appointments.description, 
+              appointments.sections_id AS section, 
+              appointments.classe_id, 
+              appointments.room_id, 
+              rooms.name, 
+              meeting_id,
+
+          ');
+          $this->db->from('appointments');
+      
+          // Jointure avec la table rooms pour récupérer les informations des salles
+          $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+      
+          // Filtre : récupérer uniquement les rendez-vous actifs
+          $this->db->where('appointments.Etat', 1);
+          $this->db->where('rooms.school_id', $schoolID );
+      
+        
+      
+          if (!empty($meeting_name)) {
+              $this->db->like('appointments.title', $meeting_name);
+          }
+      
+          if (!empty($date_range)) {
+              $dates = explode(' to ', $date_range);
+              if (count($dates) === 2) {
+                  $this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
+                  $this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
+              }
+          }
+      
+          $appointments = $this->db->get()->result_array();
+      
+          foreach ($appointments as &$appointment) {
+              $meetingId = $appointment['meeting_id'] ?? null;
+              $appointment['recordings'] = [];
+         // die( $meetingId);
+              if ($meetingId) {
+                  // Générer l’URL avec meetingID spécifique
+                  // $query = http_build_query(['meetingID' => $meetingId]);
+                  // $checksum = sha1('getRecordings' . $query . $bbbSecret);
+                  // $url = $bbbUrl . 'api/getRecordings?' . $query . '&checksum=' . $checksum;
+                  $params = ['meetingID' => $meetingId];
+                  $query = http_build_query($params);
+                  $checksum = sha1('getRecordings' . $query . $bbbSecret);
+                  $url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
+      
+                  // Appel de l’API
+                  $ch = curl_init();
+                  curl_setopt($ch, CURLOPT_URL, $url);
+                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                  $response = curl_exec($ch);
+                  curl_close($ch);
+      
+                  $xml = @simplexml_load_string($response);
+          // die($response);
+                  if ($xml && $xml->returncode == 'SUCCESS') {
+                      foreach ($xml->recordings->recording as $rec) {
+                          $appointment['recordings'][] = [
+                              'meetingID' => (string) $rec->meetingID,
+                              'playback_url' => (string) $rec->playback->format->url,
+                              'duration' => (string) $rec->playback->format->length,
+                              'video_download_url' => (string) $rec->playback->format->url,
+                              'endTime' => (string) $rec->endTime
+                          ];
+                      }
+                  }
+              }
+          }
+      
+          // Affichage HTML comme avant
+          foreach ($appointments as $appointment) {
+            $classe_name = $this->db->get_where('classes', array('id' => $appointment['classe_id']))->row('name');
+            $section = " - ";
+              if (!empty($appointment['section'])) {
+                          $section_ids = explode(',', $appointment['section']);
+                          $section_names = [];
+                              foreach ($section_ids as $id) {
+                                          $name = $this->db->get_where('sections', array('id' => $id))->row('name');
+                                          if ($name) $section_names[] = $name;
+                                      }
+                                    $section =  implode(', ', $section_names);
+                                  } 
+              echo '<tr>';
+              echo '<td>' . htmlspecialchars($appointment['title']) . '</td>';
+              echo '<td>' . htmlspecialchars($appointment['name']) . '</td>';
+              echo '<td>' . htmlspecialchars($classe_name) . '</td>';
+              echo '<td>' . htmlspecialchars($section) . '</td>';
+              echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
+              echo '<td>' . (!empty($appointment['recordings']) ? $appointment['recordings'][0]['duration'] : '—') . '</td>';
+              echo '<td>';
+      
+              if (!empty($appointment['recordings'])) {
+                  $rec = $appointment['recordings'][0];
+                  $endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
+                  $isExpired = $endTime ? (time() > ($endTime + (7 * 24 * 60 * 60))) : false;
+      
+                  if ($isExpired) {
+                      echo '<span class="badge bg-warning text-dark"> Expired</span>';
+                  } elseif (!empty($rec['playback_url'])) {
+                      echo '<a href="' . htmlspecialchars($rec['playback_url']) . '" target="_blank" class="btn btn-sm btn-success">VIDEO</a>';
+                  } else {
+                      echo '<span class="badge bg-danger">NOT RECORDED</span>';
+                  }
+              } else {
+                  echo '<span class="badge bg-danger">NOT RECORDED</span>';
+              }
+      
+              echo '</td><td>';
+      
+              if (!empty($appointment['recordings'])) {
+                  $rec = $appointment['recordings'][0];
+                  echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
+              }
+      
+              echo '<a href="' . site_url('superadmin/delete_appointment_and_recording/' . $appointment['id']) . '" class="btn btn-sm btn-danger"
+                      onclick="return confirm(\'❗ Cette action supprimera le rendez-vous et l’enregistrement associé. Continuer ?\')">
+                      🗑️ Supprimer</a>';
+              echo '</td></tr>';
+          }
+      }
+    
+    
   //START ACCOUNTANT section
   public function accountant($param1 = '', $param2 = '')
   {
