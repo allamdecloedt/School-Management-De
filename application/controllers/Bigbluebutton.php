@@ -156,7 +156,7 @@ class Bigbluebutton extends CI_Controller {
 
  
     // Créer une nouvelle session BigBlueButton
-    public function create_meeting($roomID) {
+    public function create_meeting($roomID,$appointment_id) {
 
 
         $schoolID = school_id();
@@ -164,9 +164,6 @@ class Bigbluebutton extends CI_Controller {
         
         
         $room = $this->db->get_where('rooms', ['id' => $roomID])->row_array();
-        // var_dump($room);
-        // var_dump("id : " .$room['id']);
-        // die;
 
         $user_ID = $this->session->userdata('user_id');
         $meetingID = "metting-" . rand(100000, 999999);
@@ -206,7 +203,11 @@ class Bigbluebutton extends CI_Controller {
 
 
             $this->Meeting_model->save_meeting($meetingID, $meetingName, $attendeePW, $moderatorPW, $schoolID, $user_ID,$room['classe_id'],$room['id']);
-        
+
+                $data['meeting_id']   = $meetingID;
+
+                $this->db->where('id', $appointment_id);
+                $this->db->update('appointments', $data);
                 $page_data['folder_name'] = 'bigbleubutton';
               
                 $page_data['page_title'] = 'Démarrer Réunion';
@@ -221,59 +222,59 @@ class Bigbluebutton extends CI_Controller {
                 header("Location: " . $join_url);
                 exit();
               
-                // var_dump($page_data);die;
-                // $this->load->view('backend/index', $page_data);
-                // $this->load->view('backend/superadmin/bigbleubutton/index', $page_data);
-                // redirect(site_url("superadmin/videoconf"), 'refresh');
-                // echo json_encode(["status" => "success", "redirect" => site_url("superadmin/videoconf")]);
-                // die;
+        
               
-            // echo json_encode(["status" => "success", "meeting_id" => $meetingID]);
         } else {
             echo json_encode(["status" => "error", "message" => "Erreur lors de la création de la réunion."]);
         }
     }
+  
+    
+    
+    
+
     public function room_has_active_meeting55($roomID)
-{
-    // Récupérer l'ID de la dernière réunion créée pour cette Room
-    $meeting = $this->db->order_by('id', 'DESC')
-                        ->get_where('sessions_meetings', ['class_id' => $roomID])
-                        ->row();
+    {
+        // Récupérer l'ID de la dernière réunion créée pour cette Room
+        $meeting = $this->db->order_by('id', 'DESC')
+                            ->get_where('sessions_meetings', ['class_id' => $roomID])
+                            ->row();
 
-    if (!$meeting) {
-        return false; // Pas de réunion trouvée
-    }
+        if (!$meeting) {
+            return false; // Pas de réunion trouvée
+        }
 
-    $meetingID = $meeting->meeting_id;
+        $meetingID = $meeting->meeting_id;
 
-    // Vérifier si la réunion est active sur BigBlueButton
-    $checksum = sha1("getMeetings" . $this->bbb_secret);
-    $api_url = $this->bbb_url . "getMeetings?checksum=" . $checksum;
+        // Vérifier si la réunion est active sur BigBlueButton
+        $checksum = sha1("getMeetings" . $this->bbb_secret);
+        $api_url = $this->bbb_url . "getMeetings?checksum=" . $checksum;
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    $response = curl_exec($ch);
-    curl_close($ch);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $api_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
 
-    $xml = simplexml_load_string($response);
+        $xml = simplexml_load_string($response);
 
-    if ($xml->returncode == "SUCCESS") {
-        foreach ($xml->meetings->meeting as $activeMeeting) {
-            if ((string) $activeMeeting->meetingID === $meetingID) {
-                return true; // La réunion existe et est active
+        if ($xml->returncode == "SUCCESS") {
+            foreach ($xml->meetings->meeting as $activeMeeting) {
+                if ((string) $activeMeeting->meetingID === $meetingID) {
+                    return true; // La réunion existe et est active
+                }
             }
         }
-    }
 
-    return false; // La réunion n'est pas active
-}
+        return false; // La réunion n'est pas active
+    }
 
     public function start_meeting($roomID)
     {
-        
+        // Récupérer l'ID de l'appointment depuis les paramètres GET
+            $appointment_id = $this->input->get('appointment_id');
         // Vérifier si la salle a déjà une réunion active
         if ($this->room_has_active_meeting($roomID)) {
             echo json_encode(["status" => "error", "message" => "Une réunion est déjà en cours pour cette salle."]);
@@ -282,7 +283,7 @@ class Bigbluebutton extends CI_Controller {
         
 
         // Si aucune réunion active, créer une nouvelle réunion
-        $this->create_meeting($roomID);
+        $this->create_meeting($roomID,$appointment_id);
     }
 
 

@@ -7,6 +7,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
 
 ?>
 
+
      <!-- SweetAlert2 (popup moderne) -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -96,18 +97,24 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                 <a href="<?php echo route('Calendar/').$room['class_id'].'/'.$room['id']; ?>"><i class="mdi mdi-calendar">Calendar</i></a>
 
                 <div class="d-flex justify-content-between align-items-center mt-2">
-                    <a href="<?php echo base_url('bigbluebutton/start_meeting/' . $room['id']); ?>"
+                    <!-- <a href="<?php //echo base_url('bigbluebutton/start_meeting/' . $room['id']); ?>"
                     target="_blank" 
                     class="btn btn-success meeting-btn join-btn"
-                    id="start-btn-<?php echo $room['id']; ?>"
-                    data-meeting-id="<?php echo $room['id']; ?>">
+                    id="start-btn-<?php //echo $room['id']; ?>"
+                    data-meeting-id="<?php //echo $room['id']; ?>">
                         Start
-                    </a>
-
+                    </a> -->
+                    <!-- Bouton de copie du lien -->
+                    <button  class="btn btn-success meeting-btn join-btn" onclick="rightModal('<?php echo site_url('modal/popup/bigbleubutton/apointement/'.$room['id']); ?>', '<?php echo get_phrase('appointment'); ?>')" class="btn btn-outline-secondary " 
+                           id="copy-btn-<?php echo $room['id']; ?>"
+                           >
+                           <?php echo get_phrase('start'); ?>
+                         
+                    </button>
                     <!-- Bouton de copie du lien -->
                     <button onclick="rightModal('<?php echo site_url('modal/popup/bigbleubutton/edit/'.$room['id']); ?>', '<?php echo get_phrase('update_room'); ?>')" class="btn btn-outline-secondary " 
                            id="copy-btn-<?php echo $room['id']; ?>"
-                            title="Copier le lien">
+                            >
                       
                          <i class="dripicons-pencil"></i>
                     </button>
@@ -134,7 +141,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
                 <button type="button" onclick="closeModal()" class="btn-close" ></button>
-
+                
             </div>
             <div class="modal-body">
                 <form id="appointmentForm">
@@ -156,14 +163,8 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
-                        <select class="form-control" name="section" id="section">
-                            <?php 
-                            $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
-                            var_dump($classe_id);
-                            var_dump($sections);
-                            foreach ($sections as $section): ?>
-                                <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
-                            <?php endforeach; ?>
+                        <select class="form-control" name="section[]" id="section" multiple>
+
                         </select>
                     </div>
                     <div class="form-group mt-2 col-md-12">
@@ -182,9 +183,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Add new appointment directly from room calendar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
         </div>
@@ -200,7 +199,6 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
 </div>
-
 
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -262,7 +260,11 @@ function closeModal() {
                         type: "POST",
                         data: { classe_id: event.classe_id },
                         success: function (response) {
-                            
+
+                       
+
+                      
+
                                 var sections = JSON.parse(response);
                                 $('#section').empty();
 
@@ -272,6 +274,7 @@ function closeModal() {
 
                                 // 👇 Sélection multiple
                                 let selectedSections = event.section ? event.section.split(',') : [];
+                              
 
                                 // ⚠️ Attendre que les <option> soient bien injectés
                                 setTimeout(function () {

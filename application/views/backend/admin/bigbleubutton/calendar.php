@@ -100,7 +100,7 @@
 </script>
 <script>
   
-    $(document).ready(function () {
+  $(document).ready(function () {
 
         function closeModal() {
             $("#appointmentModal").modal("hide");
@@ -138,12 +138,12 @@
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-                // $('#section').val("");
+            
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
-  
 
-                     $.ajax({
+
+                    $.ajax({
                         url: "<?= base_url('admin/get_sections'); ?>",
                         type: "POST",
                         data: { classe_id: event.classe_id },
@@ -158,7 +158,7 @@
 
                                 // 👇 Sélection multiple
                                 let selectedSections = event.section ? event.section.split(',') : [];
-                             
+                            
 
                                 // ⚠️ Attendre que les <option> soient bien injectés
                                 setTimeout(function () {
@@ -223,14 +223,14 @@
             var start = $('#appointmentDate').val();
             var description = $('#appointmentDescription').val();
             var classe_id = $('#classe_id').val();
-            var section = $('#section').val();
+            var sections = $('#section').val();
             var room_id = $('#room_id').val();
-              // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
+            // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
             if (Array.isArray(section)) {
                 sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
             }
 
-            var url = id ? "<?= base_url('admin/update_appointment'); ?>" : "<?= base_url('superadmin/add_appointment'); ?>";
+            var url = id ? "<?= base_url('admin/update_appointment'); ?>" : "<?= base_url('admin/add_appointment'); ?>";
             var successMessage = id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté avec succès !";
 
 
@@ -250,18 +250,18 @@
                 }
             });
         });
-    });
+        });
 
 
 
-     // Fonction pour afficher la notification
-     function showCopyNotification($param) {
+        // Fonction pour afficher la notification
+        function showCopyNotification($param) {
                 let toastEl = document.getElementById($param);
                 let toast = new bootstrap.Toast(toastEl);
                 toast.show();
             }
             // Fonction pour afficher une notification dynamique avec un message personnalisé
-    function showNotification(message, type = "success") {
+        function showNotification(message, type = "success") {
         let toastEl = document.getElementById("DynamicNotification");
 
         // Modifier le texte et la classe de la notification
@@ -282,7 +282,7 @@
 
         let toast = new bootstrap.Toast(toastEl);
         toast.show();
-    }
+        }
 
 </script>
 
