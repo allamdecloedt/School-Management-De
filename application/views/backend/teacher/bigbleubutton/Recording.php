@@ -21,15 +21,15 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="row align-items-end g-3">
-                    <div class="col-md-5">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <label for="meeting_name" class="form-label fw-semibold text-muted"><?php echo get_phrase('meeting_name'); ?></label>
                         <input type="text" class="form-control" id="meeting_name" name="meeting_name" placeholder="Ex: Réunion pédagogique" value="<?= htmlspecialchars($filters['meeting_name'] ?? '') ?>">
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <label for="dateRange" class="form-label fw-semibold text-muted"><?php echo get_phrase('Date range'); ?></label>
                         <input type="text" class="form-control" id="dateRange" name="date_range" placeholder="Choisir une plage de dates" value="<?= htmlspecialchars($filters['date_range'] ?? '') ?>">
                     </div>
-                    <div class="col-md-2 d-flex gap-2">
+                    <div class="col-lg-4 col-md-12 col-sm-12 d-flex gap-2">
                         <button type="button" id="applyFilters" class="btn btn-primary w-100"><?php echo get_phrase('apply'); ?></button>
                         <button type="button" id="clearFilters" class="btn btn-outline-secondary w-100"><?php echo get_phrase('clear'); ?></button>
                     </div>
