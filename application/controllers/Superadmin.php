@@ -75,17 +75,22 @@ class Superadmin extends CI_Controller
   public function manage_class($param1 = '', $param2 = '', $param3 = '')
   {
 
-    if ($param1 == 'create') {
-      $response = $this->crud_model->class_create();
-      // echo $response;
-       // Préparer la réponse avec un nouveau jeton CSRF
-       $csrf = array(
-        'csrfName' => $this->security->get_csrf_token_name(),
-        'csrfHash' => $this->security->get_csrf_hash(),
-    );
-
-    // Renvoyer la réponse avec un nouveau jeton CSRF
-    echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      if ($param1 == 'create') {
+        $modelResponse = $this->crud_model->class_create();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
+      
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'delete') {
@@ -157,16 +162,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->class_room_create();
-      // echo $response;
-            // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->class_room_create();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -254,16 +264,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->department_create();
-      // echo $response;
-            // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->department_create();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -311,18 +326,22 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->syllabus_create();
-      // echo $response;
-       // Préparer la réponse avec un nouveau jeton CSRF
-       $csrf = array(
-        'csrfName' => $this->security->get_csrf_token_name(),
-        'csrfHash' => $this->security->get_csrf_hash(),
+      $modelResponse = $this->crud_model->syllabus_create();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
     );
-
-    // Renvoyer la réponse avec un nouveau jeton CSRF
-    echo json_encode(array('status' => $response, 'csrf' => $csrf));
-    }
-
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+    echo json_encode($response);
+  }
     if ($param1 == 'delete') {
       $response = $this->crud_model->syllabus_delete($param2);
       // echo $response;
@@ -469,15 +488,21 @@ class Superadmin extends CI_Controller
 
 
     if ($param1 == 'create') {
-      $response = $this->user_model->create_teacher();
-            // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->user_model->create_teacher();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -911,15 +936,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->user_model->accountant_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->user_model->accountant_create();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -965,15 +996,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->user_model->librarian_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->user_model->librarian_create();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -1018,15 +1055,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->routine_create();
+      $modelResponse = $this->crud_model->routine_create();
                   // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+                  $csrf = array(
+                    'name' => $this->security->get_csrf_token_name(),
+                    'hash' => $this->security->get_csrf_hash()
+                );
+                
+                // Fusionner la réponse du modèle avec le CSRF
+                $response = array(
+                    'status' => $modelResponse['status'],
+                    'notification' => $modelResponse['notification'],
+                    'csrf' => $csrf
+                );
+                
+                echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -1073,15 +1116,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'take_attendance') {
-      $response = $this->crud_model->take_attendance();
-      // Préparer la réponse avec un nouveau jeton CSRF
-      $csrf = array(
-               'csrfName' => $this->security->get_csrf_token_name(),
-                'csrfHash' => $this->security->get_csrf_hash(),
-                );
-            
-      // Renvoyer la réponse avec un nouveau jeton CSRF
-      echo json_encode(array('status' => $response, 'csrf' => $csrf));
+        $modelResponse = $this->crud_model->take_attendance();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
+      
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'filter') {
@@ -1137,15 +1186,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->event_calendar_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->event_calendar_create();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -1420,15 +1475,21 @@ class Superadmin extends CI_Controller
   {
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->exam_create();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->exam_create();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -1566,15 +1627,21 @@ class Superadmin extends CI_Controller
 
     // store data on database
     if ($param1 == 'create') {
-      $response = $this->crud_model->grade_create();
+      $modelResponse = $this->crud_model->grade_create();
                   // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+                  $csrf = array(
+                    'name' => $this->security->get_csrf_token_name(),
+                    'hash' => $this->security->get_csrf_hash()
+                );
+                
+                // Fusionner la réponse du modèle avec le CSRF
+                $response = array(
+                    'status' => $modelResponse['status'],
+                    'notification' => $modelResponse['notification'],
+                    'csrf' => $csrf
+                );
+                
+                echo json_encode($response);
     }
 
     // update data on database
@@ -1672,28 +1739,40 @@ class Superadmin extends CI_Controller
   {
     // For creating new invoice
     if ($param1 == 'single') {
-      $response = $this->crud_model->create_single_invoice();
+      $modelResponse = $this->crud_model->create_single_invoice();
                   // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+                  $csrf = array(
+                    'name' => $this->security->get_csrf_token_name(),
+                    'hash' => $this->security->get_csrf_hash()
+                );
+                
+                // Fusionner la réponse du modèle avec le CSRF
+                $response = array(
+                    'status' => $modelResponse['status'],
+                    'notification' => $modelResponse['notification'],
+                    'csrf' => $csrf
+                );
+                
+                echo json_encode($response);
     }
 
     // For creating new mass invoice
     if ($param1 == 'mass') {
-      $response = $this->crud_model->create_mass_invoice();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->create_mass_invoice();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+      echo json_encode($response);
     }
 
     // For editing invoice
@@ -1896,15 +1975,21 @@ class Superadmin extends CI_Controller
   public function expense_category($param1 = "", $param2 = "")
   {
     if ($param1 == 'create') {
-      $response = $this->crud_model->create_expense_category();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->create_expense_category();
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+        echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -1948,15 +2033,21 @@ class Superadmin extends CI_Controller
 
     // adding expense
     if ($param1 == 'create') {
-      $response = $this->crud_model->create_expense();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+          $modelResponse = $this->crud_model->create_expense();
+          // Préparer la réponse avec un nouveau jeton CSRF
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     // update expense
@@ -2012,15 +2103,21 @@ class Superadmin extends CI_Controller
     $school_id = school_id();
 
     if ($param1 == 'create') {
-      $response = $this->crud_model->session_create();
+      $modelResponse = $this->crud_model->session_create();
           // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     if ($param1 == 'update') {
@@ -2077,15 +2174,21 @@ class Superadmin extends CI_Controller
   {
     // adding book
     if ($param1 == 'create') {
-      $response = $this->crud_model->create_book();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->crud_model->create_book();
+          // Préparer la réponse avec un nouveau jeton CSRF
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     // update book
@@ -2131,15 +2234,21 @@ class Superadmin extends CI_Controller
   {
     // adding book
     if ($param1 == 'create') {
-      $response = $this->crud_model->create_book_issue();
-                  // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      $modelResponse = $this->crud_model->create_book_issue();
+          // Préparer la réponse avec un nouveau jeton CSRF
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     // update book
@@ -2202,15 +2311,21 @@ class Superadmin extends CI_Controller
   public function addon_manager($param1 = "", $param2 = "")
   {
     if ($param1 == 'install') {
-      $response = $this->addon_model->install_addon();
+      $modelResponse = $this->addon_model->install_addon();
           // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     // DEACTIVE ADDONS
@@ -2267,28 +2382,40 @@ class Superadmin extends CI_Controller
   {
     // adding notice
     if ($param1 == 'create') {
-      $response = $this->crud_model->create_notice();
+      $modelResponse = $this->crud_model->create_notice();
           // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-      
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
     }
 
     // update notice
     if ($param1 == 'update') {
-      $response = $this->crud_model->update_notice($param2);
-          // Préparer la réponse avec un nouveau jeton CSRF
-            $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
+        $modelResponse = $this->crud_model->update_notice($param2);
+        // Préparer la réponse avec un nouveau jeton CSRF
+        $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
       
-          // Renvoyer la réponse avec un nouveau jeton CSRF
-          echo json_encode(array('status' => $response, 'csrf' => $csrf));
+      // Fusionner la réponse du modèle avec le CSRF
+      $response = array(
+          'status' => $modelResponse['status'],
+          'notification' => $modelResponse['notification'],
+          'csrf' => $csrf
+      );
+      
+        echo json_encode($response);
     }
 
     // deleting notice

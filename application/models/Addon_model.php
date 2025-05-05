@@ -93,18 +93,18 @@ class Addon_model extends CI_Model {
 			}
 
 
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('addon_installed_successfully')
 			);
 		}else{
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('no_addon_found')
 			);
 		}
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	//DEACTIVATE AN ADDON

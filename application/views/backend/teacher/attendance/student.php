@@ -1,10 +1,12 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
+
 <?php $check_permission = has_permission($class_id, $section_id, 'attendance'); ?>
 <?php if ($check_permission): ?>
     <?php $school_id = school_id(); ?>
     <div class="row" style="margin-bottom: 10px; width: 100%;">
-        <div class="col-6"><a href="javascript:" class="btn btn-sm btn-secondary" onclick="present_all()"><?php echo get_phrase('present_all'); ?></a></div>
-        <div class="col-6"><a href="javascript:" class="btn btn-sm btn-secondary float-end" onclick="absent_all()"><?php echo get_phrase('absent_all'); ?></a></div>
-    </div>
+        <div class="col-6"><a href="javascript:" class="btn btn-primary btn-l px-4" id="update-btn" onclick="present_all()"><i class="mdi mdi-check-circle-outline"></i><?php echo get_phrase('present_all'); ?></a></div>
+        <div class="col-6"><a href="javascript:" class="btn btn-primary btn-l px-4" id="update-btn" onclick="absent_all()"><i class="mdi mdi-alert-circle-outline"></i><?php echo get_phrase('absent_all'); ?></a></div>
+</div>
 
     <div class="table-responsive-sm row col-md-12" style="padding-right: 0px;">
         <table class="table table-bordered table-centered mb-0">
@@ -42,7 +44,7 @@
         </table>
     </div>
     <div class="form-group col-md-12 mt-4" id = "updateAttendanceDiv" style="display: none;">
-        <button class="btn w-100 btn-primary" type="submit"><?php echo get_phrase('update_attendance'); ?></button>
+        <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_attendance'); ?></button>
     </div>
 <?php else: ?>
     <div class="col-md-12 text-center">
