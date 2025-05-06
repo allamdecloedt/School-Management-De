@@ -410,13 +410,13 @@ class Admin extends CI_Controller
 	}
 
 	public function get_csrf_token()
-{
-    $csrf = array(
-        'csrf_name' => $this->security->get_csrf_token_name(),
-        'csrf_hash' => $this->security->get_csrf_hash(),
-    );
-    echo json_encode($csrf);
-}
+	{
+		$csrf = array(
+			'csrf_name' => $this->security->get_csrf_token_name(),
+			'csrf_hash' => $this->security->get_csrf_hash(),
+		);
+		echo json_encode($csrf);
+	}
 
   public function get_sections_by_class()
 {
