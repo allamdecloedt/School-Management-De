@@ -1,4 +1,5 @@
 
+  
 
     <!-- SweetAlert2 (popup moderne) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -6,8 +7,8 @@
 
 
 
-    <style>
-      #calendar {
+    <style>   
+     #calendar {
             max-width: 100%;
             margin: auto;
             background: white;
@@ -15,6 +16,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
     </style>
 
 
@@ -29,7 +31,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
             </div>
             <div class="modal-body">
                 <form id="appointmentForm">
@@ -51,13 +52,15 @@
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
-                        <select class="form-control" name="section" id="section">
+                      
+                        <select class="form-control" name="section[]" id="section" multiple>
                             <?php 
                             $sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
                             foreach ($sections as $section): ?>
                                 <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
                             <?php endforeach; ?>
                         </select>
+
                     </div>
                     <div class="form-group mt-2 col-md-12">
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
@@ -93,6 +96,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
+
 <script>
     $(document).ready(function () {
         $('#section').selectpicker();
@@ -100,7 +104,7 @@
 </script>
 <script>
   
-  $(document).ready(function () {
+    $(document).ready(function () {
 
         function closeModal() {
             $("#appointmentModal").modal("hide");
@@ -119,6 +123,14 @@
             events: "<?= base_url('admin/get_appointments'); ?>", // Charge les rendez-vous
 
             // 👉 Ouvrir la popup quand on clique sur une date
+            // select: function (start, end, allDay) {
+            //     $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
+            //     $('#appointmentId').val(""); // Vide l'ID
+            //     $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
+            //     $('#appointmentModal').modal('show');
+            // },
+
+
             select: function (start, end, allDay) {
                 let now = moment(); // Maintenant
                 let clicked = moment(start); // Date cliquée
@@ -145,6 +157,7 @@
             },
 
 
+
             eventRender: function(event, element) {
                 let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
                 let title = event.title.replace(/(\d{2})a/, '$1:00 -'); // Nettoyer le titre
@@ -158,12 +171,12 @@
                 $('#appointmentTitle').val(event.title);
                 $('#appointmentDate').val(moment(event.start).format('YYYY-MM-DD HH:mm'));
                 $('#appointmentDescription').val(event.description);
-            
+               
                 $('#classe_id').val(event.classe_id);
                 $('#room_id').val(event.room_id);
+  
 
-
-                    $.ajax({
+                     $.ajax({
                         url: "<?= base_url('admin/get_sections'); ?>",
                         type: "POST",
                         data: { classe_id: event.classe_id },
@@ -178,7 +191,7 @@
 
                                 // 👇 Sélection multiple
                                 let selectedSections = event.section ? event.section.split(',') : [];
-                            
+                             
 
                                 // ⚠️ Attendre que les <option> soient bien injectés
                                 setTimeout(function () {
@@ -245,19 +258,20 @@
             var classe_id = $('#classe_id').val();
             var section = $('#section').val();
             var room_id = $('#room_id').val();
+            var now = moment();
             var selected = moment(start);
 
-            // 📅 Bloquer si heure sélectionnée est avant maintenant
+                // 📅 Bloquer si heure sélectionnée est avant maintenant
             if (selected.isBefore(now)) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Heure invalide',
-                text: 'Impossible de programmer un rendez-vous dans le passé.',
-                confirmButtonText: 'OK'
-            });
-            return; // Ne pas envoyer l'Ajax
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Heure invalide',
+                    text: 'Impossible de programmer un rendez-vous dans le passé.',
+                    confirmButtonText: 'OK'
+                });
+                return; // Ne pas envoyer l'Ajax
             }
-            // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
+              // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
             if (Array.isArray(section)) {
                 sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"
             }
@@ -271,7 +285,7 @@
                 type: "POST",
                 data: { id: id, title: title, start: start, description: description, classe_id: classe_id, sections: sections, room_id: room_id },
                 success: function () {
-                
+                 
                     $('#appointmentModal').modal('hide');
                     $('#calendar').fullCalendar('refetchEvents'); // Rafraîchir le calendrier
                     // alert(id ? "Rendez-vous mis à jour !" : "Rendez-vous ajouté !");
@@ -282,18 +296,18 @@
                 }
             });
         });
-        });
+    });
 
 
 
-        // Fonction pour afficher la notification
-        function showCopyNotification($param) {
+     // Fonction pour afficher la notification
+     function showCopyNotification($param) {
                 let toastEl = document.getElementById($param);
                 let toast = new bootstrap.Toast(toastEl);
                 toast.show();
             }
             // Fonction pour afficher une notification dynamique avec un message personnalisé
-        function showNotification(message, type = "success") {
+    function showNotification(message, type = "success") {
         let toastEl = document.getElementById("DynamicNotification");
 
         // Modifier le texte et la classe de la notification
@@ -314,10 +328,9 @@
 
         let toast = new bootstrap.Toast(toastEl);
         toast.show();
-        }
+    }
 
 </script>
-
 
 
 
