@@ -32,6 +32,7 @@
                     <div class="col-lg-4 col-md-12 col-sm-12 d-flex gap-2">
                         <button type="button" id="applyFilters" class="btn btn-primary w-100"><?php echo get_phrase('apply'); ?></button>
                         <button type="button" id="clearFilters" class="btn btn-outline-secondary w-100"><?php echo get_phrase('clear'); ?></button>
+                        <button type="button" id="exportCsv" class="btn btn-success w-100"><?php echo get_phrase('EXPORT CSV'); ?></button>
                     </div>
                 </div>
             </div>
@@ -170,4 +171,16 @@
 
     // Charger les données initiales
     // loadRecordings();
+
+    document.getElementById('exportCsv').addEventListener('click', function () {
+        const meetingName = document.getElementById('meeting_name').value.trim();
+        const dateRange = document.getElementById('dateRange').value.trim();
+
+        // Redirection vers l'URL d'exportation avec les paramètres
+        const url = new URL("<?php echo site_url('superadmin/export_recordings_csv'); ?>");
+        if (meetingName) url.searchParams.append('meeting_name', meetingName);
+        if (dateRange) url.searchParams.append('date_range', dateRange);
+
+        window.location.href = url.toString();
+    });
 </script>
