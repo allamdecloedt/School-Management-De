@@ -1577,5 +1577,6 @@
     "gerer_le_rendez_vous": "Gérer le Rendez-vous",
     "titre_du_rendez_vous": "Titre du Rendez-vous",
     "date_heure": "Date et heure",
-    "sauvegarder": "Sauvegarder"
+    "sauvegarder": "Sauvegarder",
+    "please_add_an_appointment_in_the_calendar": "Please add an appointment in the calendar."
 }

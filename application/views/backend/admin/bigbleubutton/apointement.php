@@ -2,7 +2,7 @@
 $this->db->where('room_id', $param1);
 $this->db->where('start_date >', date('Y-m-d H:i:s')); // uniquement les RDV futurs
 $appointments = $this->db->get('appointments')->result_array();
-
+$appointments_count = count($appointments);
 
 ?>
 
@@ -27,7 +27,10 @@ $appointments = $this->db->get('appointments')->result_array();
                         <option value="<?php echo $appointment['id']; ?>"><?php echo $appointment['title']; ?></option>
                     <?php endforeach; ?>
             </select>
-            <span id="message_obligatoir" style="color: red;"></span>
+            <span id="message_obligatoir" style="color: red;"></span></br>
+            <?php if($appointments_count == 0){ ?>
+            <span  style="color: red;"><?php echo get_phrase('Please_add_an_appointment_in_the_calendar'); ?></span></br>
+            <?php } ?>
    
         </div>
 
@@ -82,7 +85,7 @@ $appointments = $this->db->get('appointments')->result_array();
         var selectedAppointmentId = $('#appointementSelect').val();
         if (!selectedAppointmentId) {
             e.preventDefault();
-            $('#message_obligatoir').text("Veuillez sélectionner un appointment avant de rejoindre la réunion");
+            $('#message_obligatoir').text("Veuillez sélectionner un appointment avant de rejoindre la réunion.");
            
         }
     });
