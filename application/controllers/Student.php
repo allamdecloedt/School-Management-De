@@ -148,6 +148,7 @@ class Student extends CI_Controller {
 	  
 		  $meeting_name = $this->input->post('meeting_name', true);
 		  $date_range = $this->input->post('date_range', true);
+		  $school_id = $this->input->post('school_id', true);
 	  
 		  // $this->db->select('*')->from('appointments');
 		  $schoolID = school_id();
@@ -163,7 +164,8 @@ class Student extends CI_Controller {
 			  appointments.sections_id AS section, 
 			  appointments.classe_id, 
 			  appointments.room_id, 
-			  rooms.name, 
+			 
+			  rooms.name,
 			  meeting_id,
 
 		  ');
@@ -174,7 +176,9 @@ class Student extends CI_Controller {
 	  
 		  // Filtre : récupérer uniquement les rendez-vous actifs
 		  $this->db->where('appointments.Etat', 1);
-		  $this->db->where('rooms.school_id', $schoolID );
+		  //$this->db->where('rooms.school_id', $schoolID);
+		  $this->db->where('appointments.school_id', $school_id);
+	
 	  
 		
 	  
@@ -192,10 +196,10 @@ class Student extends CI_Controller {
 	  
 		  $appointments = $this->db->get()->result_array();
 	  
-		  foreach ($appointments as &$appointment) {
-			  $meetingId = $appointment['meeting_id'] ?? null;
-			  $appointment['recordings'] = [];
-		 // die( $meetingId);
+		  foreach ($appointments as &$appointment_rec) {
+			  $meetingId = $appointment_rec['meeting_id'] ?? null;
+			  $appointment_rec['recordings'] = [];
+		
 			  if ($meetingId) {
 				  // Générer l’URL avec meetingID spécifique
 				  // $query = http_build_query(['meetingID' => $meetingId]);
@@ -216,10 +220,10 @@ class Student extends CI_Controller {
 				  curl_close($ch);
 	  
 				  $xml = @simplexml_load_string($response);
-		  // die($response);
+
 				  if ($xml && $xml->returncode == 'SUCCESS') {
 					  foreach ($xml->recordings->recording as $rec) {
-						  $appointment['recordings'][] = [
+						  $appointment_rec['recordings'][] = [
 							  'meetingID' => (string) $rec->meetingID,
 							  'playback_url' => (string) $rec->playback->format->url,
 							  'duration' => (string) $rec->playback->format->length,
@@ -250,11 +254,11 @@ class Student extends CI_Controller {
 			  echo '<td>' . htmlspecialchars($classe_name) . '</td>';
 			  echo '<td>' . htmlspecialchars($section) . '</td>';
 			  echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
-			  echo '<td>' . (!empty($appointment['recordings']) ? $appointment['recordings'][0]['duration'] : '—') . '</td>';
+			  echo '<td>' . (!empty($appointment_rec['recordings']) ? $appointment_rec['recordings'][0]['duration'] : '—') . '</td>';
 			  echo '<td>';
 	  
 			  if (!empty($appointment['recordings'])) {
-				  $rec = $appointment['recordings'][0];
+				  $rec = $appointment_rec['recordings'][0];
 				  $endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
 				  $isExpired = $endTime ? (time() > ($endTime + (7 * 24 * 60 * 60))) : false;
 	  
@@ -271,8 +275,8 @@ class Student extends CI_Controller {
 	  
 			  echo '</td><td>';
 	  
-			  if (!empty($appointment['recordings'])) {
-				  $rec = $appointment['recordings'][0];
+			  if (!empty($appointment_rec['recordings'])) {
+				  $rec = $appointment_rec['recordings'][0];
 				  echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
 			  }
 	  
