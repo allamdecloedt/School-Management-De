@@ -493,6 +493,7 @@ $config['csrf_exclude_uris'] = array(
     'teacher/filter_recordings',
     'teacher/get_recordings',
     'teacher/get_recordings_by_meeting_id',
+    'student/filter_recordings',
 
 );
  

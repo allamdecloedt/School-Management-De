@@ -21,15 +21,36 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="row align-items-end g-3">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                      <div class="form-group">
+                        <label for="school_id"><?php echo get_phrase('schools'); ?></label>
+                        <select class="form-control select2" data-toggle="select2" name="school_id" id="school_id" onchange="schoolWiseClasse(this.value)">
+                            <option value="<?php echo 'all'; ?>" <?php if($selected_school_id == 'all') echo 'selected'; ?>><?php echo get_phrase('all'); ?></option>
+                                 <?php 
+                                     $user_id   = $this->session->userdata('user_id');
+                                     // $schools = $this->db->get('schools')->result_array();
+                                     // $schools = $this->crud_model->get_schools()->result_array();                            
+                                    $schools =  $this->db->select('*,schools.id as id');
+                                    $this->db->from('schools');
+                                    $this->db->join('students', 'schools.id = students.school_id', 'left');
+                                    $this->db->where('students.user_id', $user_id);
+                                    $query = $this->db->get()->result_array();
+                                ?>
+                                    <?php foreach ($query as $school): ?>
+                                        <option value="<?php echo $school['id']; ?>" <?php if($selected_school_id == $school['id']) echo 'selected'; ?>>   <?php echo  $school['name']; ?></option>
+                                    <?php endforeach; ?>
+                        </select>
+                    </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
                         <label for="meeting_name" class="form-label fw-semibold text-muted"><?php echo get_phrase('meeting_name'); ?></label>
                         <input type="text" class="form-control" id="meeting_name" name="meeting_name" placeholder="Ex: Réunion pédagogique" value="<?= htmlspecialchars($filters['meeting_name'] ?? '') ?>">
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
                         <label for="dateRange" class="form-label fw-semibold text-muted"><?php echo get_phrase('Date range'); ?></label>
                         <input type="text" class="form-control" id="dateRange" name="date_range" placeholder="Choisir une plage de dates" value="<?= htmlspecialchars($filters['date_range'] ?? '') ?>">
                     </div>
-                    <div class="col-lg-4 col-md-12 col-sm-12 d-flex gap-2">
+                    <div class="col-lg-3 col-md-12 col-sm-12 d-flex gap-2">
                         <button type="button" id="applyFilters" class="btn btn-primary w-100"><?php echo get_phrase('apply'); ?></button>
                         <button type="button" id="clearFilters" class="btn btn-outline-secondary w-100"><?php echo get_phrase('clear'); ?></button>
                     </div>
@@ -132,6 +153,7 @@
       function loadRecordings() {
         const meetingName = document.getElementById('meeting_name').value.trim();
         const dateRange = document.getElementById('dateRange').value.trim();
+        const school_id = document.getElementById('school_id').value.trim();
 
         $.ajax({
             url: "<?php echo site_url('student/filter_recordings'); ?>",
@@ -139,6 +161,7 @@
             data: {
                 meeting_name: meetingName,
                 date_range: dateRange,
+                school_id: school_id,
                 <?php echo $this->security->get_csrf_token_name(); ?>: "<?php echo $this->security->get_csrf_hash(); ?>"
             },
             success: function(response) {

@@ -167,7 +167,8 @@ class Room_model extends CI_Model {
             appointments.description, 
             appointments.sections_id AS section, 
             appointments.classe_id, 
-            appointments.room_id
+            appointments.room_id,
+            rooms.name ,
         ');
         $this->db->from('appointments');
         $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
