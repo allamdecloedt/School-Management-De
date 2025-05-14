@@ -1573,5 +1573,9 @@
     "session_has_been_deleted_successfully": "Session has been deleted successfully",
     "deleting": "Deleting",
     "creating": "Creating",
-    "export_csv": "Export csv"
+    "export_csv": "Export csv",
+    "gerer_le_rendez_vous": "Gérer le Rendez-vous",
+    "titre_du_rendez_vous": "Titre du Rendez-vous",
+    "date_heure": "Date et heure",
+    "sauvegarder": "Sauvegarder"
 }
