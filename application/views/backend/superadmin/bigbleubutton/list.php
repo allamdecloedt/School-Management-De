@@ -139,7 +139,7 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
+                <h5 class="modal-title" id="appointmentModalLabel"><?php echo get_phrase('gerer_le_rendez_vous'); ?></h5>
                 <button type="button" onclick="closeModal()" class="btn-close" ></button>
                 
             </div>
@@ -150,26 +150,26 @@ $rooms = $this->db->get_where('rooms', array('school_id' => $school_id,'Etat' =>
                     <input type="hidden" id="room_id" name="room_id" value="<?= $room_id; ?>">
 
                     <div class="form-group">
-                        <label for="appointmentTitle">Titre du Rendez-vous</label>
+                        <label for="appointmentTitle"><?php echo get_phrase('titre_du_rendez_vous'); ?></label><span class="required"> * </span>
                         <input type="text" class="form-control" id="appointmentTitle" required>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDate">Date et heure</label>
+                        <label for="appointmentDate"><?php echo get_phrase('date_heure'); ?></label><span class="required"> * </span>
                         <input type="datetime-local" class="form-control" id="appointmentDate" required>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDescription">Description</label>
+                        <label for="appointmentDescription"><?php echo get_phrase('description'); ?></label>
                         <textarea class="form-control" id="appointmentDescription" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="section">Section</label>
+                        <label for="section"><?php echo get_phrase('section'); ?></label><span class="required"> * </span>
                         <select class="form-control" name="section[]" id="section" multiple>
 
                         </select>
                     </div>
                     <div class="form-group mt-2 col-md-12">
-                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
-                        <button type="button" id="deleteAppointment" class="btn btn-danger float-right">Supprimer</button>
+                        <button type="submit" class="btn btn-primary"><?php echo get_phrase('sauvegarder'); ?></button>
+                        <button type="button" id="deleteAppointment" class="btn btn-danger float-right"><?php echo get_phrase('delete'); ?></button>
                     </div>
                 </form>
             </div>
