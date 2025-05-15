@@ -1578,5 +1578,6 @@
     "titre_du_rendez_vous": "Titre du Rendez-vous",
     "date_heure": "Date et heure",
     "sauvegarder": "Sauvegarder",
-    "please_add_an_appointment_in_the_calendar": "Please add an appointment in the calendar."
+    "please_add_an_appointment_in_the_calendar": "Please add an appointment in the calendar.",
+    "back_to_list_room": "Back to list room"
 }
