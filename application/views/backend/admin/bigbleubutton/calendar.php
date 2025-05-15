@@ -18,7 +18,13 @@
         }
 
     </style>
-
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="<?= base_url('admin/Liveclasse'); ?>" class="btn btn-secondary">
+                <i class="mdi mdi-arrow-left"></i> <?php echo get_phrase('Back to List Room'); ?>
+            </a>
+        </div>
+    </div>
 
     <div id="calendar"></div>
 
