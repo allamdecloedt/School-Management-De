@@ -40,7 +40,7 @@
                         </div>
                     </div>
                         <h5 class="card-title m-0 py-1 form-label fw-medium">
-                            <span class="fw-light"><?php echo get_phrase('section').' '.++$key; ?></span>: 
+                            <span class="fw-light"><?php echo get_phrase('section_cours').' '.++$key; ?></span>: 
                             <?php echo $section['title']; ?>
                         </h5>
 
