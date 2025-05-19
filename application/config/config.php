@@ -496,7 +496,7 @@ $config['csrf_exclude_uris'] = array(
     'addons/courses/exam_questions/.*',
     'addons/courses/manage_exam_multiple_choices_options',
     'addons/courses/manage_multiple_choices_options',
-    'addons/courses/ajax_sort_question'
+    'addons/courses/ajax_sort_question',
      'admin/delete_room',
      'teacher/delete_room',
     'BigBlueButton/*',

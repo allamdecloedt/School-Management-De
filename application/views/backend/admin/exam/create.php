@@ -68,77 +68,58 @@
 
 <script>
 $(document).ready(function() {
-
     toastr.options = {
         closeButton: true,
         progressBar: true,
         positionClass: 'toast-top-right',
         timeOut: 5000,
         showMethod: 'fadeIn',
-        hideMethod: 'fadeOut'
+        hideMethod: 'fadeOut',
     };
 
-    // Fonction spécifique pour charger les sections dans le modal de création
-    window.getSections = function(class_id, selectedSectionId = '') {
+    function getCsrfToken() {
+        var csrfName = $('input[name="<?php echo addslashes($this->security->get_csrf_token_name()); ?>"]').attr('name');
+        var csrfHash = $('input[name="<?php echo addslashes($this->security->get_csrf_token_name()); ?>"]').val();
+        return { csrfName: csrfName, csrfHash: csrfHash };
+    }
 
-  $(".ajaxForm").validate({}); // Jquery form validation initialization
+    // Form submission handler for .ajaxForm
+    $(".ajaxForm").validate({});
     $(".ajaxForm").submit(function(e) {
-        
-        e.preventDefault(); // Bloque le comportement normal
+        e.preventDefault();
         var form = $(this);
-        //ajaxSubmit(e, form, showAllGrades);
-        function getCsrfToken() {
-         // Récupérer le nom du token CSRF depuis le champ input caché
-          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
-         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
-           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
-         // Retourner un objet contenant le nom du token et sa valeur
-         return { csrfName: csrfName, csrfHash: csrfHash };
-      }
-           // Cible uniquement le bouton de ce formulaire
         var submitButton = $(this).find('button[type="submit"]');
-        var adding_text = "<?php echo get_phrase('creating'); ?>...";
-        
-        // Désactive et met à jour uniquement ce bouton
-        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+adding_text);
-         // Récupérer le token CSRF avant l'envoi
-         var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
-         const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
+        var adding_text = "<?php echo addslashes(get_phrase('creating')); ?>...";
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>' + adding_text);
+        var csrf = getCsrfToken();
+        const formData = new FormData(this);
 
-    $.ajax({
-        url: $(this).attr('action'),
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function (response) {
-            if (response.status) { // Vérifie si la mise à jour a réussi
-                success_notify(response.notification);
-                // Met à jour le token CSRF
-                $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
-
-                // Rafraîchissement de la page après un léger délai pour s'assurer que les modifications sont appliquées
-                setTimeout(function() {
-                  location.reload();
-                }, 3500);// Attendre 3500ms avant de recharger la page
-            } else {
-              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
-                
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status) {
+                    success_notify(response.notification);
+                    $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3500);
+                } else {
+                    error_notify('<?php echo addslashes(get_phrase('action_not_allowed')); ?>');
+                }
+            },
+            error: function() {
+                error_notify('<?php echo addslashes(get_phrase('an_error_occurred_during_submission')); ?>');
             }
-        },
-        error: function () {
-          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
-        }
-      });
+        });
     });
 
-
-
-    // Charger les sections quand une classe est sélectionnée
-    $('#class_id').change(function() {
-        var class_id = $(this).val();
-
+    // Load sections when a class is selected
+    window.getSections = function(class_id, selectedSectionId = '') {
         if (class_id) {
             $.ajax({
                 url: '<?php echo site_url('admin/get_sections_by_class'); ?>',
@@ -147,8 +128,7 @@ $(document).ready(function() {
                 success: function(response) {
                     var data = JSON.parse(response);
                     var sectionSelect = $('#modal_section_id');
-                    sectionSelect.html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
-                    
+                    sectionSelect.html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
                     if (data.sections && data.sections.length > 0) {
                         $.each(data.sections, function(index, section) {
                             var isSelected = (section.id == selectedSectionId) ? 'selected' : '';
@@ -159,20 +139,23 @@ $(document).ready(function() {
                     }
                 },
                 error: function(xhr, status, error) {
-
-                
-                    $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
-
+                    $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
                 }
             });
         } else {
-            $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+            $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
         }
     };
 
+    // Class selection change handler
+    $('#class_id').change(function() {
+        var class_id = $(this).val();
+        window.getSections(class_id);
+    });
+
     let isSubmitting = false;
 
-    // Gestionnaire pour le formulaire de création
+    // Handler for exam creation form
     $('#examCreateForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -183,14 +166,14 @@ $(document).ready(function() {
 
         isSubmitting = true;
         const $submitBtn = $(this).find('button[type="submit"]');
-        $submitBtn.prop('disabled', true).text('<?php echo get_phrase('creating'); ?>...');
+        $submitBtn.prop('disabled', true).text('<?php echo addslashes(get_phrase('creating')); ?>...');
 
         const formData = {
             exam_name: $('#exam_name').val(),
             starting_date: $('#starting_date').val(),
             class_id: $('#modal_class_id').val(),
             section_id: $('#modal_section_id').val(),
-            '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+            '<?php echo addslashes($this->security->get_csrf_token_name()); ?>': '<?php echo addslashes($this->security->get_csrf_hash()); ?>'
         };
 
         $.ajax({
@@ -200,59 +183,58 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 isSubmitting = false;
-                $submitBtn.prop('disabled', false).text('<?php echo get_phrase('create_exam'); ?>');
+                $submitBtn.prop('disabled', false).text('<?php echo addslashes(get_phrase('create_exam')); ?>');
 
                 try {
                     if (response.status === true) {
-                        showNotification('success', response.message || '<?php echo get_phrase('exam_created_successfully'); ?>');
+                        showNotification('success', response.message || '<?php echo addslashes(get_phrase('exam_created_successfully')); ?>');
                         $('#right-modal').modal('hide');
                         $('#examCreateForm')[0].reset();
-                        $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+                        $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
 
-                        // Mettre à jour la table et le calendrier avec tous les exams
                         if (typeof window.updateExamTableAndCalendar === 'function') {
-                            window.updateExamTableAndCalendar(); // Appel sans class_id pour charger tous les exams
+                            window.updateExamTableAndCalendar();
                         } else {
                             console.error('updateExamTableAndCalendar not found');
-                            showNotification('error', '<?php echo get_phrase('update_function_not_found'); ?>');
+                            showNotification('error', '<?php echo addslashes(get_phrase('update_function_not_found')); ?>');
                         }
                     } else {
-                        showNotification('error', response.message || '<?php echo get_phrase('failed_to_create_exam'); ?>');
+                        showNotification('error', response.message || '<?php echo addslashes(get_phrase('failed_to_create_exam')); ?>');
                     }
                 } catch (e) {
                     console.error('Erreur de traitement de la réponse:', e, response);
-                    showNotification('error', '<?php echo get_phrase('invalid_server_response'); ?>');
+                    showNotification('error', '<?php echo addslashes(get_phrase('invalid_server_response')); ?>');
                 }
             },
             error: function(xhr, status, error) {
                 console.error('Exam create AJAX error:', status, error, xhr.responseText);
                 isSubmitting = false;
-                $submitBtn.prop('disabled', false).text('<?php echo get_phrase('create_exam'); ?>');
-                showNotification('error', '<?php echo get_phrase('failed_to_create_exam'); ?>: ' + xhr.status + ' ' + error);
+                $submitBtn.prop('disabled', false).text('<?php echo addslashes(get_phrase('create_exam')); ?>');
+                showNotification('error', '<?php echo addslashes(get_phrase('failed_to_create_exam')); ?>: ' + xhr.status + ' ' + error);
             }
         });
     });
 
-    // Gestionnaire pour l'ouverture du modal, spécifique au formulaire de création
+    // Modal open handler
     $('#right-modal').on('shown.bs.modal.create', function() {
         if ($('#examCreateForm').length === 0) {
-            return; // Ne pas exécuter si ce n'est pas le formulaire de création
+            return;
         }
         const class_id = $('#modal_class_id').val();
         if (class_id) {
-            getSections(class_id);
+            window.getSections(class_id);
         }
     });
 
-    // Gestionnaire pour la fermeture du modal, spécifique au formulaire de création
+    // Modal close handler
     $('#right-modal').on('hidden.bs.modal.create', function() {
         if ($('#examCreateForm').length === 0) {
-            return; // Ne pas exécuter si ce n'est pas le formulaire de création
+            return;
         }
         const $form = $('#examCreateForm');
         if ($form.length > 0) {
             $form[0].reset();
-            $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+            $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase(' питать')); ?></option>');
             $form.find('button[type="submit"]').blur();
         }
         $('body').focus();
