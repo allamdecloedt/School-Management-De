@@ -302,20 +302,23 @@ if (!function_exists('parent_id')) {
 
 //ACTIVE SESSION
 if (!function_exists('active_session')) {
-  function active_session($param1 = '')
-  {
-    $CI = &get_instance();
-    $CI->load->database();
-    if ($param1 == '') {
-      $session_details = $CI->db->get_where('sessions', array('status' => 1))->row_array();
-      return $session_details['id'];
-    } else {
-      $session_details = $CI->db->get_where('sessions', array('status' => 1))->row_array();
-      return $session_details[$param1];
+    function active_session($param1 = '') {
+        $CI =& get_instance();
+        $CI->load->database();
+        
+        // Préciser la table pour la colonne 'status'
+        $CI->db->select('*');
+        $CI->db->from('sessions');
+        $CI->db->where('sessions.status', 1);
+        $session_details = $CI->db->get()->row_array();
+        
+        if ($param1 == '') {
+            return $session_details['id'];
+        } else {
+            return $session_details[$param1];
+        }
     }
-  }
 }
-
 
 // TEACHER PERMISSION. PROVIDE MODULE NAME AND TEACHERS ID
 if (!function_exists('has_permission')) {

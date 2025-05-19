@@ -1,59 +1,87 @@
-<?php $student_data = $this->user_model->get_logged_in_student_details();  ?>
-<!--title-->
+<?php
+$student_data = $this->user_model->get_logged_in_student_details();
+$user_id = $this->session->userdata('user_id');
+$session_id = active_session();
+
+// Récupérer les informations des inscriptions de l'étudiant connecté
+$this->db->select('enrols.class_id, enrols.section_id, enrols.school_id, classes.name as class_name, sections.name as section_name');
+$this->db->from('enrols');
+$this->db->join('students', 'students.id = enrols.student_id', 'left');
+$this->db->join('classes', 'classes.id = enrols.class_id', 'left');
+$this->db->join('sections', 'sections.id = enrols.section_id', 'left');
+$this->db->where('students.user_id', $user_id);
+$this->db->where('enrols.session', $session_id);
+$enrolments = $this->db->get()->result_array();
+?>
+
+<!-- Title -->
 <div class="row ">
-  <div class="col-xl-12">
-    <div class="card">
-      <div class="card-body py-2">
-        <h4 class="page-title d-inline-block"> <i class="mdi mdi-format-list-numbered title_icon"></i> <?php echo get_phrase('manage_marks'); ?> </h4>
-      </div> <!-- end card body-->
-    </div> <!-- end card -->
-  </div><!-- end col-->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body py-2">
+                <h4 class="page-title d-inline-block"> <i class="mdi mdi-format-list-numbered title_icon"></i> <?php echo get_phrase('manage_marks'); ?> </h4>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-12">
+ 
         <div class="card">
             <div class="row mt-3">
                 <div class="col-md-1 mb-1"></div>
                 <div class="col-md-2 mb-1">
-                    <select name="exam" id="exam_id" class="form-control select2" data-toggle = "select2" required onchange="examsWiseClass(this.value)">
+                    <select name="exam" id="exam_id" class="form-control select2" data-toggle="select2" required onchange="examsWiseClass(this.value)">
                         <option value=""><?php echo get_phrase('select_a_exam'); ?></option>
-                        <?php 
-                        // $school_id = school_id();
-                        $user_id = $this->session->userdata('user_id');
-                        $student_data = $this->db->get_where('students', array('user_id' => $user_id))->result_array();
-                        $school_ids = array();
+                        <?php
+                        // Récupérer les examens liés aux inscriptions de l'étudiant
+                        foreach ($enrolments as $enrolment) {
+                            $this->db->select('exams.*');
+                            $this->db->from('exams');
+                            $this->db->where('exams.school_id', $enrolment['school_id']);
+                            $this->db->where('exams.class_id', $enrolment['class_id']);
+                            $this->db->where('exams.section_id', $enrolment['section_id']);
+                            $this->db->where('exams.session', $session_id);
+                            $exams = $this->db->get()->result_array();
 
-                        foreach ($student_data as $student_data) {
-                            $school_ids[] = $student_data['school_id'];
-                       
-                        $exams = $this->db->get_where('exams', array('school_id' => $student_data['school_id'], 'session' => active_session()))->result_array();
-                        foreach($exams as $exam){ 
-                            
-                            ?>
-                            <option value="<?php echo $exam['id']; ?>"><?php echo $exam['name'];?></option>
-                        <?php } ?>
-                        <?php } ?>
+                            foreach ($exams as $exam) {
+                                ?>
+                                <option value="<?php echo $exam['id']; ?>"><?php echo $exam['name']; ?></option>
+                                <?php
+                            }
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="col-md-2 mb-1">
-                    <select name="class" id="class_id_mark" class="form-control select2" data-toggle = "select2" required onchange="classWiseSection(this.value)">
+                    <select name="class" id="class_id_mark" class="form-control select2" data-toggle="select2" required onchange="classWiseSection(this.value)" disabled>
                         <option value=""><?php echo get_phrase('select_a_class'); ?></option>
+                        <?php
+                        // Afficher les classes où l'étudiant est inscrit
+                        foreach ($enrolments as $enrolment) {
+                            ?>
+                            <option value="<?php echo $enrolment['class_id']; ?>"><?php echo $enrolment['class_name']; ?></option>
+                            <?php
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="col-md-2 mb-1">
-                    <select name="section" id="section_id" class="form-control select2" data-toggle = "select2" required>
+                    <select name="section" id="section_id" class="form-control select2" data-toggle="select2" required disabled>
                         <option value=""><?php echo get_phrase('select_section'); ?></option>
-                        <option value="<?php echo $student_data['section_id']; ?>"><?php echo $student_data['section_name']; ?></option>
+                        <?php
+                        // Afficher les sections où l'étudiant est inscrit
+                        foreach ($enrolments as $enrolment) {
+                            ?>
+                            <option value="<?php echo $enrolment['section_id']; ?>"><?php echo $enrolment['section_name']; ?></option>
+                            <?php
+                        }
+                        ?>
                     </select>
                 </div>
-                <!-- <div class="col-md-2 mb-1">
-                    <select name="subject" id="subject_id" class="form-control select2" data-toggle = "select2" required>
-                        <option value=""><?php echo get_phrase('select_subject'); ?></option>
-                    </select>
-                </div> -->
                 <div class="col-md-2">
-                    <button class="btn btn-block btn-secondary" onclick="filter_marks()" ><?php echo get_phrase('filter'); ?></button>
+                    <button class="btn btn-block btn-secondary" onclick="filter_marks()"><?php echo get_phrase('filter'); ?></button>
                 </div>
             </div>
             <div class="card-body mark_content">
@@ -69,44 +97,54 @@
 
 <script>
 $('document').ready(function(){
-    $('select.select2:not(.normal)').each(function () { $(this).select2({ dropdownParent: '#right-modal' }); }); //initSelect2(['#class_id', '#exam_id', '#section_id', '#subject_id']);
+    $('select.select2:not(.normal)').each(function () { $(this).select2({ dropdownParent: '#right-modal' }); });
 });
 
 function examsWiseClass(examId) {
+    var classSelect = $('#class_id_mark');
+    var sectionSelect = $('#section_id');
 
-    $.ajax({
-        url: "<?php echo route('exam_class/list/'); ?>"+examId,
-        success: function(response){
-            $('#class_id_mark').html(response);
-      
-        }
-    });
+    if (examId) {
+        $.ajax({
+            url: "<?php echo route('exam_class/list/'); ?>" + examId,
+            success: function(response){
+                classSelect.html(response);
+                classSelect.prop('disabled', false); // Activer le menu des classes
+                sectionSelect.html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+                sectionSelect.prop('disabled', true); // Garder les sections désactivées jusqu'à ce qu'une classe soit choisie
+            }
+        });
+    } else {
+        // Si aucun examen n'est sélectionné, désactiver les menus
+        classSelect.html('<option value=""><?php echo get_phrase('select_a_class'); ?></option>');
+        classSelect.prop('disabled', true);
+        sectionSelect.html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+        sectionSelect.prop('disabled', true);
+    }
 }
+
 function classWiseSection(classId) { 
-    $.ajax({
-        url: "<?php echo route('section/list/'); ?>"+classId,
-        success: function(response){
-            $('#section_id').html(response);
-            classWiseSubject(classId);
-        }
-    });
-}
+    var sectionSelect = $('#section_id');
 
-function classWiseSubject(classId) {
-    $.ajax({
-        url: "<?php echo route('class_wise_subject/'); ?>"+classId,
-        success: function(response){
-            $('#subject_id').html(response);
-        }
-    });
+    if (classId) {
+        $.ajax({
+            url: "<?php echo route('section/list/'); ?>" + classId,
+            success: function(response){
+                sectionSelect.html(response);
+                sectionSelect.prop('disabled', false); // Activer le menu des sections
+            }
+        });
+    } else {
+        // Si aucune classe n'est sélectionnée, désactiver le menu des sections
+        sectionSelect.html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+        sectionSelect.prop('disabled', true);
+    }
 }
 
 function filter_marks(){
     var exam = $('#exam_id').val();
     var class_id = $('#class_id_mark').val();
     var section_id = $('#section_id').val();
-    // var subject = $('#subject_id').val();
-    // Récupérer le nom et la valeur du jeton CSRF depuis l'input caché
     var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
     var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
 
@@ -114,14 +152,14 @@ function filter_marks(){
         $.ajax({
             type: 'POST',
             url: '<?php echo route('mark/list') ?>',
-            data: {class_id : class_id, section_id : section_id, exam : exam , [csrfName]: csrfHash},
+            data: {class_id: class_id, section_id: section_id, exam: exam, [csrfName]: csrfHash},
             dataType: 'json',
             success: function(response){
                 $('.mark_content').html(response.status);
-                // Mettre à jour le jeton CSRF avec le nouveau jeton renvoyé dans la réponse
+                // Mettre à jour le jeton CSRF
                 var newCsrfName = response.csrf.csrfName;
                 var newCsrfHash = response.csrf.csrfHash;
-                $('input[name="' + newCsrfName + '"]').val(newCsrfHash); // Mise à jour du token CSRF
+                $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
             }
         });
     }else{

@@ -25,16 +25,14 @@ class Crud_model extends CI_Model {
 
 	//START CLASS section
 	public function get_classes($id = "") {
-
 		$this->db->where('school_id', $this->school_id);
-
 		if ($id > 0) {
 			$this->db->where('id', $id);
-
 		}
-		return $this->db->get('classes');
-
-
+		$query = $this->db->get('classes');
+		foreach ($query->result_array() as $class) {
+		}
+		return $query;
 	}
 	public function class_create()
 	{
@@ -639,35 +637,205 @@ class Crud_model extends CI_Model {
 	//START EXAM section
 	public function exam_create()
 {
+    // Générer un identifiant unique pour la requête
+    $request_id = uniqid('exam_create_');
+
+    // Prepare exam data
     $data['name'] = html_escape($this->input->post('exam_name'));
-    $data['starting_date'] = strtotime($this->input->post('starting_date'));
-    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
-    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
+    $starting_date_input = $this->input->post('starting_date');
+    // Convertir datetime-local (YYYY-MM-DDTHH:MM) en timestamp
+    $data['starting_date'] = $starting_date_input ? strtotime(str_replace('T', ' ', $starting_date_input)) : false;
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['section_id'] = html_escape($this->input->post('section_id'));
     $data['school_id'] = $this->school_id;
     $data['session'] = $this->active_session;
 
-    $this->db->insert('exams', $data);
+    // Validate required fields
+    if (empty($data['name'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_name_required')
+        );
+        return json_encode($response);
+    }
+    if (empty($data['class_id'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('class_required')
+        );
+        return json_encode($response);
+    }
+    if (empty($data['section_id'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('section_required')
+        );
+        return json_encode($response);
+    }
+    if (!$data['starting_date']) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_date_format')
+        );
+        return json_encode($response);
+    }
 
-    return array(
+    // Verify class_id exists
+    $class_exists = $this->db->get_where('classes', ['id' => $data['class_id'], 'school_id' => $this->school_id])->num_rows();
+    if (!$class_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_class')
+        );
+        return json_encode($response);
+    }
+
+    // Verify section_id exists and belongs to the class
+    $section_exists = $this->db->get_where('sections', ['id' => $data['section_id'], 'class_id' => $data['class_id']])->num_rows();
+    if (!$section_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_section')
+        );
+        return json_encode($response);
+    }
+
+    // Check for duplicate exam
+    $this->db->where('name', $data['name']);
+    $this->db->where('starting_date', $data['starting_date']);
+    $this->db->where('class_id', $data['class_id']);
+    $this->db->where('section_id', $data['section_id']);
+    $this->db->where('school_id', $data['school_id']);
+    $this->db->where('session', $data['session']);
+    $existing_exam = $this->db->get('exams')->row_array();
+
+    if ($existing_exam) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_already_exists')
+        );
+        return json_encode($response);
+    }
+
+    // Insert the exam
+    $this->db->insert('exams', $data);
+    $exam_id = $this->db->insert_id();
+
+    if (!$exam_id) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('failed_to_create_exam')
+        );
+        return json_encode($response);
+    }
+
+
+    // Fetch the newly created exam details
+    $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
+    $this->db->from('exams');
+    $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+    $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+    $this->db->where('exams.id', $exam_id);
+    $exam = $this->db->get()->row_array();
+
+    // Prepare response
+    $response = array(
+
         'status' => true,
-        'notification' => get_phrase('exam_created_successfully')
+        'notification' => get_phrase('exam_created_successfully'),
+        'class_id' => $data['class_id'], // Added for filtering in frontend
+        'exam' => array(
+            'id' => $exam['id'],
+            'name' => $exam['name'] ?: 'Unnamed Exam',
+            'starting_date' => $exam['starting_date'],
+            'formatted_date' => $exam['starting_date'] ? date('D, d-M-Y H:i', $exam['starting_date']) : 'No Date',
+            'class_name' => $exam['class_name'] ?: get_phrase('no_class'),
+            'section_name' => $exam['section_name'] ?: get_phrase('no_section'),
+            'calendar_event' => array(
+                'title' => $exam['name'] ?: 'Unnamed Exam',
+                'start' => $exam['starting_date'] ? date('Y-m-d H:i:s', $exam['starting_date']) : ''
+            )
+        )
     );
-    //return json_encode($response);
+
+
+    return json_encode($response);
+
 }
 public function exam_update($param1 = '')
 {
+    // Prepare exam data
     $data['name'] = html_escape($this->input->post('exam_name'));
     $data['starting_date'] = strtotime($this->input->post('starting_date'));
-    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
-    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['section_id'] = html_escape($this->input->post('section_id'));
 
+    // Validate required fields
+    if (empty($data['name']) || empty($data['class_id']) || empty($data['section_id']) || !$data['starting_date']) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('all_fields_are_required')
+        );
+        return json_encode($response);
+    }
+
+    // Verify class_id exists
+    $class_exists = $this->db->get_where('classes', ['id' => $data['class_id'], 'school_id' => $this->school_id])->num_rows();
+    if (!$class_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_class')
+        );
+        return json_encode($response);
+    }
+
+    // Verify section_id exists and belongs to the class
+    $section_exists = $this->db->get_where('sections', ['id' => $data['section_id'], 'class_id' => $data['class_id']])->num_rows();
+    if (!$section_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_section')
+        );
+        return json_encode($response);
+    }
+
+    // Update the exam
     $this->db->where('id', $param1);
-    $this->db->update('exams', $data);
+    $update_result = $this->db->update('exams', $data);
 
-    $response = array(
-        'status' => true,
-        'notification' => get_phrase('exam_updated_successfully')
-    );
+    // Fetch the updated exam details
+    $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
+    $this->db->from('exams');
+    $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+    $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+    $this->db->where('exams.id', $param1);
+    $exam = $this->db->get()->row_array();
+
+    if ($exam) {
+        $exam['formatted_date'] = $exam['starting_date'] ? date('D, d-M-Y H:i', $exam['starting_date']) : 'No Date';
+        $response = array(
+            'status' => $update_result,
+            'notification' => $update_result ? get_phrase('exam_updated_successfully') : get_phrase('failed_to_update_exam'),
+            'exam' => array(
+                'id' => $exam['id'],
+                'name' => $exam['name'] ?: 'Unnamed Exam',
+                'starting_date' => $exam['starting_date'],
+                'formatted_date' => $exam['formatted_date'],
+                'class_name' => $exam['class_name'] ?: get_phrase('no_class'),
+                'section_name' => $exam['section_name'] ?: get_phrase('no_section'),
+                'calendar_event' => array(
+                    'title' => $exam['name'] ?: 'Unnamed Exam',
+                    'start' => $exam['starting_date'] ? date('Y-m-d H:i:s', $exam['starting_date']) : ''
+                )
+            )
+        );
+    } else {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_not_found')
+        );
+    }
+
     return json_encode($response);
 }
 
@@ -1398,4 +1566,9 @@ public function exam_update($param1 = '')
             return false;
         }
     }
+
+	public function get_total_questions($exam_id) {
+		$this->db->where('exam_id', $exam_id);
+		return $this->db->count_all_results('exam_questions');
+	}
 }

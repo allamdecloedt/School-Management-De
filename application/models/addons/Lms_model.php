@@ -778,14 +778,12 @@ class Lms_model extends CI_Model {
         if ($type == "exam") {
             $query = $this->db->get_where('exams', array('id' => $id));
             if ($query === FALSE) {
-                log_message('error', 'Erreur lors de la récupération de l\'examen : ' . $this->db->last_query());
                 return FALSE;
             }
             return $query;
         } else {
             $query = $this->db->get('exams');
             if ($query === FALSE) {
-                log_message('error', 'Erreur lors de la récupération des examens : ' . $this->db->last_query());
                 return FALSE;
             }
             return $query;

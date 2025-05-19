@@ -3,9 +3,8 @@
     <div class="col-12">
         <div class="page-title-box">
             <h4 class="page-title">
-            	<i class="mdi mdi-grease-pencil title_icon"></i> <?php echo get_phrase('Exam'); ?>
-            	<button type="button" class="btn btn-icon btn-success btn-rounded mb-1 mt-3 alignToTitle float-end" onclick="rightModal('<?php echo site_url('modal/popup/exam/create'); ?>', '<?php echo get_phrase('create_exam'); ?>')"> <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_exam'); ?></button>
-        	</h4>
+                <i class="mdi mdi-grease-pencil title_icon"></i> <?php echo get_phrase('Exam'); ?>
+            </h4>
         </div>
     </div>
 </div>
@@ -14,23 +13,29 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body exam_content">
-              <?php include 'list.php'; ?>
+                <!-- Ne pas inclure list.php directement -->
+                <!-- Le contenu sera chargé via AJAX -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var showAllExams = function () {
-        var url = '<?php echo route('exam/list'); ?>';
+$(document).ready(function() {
+    // Appeler showAllExams au chargement de la page pour charger le contenu
+    showAllExams();
+});
 
-        $.ajax({
-            type : 'GET',
-            url: url,
-            success : function(response) {
-                $('.exam_content').html(response);
-                initDataTable('basic-datatable');
-            }
-        });
-    }
+var showAllExams = function () {
+    var url = '<?php echo route('exam/list'); ?>';
+
+    $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(response) {
+            $('.exam_content').html(response);
+            // Pas besoin d'appeler initDataTable ici, car list.php gère l'initialisation
+        }
+    });
+}
 </script>

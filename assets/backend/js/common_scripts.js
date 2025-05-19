@@ -1,11 +1,24 @@
 function showOptions(number_of_options, context = 'quiz') {
-    var csrfName = $('#csrf_name').val();
-    var csrfHash = $('#csrf_hash').val();
+    var baseUrl = $('#base_url').val();
 
-    // Vérifiez si les champs CSRF existent
+    if (number_of_options < 0 || number_of_options > 20) {
+        showNotification('error', 'Number of options must be between 0 and 20.');
+        return;
+    }
+
+    // Get CSRF token
+    var csrfName = $('input[name="csrf_token_name"]').attr('name'); // Adjust to match your CSRF token name
+    var csrfHash = $('input[name="csrf_token_name"]').val();
+
+    // Fallback: Check for CSRF token in meta tag
     if (!csrfName || !csrfHash) {
-        console.error('Champs CSRF manquants ou non initialisés');
-        alert('Erreur : Les jetons CSRF ne sont pas disponibles. Veuillez recharger la page.');
+        csrfName = $('meta[name="csrf-name"]').attr('content');
+        csrfHash = $('meta[name="csrf-token"]').attr('content');
+    }
+
+
+    if (!csrfName || !csrfHash) {
+        showNotification('error', 'CSRF token not found. Please refresh the page.');
         return;
     }
 
@@ -17,35 +30,78 @@ function showOptions(number_of_options, context = 'quiz') {
     });
 
     var url = (context === 'exam') 
-        ? $('#base_url').val() + 'addons/courses/manage_exam_multiple_choices_options'
-        : $('#base_url').val() + 'addons/courses/manage_multiple_choices_options';
+        ? baseUrl + 'addons/courses/manage_exam_multiple_choices_options'
+        : baseUrl + 'addons/courses/manage_multiple_choices_options';
 
     $.ajax({
         type: "POST",
         url: url,
-        data: { number_of_options: number_of_options, [csrfName]: csrfHash },
+        data: {
+            number_of_options: number_of_options,
+            [csrfName]: csrfHash
+        },
         dataType: 'json',
         success: function(response) {
-            jQuery('.options').remove();
-            jQuery('#multiple_choice_question').after(response.html);
-            // Mise à jour du jeton CSRF
-            var newCsrfName = response.csrf.csrfName;
-            var newCsrfHash = response.csrf.csrfHash;
-            $('#csrf_name').val(newCsrfName);
-            $('#csrf_hash').val(newCsrfHash);
-            $('#csrf_token_field').attr('name', newCsrfName).val(newCsrfHash);
-            // Mettre à jour tous les formulaires avec le nouveau jeton CSRF
-            $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
-            jQuery('.options').each(function(index) {
-                if (existingOptions[index]) {
-                    jQuery(this).find('input[type="text"]').val(existingOptions[index].value);
-                    jQuery(this).find('input[type="checkbox"]').prop('checked', existingOptions[index].checked);
+            if (response.html) {
+                try {
+                    jQuery('.options').remove();
+                    jQuery('#multiple_choice_question').after(response.html);
+                    jQuery('.options').each(function(index) {
+                        if (existingOptions[index]) {
+                            jQuery(this).find('input[type="text"]').val(existingOptions[index].value);
+                            jQuery(this).find('input[type="checkbox"]').prop('checked', existingOptions[index].checked);
+                        }
+                    });
+                    // Update CSRF token
+                    if (response.csrf) {
+                        $('input[name="' + response.csrf.csrfName + '"]').val(response.csrf.csrfHash);
+                        $('meta[name="csrf-name"]').attr('content', response.csrf.csrfName);
+                        $('meta[name="csrf-token"]').attr('content', response.csrf.csrfHash);
+                    }
+                    showNotification('success', 'Options generated successfully');
+                } catch (e) {
+                    console.error('Error appending HTML:', e);
+                    showNotification('error', 'Invalid HTML received from server');
                 }
-            });
+            } else {
+                showNotification('error', 'Failed to generate options: No HTML received');
+            }
         },
         error: function(xhr, status, error) {
-            console.error('Erreur lors de la génération des options : ', error);
-            alert('Une erreur est survenue lors de la génération des options. Veuillez recharger la page.');
+            console.error('AJAX Error:', xhr.status, xhr.responseText);
+            showNotification('error', 'Failed to generate options: ' + (xhr.responseJSON?.message || xhr.responseText));
         }
     });
 }
+
+function showNotification(type, message) {
+    // Configure Toastr options
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        timeOut: 3000,
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut'
+    };
+
+    let title;
+    switch (type.toLowerCase()) {
+        case 'success':
+            title = 'Success';
+            break;
+        case 'error':
+            title = 'Error';
+            break;
+        case 'warning':
+            title = 'Warning';
+            break;
+        case 'info':
+            title = 'Info';
+            break;
+        default:
+            title = 'Notification';
+    }
+    toastr[type](message, title);
+}
+
