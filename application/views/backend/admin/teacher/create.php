@@ -96,8 +96,8 @@
         </div>
 
         <div class="form-group mb-1">
-            <label for="phone"><?php echo get_phrase('address'); ?><span class="required"> * </span></label>
-            <textarea class="form-control" id="address" name = "address" rows="5" required></textarea>
+            <label for="phone"><?php echo get_phrase('address'); ?></label>
+            <textarea class="form-control" id="address" name = "address" rows="5" ></textarea>
             <small id="" class="form-text text-muted"><?php echo get_phrase('provide_teacher_address'); ?></small>
         </div>
 
