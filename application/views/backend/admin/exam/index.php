@@ -26,12 +26,19 @@
         var url = '<?php echo route('exam/list'); ?>';
 
         $.ajax({
-            type : 'GET',
+            type: 'GET',
             url: url,
-            success : function(response) {
+            success: function(response) {
                 $('.exam_content').html(response);
-                initDataTable('basic-datatable');
+            },
+            error: function(xhr, status, error) {
+                console.error('Erreur AJAX showAllExams:', status, error, xhr.responseText);
             }
         });
     }
+
+    // Appeler showAllExams au chargement de la page
+    $(document).ready(function() {
+        showAllExams();
+    });
 </script>

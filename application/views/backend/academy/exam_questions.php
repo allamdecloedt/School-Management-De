@@ -4,9 +4,8 @@
 $exam_details = $this->lms_model->get_exams('exam', $param1)->row_array();
 $questions = $this->lms_model->get_exam_questions($param1)->result_array();
 ?>
+
 <?php if (count($exam_details)): ?>
-    <!-- Hidden field for CSRF token -->
-    <input type="hidden" id="csrf_token" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -37,8 +36,8 @@ $questions = $this->lms_model->get_exam_questions($param1)->result_array();
                                                     <div class="media-body">
                                                         <h5 class="mb-1 mt-0"><?php echo $question['title']; ?>
                                                             <span id="<?php echo 'widgets-of-'.$question['id']; ?>" class="widgets-of-quiz-question">
-                                                                <a href="javascript::" class="alignToTitle float-end ms-1 text-secondary" onclick="deleteExamQuestionAndReloadModal('<?php echo $param1; ?>', '<?php echo $question['id']; ?>')" data-dismiss="modal"><i class="dripicons-cross"></i></a>
-                                                                <a href="javascript::" class="alignToTitle float-end text-secondary" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/exam_question_edit/'.$question['id'].'/'.$param1); ?>', '<?php echo get_phrase('update_exam_question'); ?>')" data-dismiss="modal"><i class="dripicons-document-edit"></i></a>
+                                                                <a href="javascript:void(0)" class="alignToTitle float-end ms-1 text-secondary" onclick="deleteExamQuestionAndReloadModal('<?php echo $param1; ?>', '<?php echo $question['id']; ?>')" data-dismiss="modal"><i class="dripicons-cross"></i></a>
+                                                                <a href="javascript:void(0)" class="alignToTitle float-end text-secondary" onclick="showAjaxModal('<?php echo site_url('modal/popup/academy/exam_question_edit/'.$question['id'].'/'.$param1); ?>', '<?php echo get_phrase('update_exam_question'); ?>')" data-dismiss="modal"><i class="dripicons-document-edit"></i></a>
                                                             </span>
                                                         </h5>
                                                     </div> <!-- end media-body -->
@@ -54,6 +53,16 @@ $questions = $this->lms_model->get_exam_questions($param1)->result_array();
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
         </div> <!-- end col -->
+    </div>
+<?php else: ?>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4><?php echo get_phrase('no_exam_found'); ?></h4>
+                </div>
+            </div>
+        </div>
     </div>
 <?php endif; ?>
 
@@ -91,138 +100,87 @@ function(a) {
 <script type="text/javascript">
     jQuery(document).ready(function() {
         $('.widgets-of-quiz-question').hide();
-    });
+        // Show sort button
+        $('#question-sort-btn').show();
 
-    $('.on-hover-action').mouseenter(function() {
-        var id = this.id;
-        $('#widgets-of-' + id).show();
-    });
-    $('.on-hover-action').mouseleave(function() {
-        var id = this.id;
-        $('#widgets-of-' + id).hide();
+        $('.on-hover-action').mouseenter(function() {
+            var id = this.id;
+            $('#widgets-of-' + id).show();
+        });
+        $('.on-hover-action').mouseleave(function() {
+            var id = this.id;
+            $('#widgets-of-' + id).hide();
+        });
     });
 
     function deleteExamQuestionAndReloadModal(examID, questionID) {
-    var deletionURL = '<?php echo site_url(); ?>addons/courses/exam_questions/' + examID + '/delete/' + questionID;
-    var csrfName = $('#csrf_name').val();
-    var csrfHash = $('#csrf_hash').val();
+        var deletionURL = '<?php echo site_url(); ?>addons/courses/exam_questions/' + examID + '/delete/' + questionID;
 
-    // Vérifiez si les champs CSRF existent
-    if (!csrfName || !csrfHash) {
-        console.error('Champs CSRF manquants ou non initialisés');
-        error_notify('Erreur : Les jetons CSRF ne sont pas disponibles. Veuillez recharger la page.');
-        return;
-    }
-
-    confirmModal(deletionURL, function(response) {
-
-        // Vérifier si la réponse est valide
-        if (!response) {
-            console.error('Réponse vide ou non définie');
-            error_notify('Erreur : Aucune réponse reçue du serveur.');
-            return;
-        }
-
-        // Mise à jour du jeton CSRF
-        if (response.csrf && response.csrf.csrfName && response.csrf.csrfHash) {
-            var newCsrfName = response.csrf.csrfName;
-            var newCsrfHash = response.csrf.csrfHash;
-            // Mettre à jour les champs CSRF
-            $('#csrf_name').val(newCsrfName);
-            $('#csrf_hash').val(newCsrfHash);
-            $('#csrf_token_field').attr('name', newCsrfName).val(newCsrfHash);
-            // Mettre à jour tous les formulaires avec le nouveau jeton CSRF
-            $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
-        } else {
-            console.warn('Aucun nouveau jeton CSRF fourni dans la réponse');
-        }
-
-        if (response.status) {
-            success_notify('<?php echo get_phrase('exam_question_deleted_successfully'); ?>');
-            // Forcer la fermeture du modal de confirmation uniquement
-            try {
-                $('#alert-modal').modal('hide');
-            } catch (e) {
-                console.error('Erreur lors de la fermeture du modal : ', e);
+        confirmModal(deletionURL, function(response) {
+            if (!response) {
+                error_notify('Erreur : Aucune réponse reçue du serveur.');
+                return;
             }
 
-            // Mettre à jour la liste des questions avec updateLargeModal
-            setTimeout(function() {
+            if (response.status) {
+                success_notify('<?php echo get_phrase('exam_question_deleted_successfully'); ?>');
                 try {
-                    updateLargeModal('<?php echo site_url('modal/popup/academy/exam_questions/'); ?>' + examID, '<?php echo get_phrase('manage_exam_questions'); ?>');
+                    $('#alert-modal').modal('hide');
                 } catch (e) {
-                    console.error('Erreur lors du rechargement de la liste : ', e);
-                    error_notify('Erreur lors du rechargement de la liste des questions.');
+                    console.error('Erreur lors de la fermeture du modal : ', e);
                 }
-            }, 500);
-        } else {
-            console.error('Échec de la suppression : ', response);
-            error_notify('<?php echo get_phrase('error_deleting_question'); ?>');
-        }
-    });
-}
 
-    // Dans exam_questions
-function sort() {
-    var containerArray = ['question-list'];
-    var itemArray = [];
-    for (var i = 0; i < containerArray.length; i++) {
-        $('#' + containerArray[i]).each(function() {
-            $(this).find('.draggable-item').each(function() {
-                itemArray.push(this.id);
-            });
+                setTimeout(function() {
+                    try {
+                        updateLargeModal('<?php echo site_url('modal/popup/academy/exam_questions/'); ?>' + examID, '<?php echo get_phrase('manage_exam_questions'); ?>');
+                    } catch (e) {
+                        console.error('Erreur lors du rechargement de la liste : ', e);
+                        error_notify('Erreur lors du rechargement de la liste des questions.');
+                    }
+                }, 500);
+            } else {
+                console.error('Échec de la suppression : ', response);
+                error_notify('<?php echo get_phrase('error_deleting_question'); ?>');
+            }
         });
     }
 
-    // Récupérer le nom et la valeur du jeton CSRF depuis les champs #csrf_name et #csrf_hash
-    var csrfName = $('#csrf_name').val();
-    var csrfHash = $('#csrf_hash').val();
-    var examID = '<?php echo $param1; ?>'; // ID de l'examen
+    function sort() {
+        var containerArray = ['question-list'];
+        var itemArray = [];
+        for (var i = 0; i < containerArray.length; i++) {
+            $('#' + containerArray[i]).each(function() {
+                $(this).find('.draggable-item').each(function() {
+                    itemArray.push(this.id);
+                });
+            });
+        }
 
-    // Vérifier si les champs CSRF existent
-    if (!csrfName || !csrfHash) {
-        console.error('Champs CSRF manquants ou non initialisés');
-        error_notify('Erreur : Les jetons CSRF ne sont pas disponibles. Veuillez recharger la page.');
-        return;
-    }
-
-    var itemJSON = JSON.stringify(itemArray);
-    $.ajax({
-        url: '<?php echo site_url('addons/courses/ajax_sort_question/'); ?>',
-        type: 'POST',
-        data: { 
-            itemJSON: itemJSON, 
-            exam_id: examID, 
-            [csrfName]: csrfHash 
-        },
-        dataType: 'json',
-        success: function(response) {
-            if (response.status && response.csrf) {
-                // Mettre à jour les jetons CSRF
-                $('#csrf_name').val(response.csrf.csrfName);
-                $('#csrf_hash').val(response.csrf.csrfHash);
-                $('#csrf_token_field').attr('name', response.csrf.csrfName).val(response.csrf.csrfHash);
-                // Mettre à jour tous les formulaires avec le nouveau jeton CSRF
-                $('input[name="' + response.csrf.csrfName + '"]').val(response.csrf.csrfHash);
-
-                success_notify('<?php echo get_phrase('questions_have_been_sorted'); ?>');
-                setTimeout(function() {
-                    // Recharger le modal pour mettre à jour la liste des questions
-                    updateLargeModal('<?php echo site_url('modal/popup/academy/exam_questions/'); ?>' + examID, '<?php echo get_phrase('manage_exam_questions'); ?>');
-                }, 1000);
-            } else {
-                console.error('Échec du tri : ', response);
+        var examID = '<?php echo $param1; ?>';
+        var itemJSON = JSON.stringify(itemArray);
+        $.ajax({
+            url: '<?php echo site_url('addons/courses/ajax_sort_question/'); ?>',
+            type: 'POST',
+            data: { 
+                itemJSON: itemJSON, 
+                exam_id: examID 
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status) {
+                    success_notify('<?php echo get_phrase('questions_have_been_sorted'); ?>');
+                    setTimeout(function() {
+                        updateLargeModal('<?php echo site_url('modal/popup/academy/exam_questions/'); ?>' + examID, '<?php echo get_phrase('manage_exam_questions'); ?>');
+                    }, 1000);
+                } else {
+                    console.error('Échec du tri : ', response);
+                    error_notify('<?php echo get_phrase('error_sorting_questions'); ?>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erreur lors du tri : ', error);
                 error_notify('<?php echo get_phrase('error_sorting_questions'); ?>');
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Erreur lors du tri : ', error);
-            error_notify('<?php echo get_phrase('error_sorting_questions'); ?>');
-        }
-    });
-}
-
-    $(document).ready(function() {
-        $('#question-sort-btn').show();
-    });
+        });
+    }
 </script>

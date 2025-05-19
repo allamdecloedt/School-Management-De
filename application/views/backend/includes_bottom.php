@@ -17,6 +17,8 @@
 <script src="<?php echo base_url(); ?>assets/backend/js/vendor/jquery-ui.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/backend/js/vendor/fullcalendar.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/backend/js/vendor/summernote-bs4.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/backend/js/toastr.min.js"></script>
+
 <!-- JS de bootstrap-select -->
 <script src="<?php echo base_url(); ?>assets/backend/js/bootstrap-select.min.js"></script>
 <script>

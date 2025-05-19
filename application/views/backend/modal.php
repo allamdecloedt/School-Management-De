@@ -63,15 +63,23 @@ function confirmModal(delete_url, callback) {
         e.preventDefault(); // Empêcher la soumission par défaut
         var form = jQuery(this);
         var url = form.attr('action'); // Utiliser l'URL définie dans l'action
-        var data = form.serialize(); // Inclut le jeton CSRF
+
         jQuery.ajax({
             url: url,
             type: 'POST',
-            data: data,
+            data: form.serialize(), // Pas besoin d'ajouter le jeton CSRF
             dataType: 'json',
             success: function(response) {
                 // Fermer le modal
                 jQuery('#alert-modal').modal('hide');
+
+                // Afficher une notification basée sur la réponse
+                if (response.status) {
+                    showNotification('success', response.notification || '<?php echo get_phrase('exam_deleted_successfully'); ?>');
+                } else {
+                    showNotification('error', response.notification || '<?php echo get_phrase('failed_to_delete_exam'); ?>');
+                }
+
                 // Appeler le callback avec la réponse
                 if (callback && typeof callback === 'function') {
                     callback(response);
@@ -81,7 +89,7 @@ function confirmModal(delete_url, callback) {
                 console.error('Erreur AJAX : ', error);
                 console.error('Statut : ', status);
                 console.error('Réponse : ', xhr.responseText);
-                error_notify('Une erreur est survenue lors de la suppression.');
+                showNotification('error', '<?php echo get_phrase('failed_to_delete_exam'); ?>');
                 // Fermer le modal même en cas d'erreur
                 jQuery('#alert-modal').modal('hide');
             }

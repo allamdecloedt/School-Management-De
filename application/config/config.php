@@ -481,7 +481,23 @@ $config['csrf_exclude_uris'] = array(
      'BigBlueButton/get_active_meetings',
      'BigBlueButton/join_meeting',
      'superadmin/delete_room',
-    'BigBlueButton/*',
+     'BigBlueButton/*',
+    'superadmin/exam/delete.*',
+    'superadmin/exam/create',
+    'superadmin/exam/update.*',
+    'superadmin/get_sections_by_class',
+    'superadmin/exam/list',
+    'superadmin/filter_exams',
+    'admin/filter_exams',
+    'admin/exam/delete.*',
+    'admin/exam/create',
+    'admin/exam/update.*',
+    'admin/get_sections_by_class',
+    'admin/exam/list',
+    'addons/courses/exam_questions/.*',
+    'addons/courses/manage_exam_multiple_choices_options',
+    'addons/courses/manage_multiple_choices_options',
+    'addons/courses/ajax_sort_question'
 );
  
 /*
