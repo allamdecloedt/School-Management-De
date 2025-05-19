@@ -95,7 +95,7 @@ foreach($users as $user):
 
       <div class="form-group mb-1">
         <label for="phone"><?php echo get_phrase('address'); ?></label>
-        <textarea class="form-control" id="address" name = "address" rows="5" required><?php echo $user['address']; ?></textarea>
+        <textarea class="form-control" id="address" name = "address" rows="5" ><?php echo $user['address']; ?></textarea>
         <small id="" class="form-text text-muted"><?php echo get_phrase('provide_teacher_address'); ?></small>
       </div>
 
