@@ -70,7 +70,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 // Function to load sections dynamically
 function getSections(class_id) {
     if (!class_id) {
-        $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+        $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
         return;
     }
     $.ajax({
@@ -79,26 +79,25 @@ function getSections(class_id) {
         data: { class_id: class_id },
         dataType: 'json',
         success: function(response) {
-            $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+            $('#modal_section_id').html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
             if (response.sections && response.sections.length > 0) {
                 $.each(response.sections, function(index, section) {
                     $('#modal_section_id').append('<option value="' + section.id + '">' + section.name + '</option>');
                 });
-                var currentSectionId = '<?php echo $exam['section_id']; ?>';
+                var currentSectionId = '<?php echo addslashes($exam['section_id']); ?>';
                 if (currentSectionId) {
                     $('#modal_section_id').val(currentSectionId);
                 }
             } else {
-                showNotification('warning', '<?php echo get_phrase('no_sections_found'); ?>');
+                showNotification('warning', '<?php echo addslashes(get_phrase('no_sections_found')); ?>');
             }
         },
         error: function(xhr, status, error) {
             console.error('getSections error:', status, error, xhr.responseText);
-            showNotification('error', '<?php echo get_phrase('failed_to_fetch_sections'); ?>');
+            showNotification('error', '<?php echo addslashes(get_phrase('failed_to_fetch_sections')); ?>');
         }
     });
 }
-
 
 // Function to show notifications
 function showNotification(type, message) {
@@ -108,7 +107,7 @@ function showNotification(type, message) {
         positionClass: 'toast-top-right',
         timeOut: 5000,
         showMethod: 'fadeIn',
-        hideMethod: 'fadeOut'
+        hideMethod: 'fadeOut',
     };
     if (type === 'success') {
         toastr.success(message);
@@ -140,7 +139,7 @@ $(document).ready(function() {
         }
         const $sectionSelect = $('#modal_section_id');
         if ($sectionSelect.length) {
-            $sectionSelect.html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+            $sectionSelect.html('<option value=""><?php echo addslashes(get_phrase('select_section')); ?></option>');
         }
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
@@ -156,10 +155,9 @@ $(document).ready(function() {
         }
         isSubmitting = true;
         const $submitBtn = $(this).find('button[type="submit"]');
-        $submitBtn.prop('disabled', true).text('<?php echo get_phrase('updating'); ?>...');
+        $submitBtn.prop('disabled', true).text('<?php echo addslashes(get_phrase('updating')); ?>...');
 
-
-        const formData = $(this).serialize() + '&<?php echo $this->security->get_csrf_token_name(); ?>=<?php echo $this->security->get_csrf_hash(); ?>';
+        const formData = $(this).serialize() + '&<?php echo addslashes($this->security->get_csrf_token_name()); ?>=<?php echo addslashes($this->security->get_csrf_hash()); ?>';
         $.ajax({
             url: '<?php echo route('exam/update/' . $param1); ?>',
             type: 'POST',
@@ -167,47 +165,51 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 isSubmitting = false;
-                $submitBtn.prop('disabled', false).text('<?php echo get_phrase('update_exam'); ?>');
+                $submitBtn.prop('disabled', false).text('<?php echo addslashes(get_phrase('update_exam')); ?>');
                 if (response.status === true) {
-                    showNotification('success', response.message || '<?php echo get_phrase('exam_updated_successfully'); ?>');
+                    showNotification('success', response.message || '<?php echo addslashes(get_phrase('exam_updated_successfully')); ?>');
                     $('#right-modal').modal('hide');
                     // Update table and calendar after modal is fully hidden
                     $('#right-modal').one('hidden.bs.modal.edit', function() {
                         if (typeof window.updateExamTableAndCalendar === 'function') {
-                            window.updateExamTableAndCalendar(); // Refresh with all exams
+                            window.updateExamTableAndCalendar();
                         } else {
                             console.error('updateExamTableAndCalendar not found');
-                            showNotification('error', '<?php echo get_phrase('update_function_not_found'); ?>');
+                            showNotification('error', '<?php echo addslashes(get_phrase('update_function_not_found')); ?>');
                         }
                     });
                 } else {
-                    showNotification('error', response.message || '<?php echo get_phrase('failed_to_update_exam'); ?>');
+                    showNotification('error', response.message || '<?php echo addslashes(get_phrase('failed_to_update_exam')); ?>');
                 }
             },
             error: function(xhr, status, error) {
                 isSubmitting = false;
-                $submitBtn.prop('disabled', false).text('<?php echo get_phrase('update_exam'); ?>');
+                $submitBtn.prop('disabled', false).text('<?php echo addslashes(get_phrase('update_exam')); ?>');
                 console.error('Update AJAX error:', status, error, xhr.responseText);
-                showNotification('error', '<?php echo get_phrase('failed_to_update_exam'); ?>');
+                showNotification('error', '<?php echo addslashes(get_phrase('failed_to_update_exam')); ?>');
             }
         });
-
     });
-  
-   // Mettre à jour le jeton CSRF après la soumission
-       $.ajax({
-        url: '<?= site_url('admin/get_csrf_token'); ?>',
+
+    // Update CSRF token
+    $.ajax({
+        url: '<?php echo site_url('admin/get_csrf_token'); ?>',
         type: 'GET',
         success: function(raw) {
-          var d = JSON.parse(raw);
-          $('#csrf_token').val(d.csrf_hash);
+            var d = JSON.parse(raw);
+            $('#csrf_token').val(d.csrf_hash);
+        },
+        error: function(xhr, status, error) {
+            console.error('CSRF token refresh error:', status, error, xhr.responseText);
         }
-      });
-    }
-  // ——— Binding : on utilise ajaxSubmit avec showAllExams ———
-  $(".ajaxForm").submit(function(e) {
-    ajaxSubmit(e, $(this), showAllExams);
-  });
+    });
+
+    // .ajaxForm submission handler
+    // Note: Ensure ajaxSubmit and showAllExams are defined elsewhere
+    $(".ajaxForm").submit(function(e) {
+        // If ajaxSubmit is not defined, you can replace this with a custom implementation
+        ajaxSubmit(e, $(this), showAllExams);
+    });
 
     // Initialize jQuery validation
     $('#examEditForm').validate({
@@ -219,12 +221,12 @@ $(document).ready(function() {
         },
         messages: {
             exam_name: {
-                required: '<?php echo get_phrase('exam_name_is_required'); ?>',
-                minlength: '<?php echo get_phrase('exam_name_must_be_at_least_2_characters'); ?>'
+                required: '<?php echo addslashes(get_phrase('exam_name_is_required')); ?>',
+                minlength: '<?php echo addslashes(get_phrase('exam_name_must_be_at_least_2_characters')); ?>'
             },
-            starting_date: { required: '<?php echo get_phrase('date_is_required'); ?>' },
-            class_id: { required: '<?php echo get_phrase('class_is_required'); ?>' },
-            section_id: { required: '<?php echo get_phrase('section_is_required'); ?>' }
+            starting_date: { required: '<?php echo addslashes(get_phrase('date_is_required')); ?>' },
+            class_id: { required: '<?php echo addslashes(get_phrase('class_is_required')); ?>' },
+            section_id: { required: '<?php echo addslashes(get_phrase('section_is_required')); ?>' }
         }
     });
 });
