@@ -34,6 +34,7 @@ if (!empty($date_range)) {
 }
 $exams = $this->db->get()->result_array();
 
+
 // Convert exam data to JSON for the calendar
 $exam_calendar = [];
 foreach ($exams as $exam) {
@@ -92,6 +93,7 @@ $exam_calendar_json = json_encode($exam_calendar);
                         <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary"><?php echo get_phrase('search'); ?></button>
                         </div>
+
                     </div>
                 </form>
             </div>

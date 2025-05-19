@@ -66,7 +66,7 @@ $profile_data = $this->user_model->get_profile_data();
                             </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="updateProfileInfo()">
+                            <button type="submit" class="btn btn-primary btn-l px-4"id="update-logos-btn" onclick="updateProfileInfo()">
                                 <i class="mdi mdi-account-check"></i>
                                  <?php echo get_phrase('update_profile') ; ?>
                             </button>
@@ -109,7 +109,7 @@ $profile_data = $this->user_model->get_profile_data();
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-secondary col-xl-4 col-lg-4 col-md-12 col-sm-12" onclick="changePassword()"><?php echo get_phrase('change_password') ; ?></button>
+                            <button type="submit" class="btn btn-primary btn-l px-4"id="update-logos-btn" onclick="changePassword()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('change_password') ; ?></button>
                         </div>
                     </div>
                 </form>
@@ -162,13 +162,15 @@ $(document).ready(function () {
 
 
  // Soumission du formulaire de logo
- $(".profileAjaxForm").submit(function(e) {
+ $(".profileAjaxForm,.changePasswordAjaxForm").submit(function(e) {
     e.preventDefault();
 
-         // Obtenez le texte de mise à jour traduit
-          var updating_text = "<?php echo get_phrase('updating'); ?>";
-         // Afficher un indicateur de chargement
-         $('button[type="submit"]').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
+              // Cible uniquement le bouton de ce formulaire
+        var submitButton = $(this).find('button[type="submit"]');
+        var updating_text = "<?php echo get_phrase('updating'); ?>...";
+        
+        // Désactive et met à jour uniquement ce bouton
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+updating_text);
          // Récupérer le token CSRF avant l'envoi
          var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
          const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
@@ -198,12 +200,12 @@ $(document).ready(function () {
                   location.reload();
                 }, 3500);// Attendre 3500ms avant de recharger la page
             } else {
-              error_notify('<?php echo get_phrase('action_not_allowed'); ?>')
+              error_notify('<?=js_phrase(get_phrase('action_not_allowed')); ?>')
                 
             }
         },
         error: function () {
-          error_notify('<?php echo get_phrase('an_error_occurred_during_submission'); ?>')
+            error_notify(<?= js_phrase('an_error_occurred_during_submission'); ?>);
             }
         });
     });

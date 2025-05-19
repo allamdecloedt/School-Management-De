@@ -1,12 +1,18 @@
-<?php
-$exams = $this->db->get_where('exams', array('id' => $param1))->result_array();
+
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
+<?php 
+$exams = $this->db->get_where('exams', array('id' => $param1))->result_array(); 
+
 $school_id = school_id();
 $classes = $this->db->get_where('classes', array('school_id' => $school_id))->result_array();
 ?>
 
 <?php foreach($exams as $exam): ?>
+
 <form method="POST" class="d-block" action="<?php echo route('exam/update/'.$param1); ?>" id="examEditForm">
+
     <div class="form-row">
+
         <div class="form-group mb-1">
             <label for="exam_name"><?php echo get_phrase('exam_name'); ?><span class="required"> * </span></label>
             <input type="text" class="form-control" id="exam_name" name="exam_name" value="<?php echo html_escape($exam['name']); ?>" required>
@@ -37,8 +43,9 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
             <small id="section_help" class="form-text text-muted"><?php echo get_phrase('select_a_section'); ?></small>
         </div>
         <div class="form-group col-md-12">
-            <button class="btn btn-block btn-primary" type="submit"><?php echo get_phrase('update_exam'); ?></button>
+            <button class="btn btn-block btn-primary btn-l px-4 " id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_exam'); ?></button>
         </div>
+
     </div>
 </form>
 <?php endforeach; ?>
@@ -59,6 +66,7 @@ $classes = $this->db->get_where('classes', array('school_id' => $school_id))->re
 </style>
 
 <script>
+
 // Function to load sections dynamically
 function getSections(class_id) {
     if (!class_id) {
@@ -90,6 +98,7 @@ function getSections(class_id) {
         }
     });
 }
+
 
 // Function to show notifications
 function showNotification(type, message) {
@@ -149,6 +158,7 @@ $(document).ready(function() {
         const $submitBtn = $(this).find('button[type="submit"]');
         $submitBtn.prop('disabled', true).text('<?php echo get_phrase('updating'); ?>...');
 
+
         const formData = $(this).serialize() + '&<?php echo $this->security->get_csrf_token_name(); ?>=<?php echo $this->security->get_csrf_hash(); ?>';
         $.ajax({
             url: '<?php echo route('exam/update/' . $param1); ?>',
@@ -181,7 +191,23 @@ $(document).ready(function() {
                 showNotification('error', '<?php echo get_phrase('failed_to_update_exam'); ?>');
             }
         });
+
     });
+  
+   // Mettre à jour le jeton CSRF après la soumission
+       $.ajax({
+        url: '<?= site_url('admin/get_csrf_token'); ?>',
+        type: 'GET',
+        success: function(raw) {
+          var d = JSON.parse(raw);
+          $('#csrf_token').val(d.csrf_hash);
+        }
+      });
+    }
+  // ——— Binding : on utilise ajaxSubmit avec showAllExams ———
+  $(".ajaxForm").submit(function(e) {
+    ajaxSubmit(e, $(this), showAllExams);
+  });
 
     // Initialize jQuery validation
     $('#examEditForm').validate({
@@ -202,4 +228,5 @@ $(document).ready(function() {
         }
     });
 });
+
 </script>

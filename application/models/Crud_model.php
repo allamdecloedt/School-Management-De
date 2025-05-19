@@ -46,11 +46,11 @@ class Crud_model extends CI_Model {
 		$section_data['class_id'] = $insert_id;
 		$this->db->insert('sections', $section_data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('class_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function class_update($param1 = '')
@@ -144,11 +144,11 @@ class Crud_model extends CI_Model {
 		$data['school_id'] = html_escape($this->input->post('school_id'));
 		$this->db->insert('class_rooms', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('classroom_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function class_room_update($param1 = '')
@@ -184,12 +184,12 @@ class Crud_model extends CI_Model {
 		$data['name'] = html_escape($this->input->post('session_title'));
 		$this->db->insert('sessions', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('session_has_been_created_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function session_update($param1 = '')
@@ -291,12 +291,12 @@ class Crud_model extends CI_Model {
 		$data['school_id'] = html_escape($this->input->post('school_id'));
 		$this->db->insert('departments', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('department_has_been_added_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function department_update($param1 = '')
@@ -342,11 +342,11 @@ class Crud_model extends CI_Model {
 		move_uploaded_file($_FILES['syllabus_file']['tmp_name'], 'uploads/syllabus/'.$data['file']);
 		$this->db->insert('syllabuses', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('syllabus_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 	public function syllabus_delete($param1){
 		$syllabus_details = $this->get_syllabus_by_id($param1);
@@ -385,12 +385,12 @@ class Crud_model extends CI_Model {
 		$data['session_id'] = $this->active_session;
 		$this->db->insert('routines', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('class_routine_added_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function routine_update($param1 = '')
@@ -459,12 +459,12 @@ class Crud_model extends CI_Model {
 
 		$this->settings_model->last_updated_attendance_data();
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('attendance_updated_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function get_todays_attendance() {
@@ -489,12 +489,12 @@ class Crud_model extends CI_Model {
 		$data['session'] = $this->active_session;
 		$this->db->insert('event_calendars', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('event_has_been_added_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function event_calendar_update($param1 = '')
@@ -581,12 +581,12 @@ class Crud_model extends CI_Model {
 		}
 		$this->db->insert('noticeboard', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('notice_has_been_created')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_notice($notice_id) {
@@ -601,12 +601,12 @@ class Crud_model extends CI_Model {
 		$this->db->where('id', $notice_id);
 		$this->db->update('noticeboard', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('notice_has_been_updated')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function delete_notice($notice_id) {
@@ -729,6 +729,7 @@ class Crud_model extends CI_Model {
         return json_encode($response);
     }
 
+
     // Fetch the newly created exam details
     $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
     $this->db->from('exams');
@@ -739,6 +740,7 @@ class Crud_model extends CI_Model {
 
     // Prepare response
     $response = array(
+
         'status' => true,
         'notification' => get_phrase('exam_created_successfully'),
         'class_id' => $data['class_id'], // Added for filtering in frontend
@@ -756,7 +758,9 @@ class Crud_model extends CI_Model {
         )
     );
 
+
     return json_encode($response);
+
 }
 public function exam_update($param1 = '')
 {
@@ -929,11 +933,11 @@ public function exam_update($param1 = '')
 		$data['session'] = $this->active_session;
 		$this->db->insert('grades', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('grade_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function grade_update($id = "") {
@@ -1070,27 +1074,27 @@ public function exam_update($param1 = '')
 		}
 
 		if ($data['paid_amount'] > $data['total_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_can_not_get_bigger_than_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 		if ($data['status'] == 'paid' && $data['total_amount'] != $data['paid_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_is_not_equal_to_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		$this->db->insert('invoices', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('invoice_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function create_mass_invoice() {
@@ -1099,19 +1103,19 @@ public function exam_update($param1 = '')
 		$data['status'] = htmlspecialchars($this->input->post('status'));
 
 		if ($data['paid_amount'] > $data['total_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_can_not_get_bigger_than_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		if ($data['status'] == 'paid' && $data['total_amount'] != $data['paid_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_is_not_equal_to_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		$data['title'] = htmlspecialchars($this->input->post('title'));
@@ -1132,17 +1136,17 @@ public function exam_update($param1 = '')
 		}
 
 		if (sizeof($enrolments) > 0) {
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('invoice_added_successfully')
 			);
 		}else{
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('no_student_found')
 			);
 		}
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_invoice($id = "") {
@@ -1219,11 +1223,11 @@ public function exam_update($param1 = '')
 		$data['school_id'] = $this->school_id;
 		$data['session'] = $this->active_session;
 		$this->db->insert('expense_categories', $data);
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('expense_category_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_expense_category($id) {
@@ -1274,11 +1278,11 @@ public function exam_update($param1 = '')
 		$data['created_at'] = strtotime(date('d-M-Y'));
 		$this->db->insert('expenses', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('expense_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	// updating
@@ -1369,11 +1373,11 @@ public function exam_update($param1 = '')
 		$data['session']   = $this->active_session;
 		$this->db->insert('books', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('books_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_book($id = "") {
@@ -1431,11 +1435,11 @@ public function exam_update($param1 = '')
 
 		$this->db->insert('book_issues', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_book_issue($id = "") {

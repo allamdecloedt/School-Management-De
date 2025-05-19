@@ -1,4 +1,6 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
 <form method="POST" class="d-block" action="<?php echo route('exam/create'); ?>" id="examCreateForm">
+
     <div class="form-row">
         <div class="form-group mb-1">
             <label for="exam_name"><?php echo get_phrase('exam_name'); ?><span class="required"> * </span></label>
@@ -41,7 +43,7 @@
             <small id="section_help" class="form-text text-muted"><?php echo get_phrase('select_a_section'); ?></small>
         </div>
         <div class="form-group col-md-12">
-            <button class="btn btn-block btn-primary" type="submit"><?php echo get_phrase('create_exam'); ?></button>
+            <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-plus"></i><?php echo get_phrase('create_exam'); ?></button>
         </div>
     </div>
 </form>
@@ -74,6 +76,7 @@ $(document).ready(function() {
 
     // Fonction spécifique pour charger les sections dans le modal de création
     window.getSections = function(class_id, selectedSectionId = '') {
+
         if (class_id) {
             $.ajax({
                 url: '<?php echo site_url('superadmin/get_sections_by_class'); ?>',

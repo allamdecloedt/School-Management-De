@@ -1,0 +1,29 @@
+
+  .mdi {
+    margin-right: 12px; /* Espace après l'icône */
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+  }
+  
+  #update-btn {
+    color: #fff;
+    /* background-color: #6c757d;
+    border-color: #6c757d; */
+    background-color:#536de6;
+    border-color: #536de6;
+    border: none;
+    border-radius: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  #update-btn:hover {
+  /* background-color: #3b5998; */
+    color: #fff;
+    background-color: #475dc4;
+    border-color: #475dc4;
+  }
+  
+  #update-btn i {
+    margin-right: 8px;
+  }
+  

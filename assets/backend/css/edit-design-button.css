@@ -1,0 +1,72 @@
+
+.mdi {
+    margin-right: 12px; /* Espace après l'icône */
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+  }
+  
+  #update-btn {
+    color: #fff;
+    /* background-color: #6c757d;
+    border-color: #6c757d; */
+    background-color:#536de6;
+    border-color: #536de6;
+    border: none;
+    border-radius: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  #update-btn:hover {
+    /* background-color: #3b5998; */
+    color: #fff;
+    background-color: #475dc4;
+    border-color: #475dc4;
+  }
+  
+  #update-btn i {
+    margin-right: 8px;
+  }
+
+  #delete-btn {
+    color: #fff;
+    background-color: #ff5b5b;
+    border-color: #ff5b5b;
+    border: none;
+    border-radius: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+#delete-btn :hover {
+    /* background-color: #3b5998; */
+    color: #fff;
+    background-color: #ff5b5b;
+    border-color: #ff5b5b; 
+  }
+
+#delete-btn  i {
+    margin-right: 8px; 
+  }
+
+ /* Mobile styles */
+@media (max-width: 576px) {
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  #update-btn,
+  #delete-btn {
+    width: 100%;
+    padding: 0.8em;
+    font-size: 1em;
+    margin: 0.3em 0;
+  }
+  
+  #update-btn .mdi,
+  #delete-btn .mdi {
+    margin-right: 6px;
+    font-size: 1.1em;
+  }
+
+  }

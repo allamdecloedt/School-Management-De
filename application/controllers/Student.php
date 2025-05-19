@@ -116,7 +116,179 @@ class Student extends CI_Controller {
 		}
 	}
 	//	SECTION ENDED
+      //START student Create_Join bigbleubutton 
+      public function Recording($param1 = '', $param2 = '', $param3 = '')
+      {
+    
+        $school_id = school_id();
 
+        // Récupère les données nécessaires
+        $page_data['appointments'] = $this->room_model->get_all_appointments_student();
+        $page_data['classes'] = $this->db->get_where('classes', array('school_id' => $school_id))->result_array();
+        $page_data['rooms'] = $this->db->get_where('rooms', array('school_id' => $school_id, 'Etat' => 1))->result_array();
+
+        // Récupère les enregistrements pour chaque rendez-vous
+        foreach ($page_data['appointments'] as &$appointment) {
+            $appointment['recordings'] = $this->room_model->get_bbb_recording_by_appointment($appointment['id']);
+           
+        }
+        unset($appointment); // Nettoie la référence
+    
+  
+        $page_data['page_name'] = 'bigbleubutton/Recording';
+        $page_data['page_title'] = 'Recording';
+
+        $this->load->view('backend/index', $page_data);
+
+   
+      }
+      //END student Create_Join bigbleubutton
+
+	  
+	  public function filter_recordings()
+	  {
+		  $this->load->config('bigbluebutton');
+		  $bbbUrl = $this->config->item('bbb_url');
+		  $bbbSecret = $this->config->item('bbb_secret');
+	  
+		  $meeting_name = $this->input->post('meeting_name', true);
+		  $date_range = $this->input->post('date_range', true);
+		  $school_id = $this->input->post('school_id', true);
+	  
+		  // $this->db->select('*')->from('appointments');
+		  $schoolID = school_id();
+		  // die($schoolID);
+		  // Sélection des colonnes nécessaires
+
+		  $this->db->select('
+			  appointments.id, 
+			  appointments.title, 
+			  appointments.start_date AS start, 
+			
+			  appointments.description, 
+			  appointments.sections_id AS section, 
+			  appointments.classe_id, 
+			  appointments.room_id, 
+			 
+			  rooms.name,
+			  meeting_id,
+
+		  ');
+		  $this->db->from('appointments');
+	  
+		  // Jointure avec la table rooms pour récupérer les informations des salles
+		  $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+	  
+		  // Filtre : récupérer uniquement les rendez-vous actifs
+		  $this->db->where('appointments.Etat', 1);
+		  //$this->db->where('rooms.school_id', $schoolID);
+		  $this->db->where('appointments.school_id', $school_id);
+	
+	  
+		
+	  
+		  if (!empty($meeting_name)) {
+			  $this->db->like('appointments.title', $meeting_name);
+		  }
+	  
+		  if (!empty($date_range)) {
+			  $dates = explode(' to ', $date_range);
+			  if (count($dates) === 2) {
+				  $this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
+				  $this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
+			  }
+		  }
+	  
+		  $appointments = $this->db->get()->result_array();
+	  
+		  foreach ($appointments as &$appointment_rec) {
+			  $meetingId = $appointment_rec['meeting_id'] ?? null;
+			  $appointment_rec['recordings'] = [];
+		
+			  if ($meetingId) {
+				  // Générer l’URL avec meetingID spécifique
+				  // $query = http_build_query(['meetingID' => $meetingId]);
+				  // $checksum = sha1('getRecordings' . $query . $bbbSecret);
+				  // $url = $bbbUrl . 'api/getRecordings?' . $query . '&checksum=' . $checksum;
+				  $params = ['meetingID' => $meetingId];
+				  $query = http_build_query($params);
+				  $checksum = sha1('getRecordings' . $query . $bbbSecret);
+				  $url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
+	  
+				  // Appel de l’API
+				  $ch = curl_init();
+				  curl_setopt($ch, CURLOPT_URL, $url);
+				  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+				  $response = curl_exec($ch);
+				  curl_close($ch);
+	  
+				  $xml = @simplexml_load_string($response);
+
+				  if ($xml && $xml->returncode == 'SUCCESS') {
+					  foreach ($xml->recordings->recording as $rec) {
+						  $appointment_rec['recordings'][] = [
+							  'meetingID' => (string) $rec->meetingID,
+							  'playback_url' => (string) $rec->playback->format->url,
+							  'duration' => (string) $rec->playback->format->length,
+							  'video_download_url' => (string) $rec->playback->format->url,
+							  'endTime' => (string) $rec->endTime
+						  ];
+					  }
+				  }
+			  }
+		  }
+	  
+		  // Affichage HTML comme avant
+		  foreach ($appointments as $appointment) {
+			$classe_name = $this->db->get_where('classes', array('id' => $appointment['classe_id']))->row('name');
+			$section = " - ";
+			  if (!empty($appointment['section'])) {
+						  $section_ids = explode(',', $appointment['section']);
+						  $section_names = [];
+							  foreach ($section_ids as $id) {
+										  $name = $this->db->get_where('sections', array('id' => $id))->row('name');
+										  if ($name) $section_names[] = $name;
+									  }
+									$section =  implode(', ', $section_names);
+								  } 
+			  echo '<tr>';
+			  echo '<td>' . htmlspecialchars($appointment['title']) . '</td>';
+			  echo '<td>' . htmlspecialchars($appointment['name']) . '</td>';
+			  echo '<td>' . htmlspecialchars($classe_name) . '</td>';
+			  echo '<td>' . htmlspecialchars($section) . '</td>';
+			  echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
+			  echo '<td>' . (!empty($appointment_rec['recordings']) ? $appointment_rec['recordings'][0]['duration'] : '—') . '</td>';
+			  echo '<td>';
+	  
+			  if (!empty($appointment['recordings'])) {
+				  $rec = $appointment_rec['recordings'][0];
+				  $endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
+				  $isExpired = $endTime ? (time() > ($endTime + (7 * 24 * 60 * 60))) : false;
+	  
+				  if ($isExpired) {
+					  echo '<span class="badge bg-warning text-dark"> Expired</span>';
+				  } elseif (!empty($rec['playback_url'])) {
+					  echo '<a href="' . htmlspecialchars($rec['playback_url']) . '" target="_blank" class="btn btn-sm btn-success">VIDEO</a>';
+				  } else {
+					  echo '<span class="badge bg-danger">NOT RECORDED</span>';
+				  }
+			  } else {
+				  echo '<span class="badge bg-danger">NOT RECORDED</span>';
+			  }
+	  
+			  echo '</td><td>';
+	  
+			  if (!empty($appointment_rec['recordings'])) {
+				  $rec = $appointment_rec['recordings'][0];
+				  echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
+			  }
+	  
+		
+			  echo '</td></tr>';
+		  }
+	  }
 		//	SECTION STARTED
 		public function exam_class($action = "", $id = "") {
 			if ($action == 'list') {
@@ -183,7 +355,102 @@ class Student extends CI_Controller {
 		}
 	}
 	//END SYLLABUS section
+  // LANGUAGE SETTINGS
+  public function language($param1 = "", $param2 = "")
+  {
+    // adding language
+    // if ($param1 == 'create') {
+    //   $response = $this->settings_model->create_language();
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
 
+    // update language
+    // if ($param1 == 'update') {
+    //   $response = $this->settings_model->update_language($param2);
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
+
+    // deleting language
+    // if ($param1 == 'delete') {
+    //   $response = $this->settings_model->delete_language($param2);
+    //   // echo $response;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('status' => $response, 'csrf' => $csrf));
+    // }
+
+    // // showing the list of language
+    // if ($param1 == 'list') {
+    //   $this->load->view('backend/superadmin/language/list');
+    // }
+
+	if ($param1 == 'active') {
+		// 1) Mise à jour de la langue en base et en session
+		$user_id = $this->session->userdata('user_id');
+		$this->session->set_userdata('language', $param2);
+		$this->settings_model->update_system_language($user_id, $param2);
+	
+		// 2) Retourner à la page appelante
+		$referer = $this->input->server('HTTP_REFERER');
+		if ($referer) {
+			redirect($referer, 'refresh');
+		} else {
+			// Fallback : renvoyer vers la home du rôle
+			$role = $this->session->userdata('user_type');
+			redirect(site_url($role), 'refresh');
+		}
+	}
+  
+
+    // showing the list of language
+    // if ($param1 == 'update_phrase') {
+    //   $current_editing_language = htmlspecialchars($this->input->post('currentEditingLanguage'));
+    //   $updatedValue = htmlspecialchars($this->input->post('updatedValue'));
+    //   $key = htmlspecialchars($this->input->post('key'));
+    //   saveJSONFile($current_editing_language, $key, $updatedValue);
+    //   $response =  $current_editing_language . ' ' . $key . ' ' . $updatedValue;
+    //   // Préparer la réponse avec un nouveau jeton CSRF
+    //   $csrf = array(
+    //     'csrfName' => $this->security->get_csrf_token_name(),
+    //     'csrfHash' => $this->security->get_csrf_hash(),
+    //           );
+            
+    //   // Renvoyer la réponse avec un nouveau jeton CSRF
+    //   echo json_encode(array('response' => $response, 'csrf' => $csrf));
+    // }
+
+    // GET THE DROPDOWN OF LANGUAGES
+    if ($param1 == 'dropdown') {
+      $this->load->view('backend/student/language/dropdown');
+    }
+    // showing the index file
+    if (empty($param1)) {
+      $page_data['folder_name'] = 'language';
+      $page_data['page_title'] = 'languages';
+      $this->load->view('backend/index', $page_data);
+    }
+  }
 
 	//START TEACHER section
 	public function teacher($param1 = '', $param2 = '', $param3 = ''){

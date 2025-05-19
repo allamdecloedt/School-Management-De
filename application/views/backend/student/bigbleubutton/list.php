@@ -122,7 +122,7 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
+                <h5 class="modal-title" id="appointmentModalLabel"><?php echo get_phrase('gerer_le_rendez_vous'); ?></h5>
      
                 <button type="button" onclick="closeModal()" class="btn-close" ></button>
 
@@ -132,19 +132,19 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
                
 
                     <div class="form-group">
-                        <label for="appointmentTitle">Titre du Rendez-vous</label>
+                        <label for="appointmentTitle"><?php echo get_phrase('titre_du_rendez_vous'); ?></label>
                         <input type="text" class="form-control" id="appointmentTitle" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDate">Date et heure</label>
+                        <label for="appointmentDate"><?php echo get_phrase('date_heure'); ?></label>
                         <input type="datetime-local" class="form-control"  id="appointmentDate" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDescription">Description</label>
+                        <label for="appointmentDescription"><?php echo get_phrase('description'); ?></label>
                         <textarea class="form-control" id="appointmentDescription" rows="3" disabled></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="section">Section</label>
+                        <label for="section"><?php echo get_phrase('section'); ?></label>
                         <select class="form-control" name="section[]" id="section" multiple disabled >
                         </select>
                     </div>
@@ -164,6 +164,7 @@ $rooms = $this->db->get_where('rooms', array('Etat' => 1))->result_array();
         $("#appointmentModal").modal("hide");
     }
         var calendar = $('#calendar').fullCalendar({
+            titleRangeSeparator: ' - ',
             header: {
                 left: 'prev,next today',
                 center: 'title',

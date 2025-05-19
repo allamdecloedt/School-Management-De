@@ -1,4 +1,9 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
 <form method="POST" class="d-block" action="<?php echo route('exam/create'); ?>" id="examCreateForm">
+
+
+
+
     <div class="form-row">
         <div class="form-group mb-1">
             <label for="exam_name"><?php echo get_phrase('exam_name'); ?><span class="required"> * </span></label>
@@ -41,7 +46,7 @@
             <small id="section_help" class="form-text text-muted"><?php echo get_phrase('select_a_section'); ?></small>
         </div>
         <div class="form-group col-md-12">
-            <button class="btn btn-block btn-primary" type="submit"><?php echo get_phrase('create_exam'); ?></button>
+            <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-plus"></i><?php echo get_phrase('create_exam'); ?></button>
         </div>
     </div>
 </form>
@@ -63,6 +68,7 @@
 
 <script>
 $(document).ready(function() {
+
     toastr.options = {
         closeButton: true,
         progressBar: true,
@@ -74,6 +80,65 @@ $(document).ready(function() {
 
     // Fonction spécifique pour charger les sections dans le modal de création
     window.getSections = function(class_id, selectedSectionId = '') {
+
+  $(".ajaxForm").validate({}); // Jquery form validation initialization
+    $(".ajaxForm").submit(function(e) {
+        
+        e.preventDefault(); // Bloque le comportement normal
+        var form = $(this);
+        //ajaxSubmit(e, form, showAllGrades);
+        function getCsrfToken() {
+         // Récupérer le nom du token CSRF depuis le champ input caché
+          var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
+         // Récupérer la valeur (hash) du token CSRF depuis le champ input caché
+           var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+         // Retourner un objet contenant le nom du token et sa valeur
+         return { csrfName: csrfName, csrfHash: csrfHash };
+      }
+           // Cible uniquement le bouton de ce formulaire
+        var submitButton = $(this).find('button[type="submit"]');
+        var adding_text = "<?php echo get_phrase('creating'); ?>...";
+        
+        // Désactive et met à jour uniquement ce bouton
+        submitButton.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i>'+adding_text);
+         // Récupérer le token CSRF avant l'envoi
+         var csrf = getCsrfToken(); // Appel de la fonction pour obtenir le token
+         const formData = new FormData(this);// Crée une nouvelle instance de FormData en passant l'élément du formulaire courant
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function (response) {
+            if (response.status) { // Vérifie si la mise à jour a réussi
+                success_notify(response.notification);
+                // Met à jour le token CSRF
+                $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+
+                // Rafraîchissement de la page après un léger délai pour s'assurer que les modifications sont appliquées
+                setTimeout(function() {
+                  location.reload();
+                }, 3500);// Attendre 3500ms avant de recharger la page
+            } else {
+              error_notify('<?= js_phrase(get_phrase('action_not_allowed')); ?>')
+                
+            }
+        },
+        error: function () {
+          error_notify(<?= js_phrase(get_phrase('an_error_occurred_during_submission')); ?>)
+        }
+      });
+    });
+
+
+
+    // Charger les sections quand une classe est sélectionnée
+    $('#class_id').change(function() {
+        var class_id = $(this).val();
+
         if (class_id) {
             $.ajax({
                 url: '<?php echo site_url('admin/get_sections_by_class'); ?>',
@@ -94,9 +159,10 @@ $(document).ready(function() {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Create Sections AJAX Error:', status, error);
-                    console.error('Response Text:', xhr.responseText);
+
+                
                     $('#modal_section_id').html('<option value=""><?php echo get_phrase('select_section'); ?></option>');
+
                 }
             });
         } else {
