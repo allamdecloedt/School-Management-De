@@ -1570,7 +1570,6 @@
     "error_updating_question": "Error updating question",
     "quiz_question_deleted_successfully": "Quiz question deleted successfully",
     "submitting...": "Submitting...",
-
     "exam_calendar": "Exam calendar",
     "add_new_exam": "Add new exam",
     "these_exams_will_appear_in_the": "These exams will appear in the",
@@ -1629,7 +1628,6 @@
     "last_30_days": "Last 30 days",
     "this_month": "This month",
     "last_month": "Last month",
-    "date_range": "Date range",
     "custom_range": "Custom range",
     "select_an_option": "Select an option",
     "please_select_school": "Please select school",
@@ -1705,17 +1703,16 @@
     "failed_to_load_sections": "Failed to load sections",
     "calendar_failed_to_load": "Calendar failed to load",
     "failed_to_load_exams": "Failed to load exams",
-
     "an_error_occurred_please_try_again": "An error occurred please try again",
     "session_has_been_deleted_successfully": "Session has been deleted successfully",
     "deleting": "Deleting",
-    "creating": "Creating",
     "export_csv": "Export csv",
     "gerer_le_rendez_vous": "Gérer le Rendez-vous",
     "titre_du_rendez_vous": "Titre du Rendez-vous",
     "date_heure": "Date et heure",
     "sauvegarder": "Sauvegarder",
     "please_add_an_appointment_in_the_calendar": "Please add an appointment in the calendar.",
-    "back_to_list_room": "Back to list room"
-
+    "back_to_list_room": "Back to list room",
+    "invalid_email_format": "Invalid email format",
+    "invalid_email_or_password": "Invalid email or password"
 }

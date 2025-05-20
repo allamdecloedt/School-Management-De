@@ -1,6 +1,4 @@
 $(document).ready(function () {
-
-  
   const $navbar = $(".sticky-nav");
   const $userButton = $(".user-section");
   const $userDropdown = $(".user-dropdown");
@@ -11,7 +9,6 @@ $(document).ready(function () {
   const $registerChoiceDropdown = $(".register-choice-dropdown");
   const $forgetToggle = $(".forget-link");
   const $forgetDropdown = $(".forget-dropdown");
-
 
   // User section logic
   if ($userButton.length) {
@@ -103,6 +100,12 @@ $(document).ready(function () {
     const $loginExitSvg = $(".login-exit-svg");
     $loginExitSvg.on("click", function () {
       $loginDropdown.css('opacity', '0');
+      $loginDropdown.removeClass("has-error"); // Reset error class
+      const errorDiv = document.getElementById("loginError");
+      if (errorDiv) {
+        errorDiv.textContent = ""; // Clear error message
+        errorDiv.classList.add("display-none"); // Hide error message
+      }
       setTimeout(() => $loginDropdown.addClass("display-none"), 100);
       if (!$forgetDropdown.hasClass("display-none")) {
         $forgetDropdown.css('opacity', '0');
@@ -137,8 +140,6 @@ $(document).ready(function () {
     $form.find(`.step[data-step="${step}"]`).addClass('active');
     $form.data('currentStep', step);
   }
-
-
 
   // Initialize forms with step tracking
   $('#learner-form').data('currentStep', 1);
@@ -191,7 +192,8 @@ $(document).ready(function () {
     const currentStep = $form.data('currentStep') || 1;
     const inputs = $currentStep.find('input[required], select[required], textarea[required]');
     let valid = true;
-  
+
+    // Validate required fields
     inputs.each(function () {
       if (!this.checkValidity()) {
         valid = false;
@@ -200,21 +202,102 @@ $(document).ready(function () {
         $(this).removeClass('invalid');
       }
     });
-  
-    const maxSteps = formId === 'learner-form' ? 4 : 5; // Updated to 5 for mentor-form
-  
+
+    const maxSteps = formId === 'learner-form' ? 4 : 5;
+
+    // If form inputs are valid, proceed with additional checks
     if (valid && currentStep < maxSteps) {
-      if (formId === 'mentor-form' && currentStep === 5) { // Updated to check step 5
+      // Learner form: Check email in Step 1
+      if (formId === 'learner-form' && currentStep === 1) {
+        const email = $form.find('input[name="student_email"]').val();
+        checkEmailExists(email).then((response) => {
+          const $emailInput = $form.find('input[name="student_email"]');
+          const $errorSpan = $emailInput.next('.email-error');
+          
+          // Remove any existing error message
+          if ($errorSpan.length) $errorSpan.remove();
+          
+          if (response.exists) {
+            // Display error message below email field
+            $emailInput.after('<span class="email-error text-danger">Email is already in use.</span>');
+            $emailInput.addClass('invalid');
+          } else {
+            // Proceed to next step
+            updateStep(currentStep + 1, formId);
+          }
+          
+          // Adjust dropdown height
+          adjustLoginDropdownHeight($form);
+        });
+      }
+      // Mentor form: Check school name in Step 1
+      else if (formId === 'mentor-form' && currentStep === 1) {
+        const schoolName = $form.find('input[name="school_name"]').val();
+        checkSchoolNameExists(schoolName).then((response) => {
+          const $schoolInput = $form.find('input[name="school_name"]');
+          const $errorSpan = $schoolInput.next('.school-error');
+          
+          // Remove any existing error message
+          if ($errorSpan.length) $errorSpan.remove();
+          
+          if (response.exists) {
+            // Display error message below school name field
+            $schoolInput.after('<span class="school-error text-danger">School name is already in use.</span>');
+            $schoolInput.addClass('invalid');
+          } else {
+            // Proceed to next step
+            updateStep(currentStep + 1, formId);
+          }
+          
+          // Adjust dropdown height
+          adjustLoginDropdownHeight($form);
+        });
+      }
+      // Mentor form: Check email in Step 4
+      else if (formId === 'mentor-form' && currentStep === 4) {
+        const email = $form.find('input[name="email"]').val();
+        checkEmailExists(email).then((response) => {
+          const $emailInput = $form.find('input[name="email"]');
+          const $errorSpan = $emailInput.next('.email-error');
+          
+          // Remove any existing error message
+          if ($errorSpan.length) $errorSpan.remove();
+          
+          if (response.exists) {
+            // Display error message below email field
+            $emailInput.after('<span class="email-error text-danger">Email is already in use.</span>');
+            $emailInput.addClass('invalid');
+          } else {
+            // Proceed to next step
+            updateStep(currentStep + 1, formId);
+          }
+          
+          // Adjust dropdown height
+          adjustLoginDropdownHeight($form);
+        });
+      }
+      // Mentor form: Check password match in Step 5
+      else if (formId === 'mentor-form' && currentStep === 5) {
         const password = $('#password-mentor').val();
         const repeatPassword = $('#repeat-password-mentor').val();
         if (password !== repeatPassword) {
           $('#errorMessageMentor').removeClass('display-none');
+          // Adjust dropdown height (in case other errors are present)
+          adjustLoginDropdownHeight($form);
           return;
         } else {
           $('#errorMessageMentor').addClass('display-none');
+          updateStep(currentStep + 1, formId);
+          // Adjust dropdown height
+          adjustLoginDropdownHeight($form);
         }
       }
-      updateStep(currentStep + 1, formId);
+      // Proceed to next step for other cases
+      else {
+        updateStep(currentStep + 1, formId);
+        // Adjust dropdown height (in case errors were removed)
+        adjustLoginDropdownHeight($form);
+      }
     }
   });
 
@@ -226,22 +309,18 @@ $(document).ready(function () {
     const currentStep = $form.data('currentStep') || 1;
 
     if (currentStep > 1) {
-      // Go to the previous step
       updateStep(currentStep - 1, formId);
     } else {
-      // Step 1: Go back to the register-choice section
       const $formContainer = formId === 'learner-form' ? $('.learner-form-container') : $('.mentor-form-container');
       const $registerChoice = $('.register-choice');
 
-      // Fade out the current form container
       $formContainer.css('opacity', '0');
       setTimeout(() => {
         $formContainer.addClass('display-none');
-        $formContainer.css('opacity', ''); // Reset opacity to default
-        // Fade in the register-choice section
+        $formContainer.css('opacity', '');
         $registerChoice.removeClass('display-none');
-        setTimeout(() => $registerChoice.css('opacity', '1'), 10); // Small delay to trigger transition
-      }, 100); // Match the transition duration from CSS
+        setTimeout(() => $registerChoice.css('opacity', '1'), 10);
+      }, 100);
     }
   });
 
@@ -270,11 +349,9 @@ $(document).ready(function () {
   });
 
   const learnerForm = document.getElementById("learner-form");
-
   if (learnerForm) {
     document.querySelector('#learner-form .register-btn').addEventListener('click', function (event) {
       if (learnerForm.checkValidity()) {
-        // Vérifier la correspondance des mots de passe
         const password = document.getElementById('password-student').value;
         const repeatPassword = document.getElementById('repeat-password-student').value;
         if (password !== repeatPassword) {
@@ -284,8 +361,6 @@ $(document).ready(function () {
         } else {
           document.getElementById('errorMessage').classList.add('display-none');
         }
-
-        // Soumission naturelle et rechargement
         setTimeout(function () {
           learnerForm.reset();
           location.reload();
@@ -298,29 +373,25 @@ $(document).ready(function () {
   }
 
   const mentorForm = document.getElementById("mentor-form");
-
   if (mentorForm) {
     document.querySelector('#mentor-form .register-btn').addEventListener('click', function (event) {
       if (mentorForm.checkValidity()) {
-        // Check password match (specific to mentor form)
         const password = document.getElementById('password-mentor').value;
         const repeatPassword = document.getElementById('repeat-password-mentor').value;
         if (password !== repeatPassword) {
           document.getElementById('errorMessageMentor').classList.remove('display-none');
-          event.preventDefault(); // Prevent submission if passwords don’t match
+          event.preventDefault();
           return;
         } else {
           document.getElementById('errorMessageMentor').classList.add('display-none');
         }
-
-        // Allow default form submission
         setTimeout(function () {
           mentorForm.reset();
           location.reload();
         }, 500);
       } else {
         mentorForm.reportValidity();
-        event.preventDefault(); // Prevent submission if form is invalid
+        event.preventDefault();
       }
     });
   }
@@ -357,93 +428,183 @@ $(document).ready(function () {
       }
     });
   }
+
+  // Input validation
+  const inputs = document.querySelectorAll('.information');
+  const passwordInputs = document.querySelectorAll('.password');
+  const selects = document.getElementsByTagName('select');
+
+  inputs.forEach(input => {
+    input.addEventListener('input', function () {
+      if (this.value !== "") {
+        this.classList.remove("invalid");
+      }
+    });
+  });
+
+  passwordInputs.forEach(input => {
+    input.addEventListener('input', function () {
+      if (this.value !== "" && checkPassword()) {
+        this.classList.remove("invalid");
+      }
+    });
+  });
+
+  Array.from(selects).forEach(select => {
+    select.addEventListener('change', function () {
+      if (this.value !== "") {
+        this.classList.remove("invalid");
+      } else {
+        this.classList.add("invalid");
+      }
+    });
+  });
+
+  // Login submit button logic
+  const loginSubmitButton = document.getElementById("loginSubmit");
+  if (loginSubmitButton) {
+    loginSubmitButton.addEventListener("click", function (event) {
+      if (!loginSubmit()) {
+        event.preventDefault();
+      }
+    });
+  }
 });
-
-// Code séparé pour la validation du login (inchangé)
-var inputs = document.querySelectorAll('.information');
-var passwordInputs = document.querySelectorAll('.password');
-var selects = document.getElementsByTagName('select');
-
-for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('input', function () {
-    if (this.value != "")
-      this.classList.remove("invalid");
-  });
-}
-
-for (var i = 0; i < passwordInputs.length; i++) {
-  passwordInputs[i].addEventListener('input', function () {
-    if (this.value != "" && checkPassword()) {
-      this.classList.remove("invalid");
-    }
-  });
-}
-
-for (var i = 0; i < selects.length; i++) {
-  selects[i].addEventListener('change', function () {
-    if (this.value != "") {
-      this.classList.remove("invalid");
-    } else {
-      this.classList.add("invalid");
-    }
-  });
-}
 
 function check_email(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 
-document.getElementById("loginSubmit").addEventListener("click", function (event) {
-  if (!loginSubmit()) {
-    event.preventDefault();
-  }
-});
+function checkPassword() {
+  // Placeholder for password validation logic, if needed
+  return true;
+}
 
 function loginSubmit() {
-  var email = document.getElementById("loginEmail").value;
-  var password = document.getElementById("loginPassword").value;
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const errorDiv = document.getElementById("loginError");
+  const loginDropdown = document.querySelector(".login-dropdown");
 
-  emailExists(email).then((status) => {
-    if (status) {
-      error_notify('<?php echo get_phrase("E-mail_address_not_in_use") ?>');
+  if (!emailInput || !passwordInput || !errorDiv || !loginDropdown) {
+    console.warn("Login form elements not found");
+    return false;
+  }
+
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  errorDiv.classList.add("display-none");
+  errorDiv.textContent = "";
+  loginDropdown.classList.remove("has-error");
+
+  if (!check_email(email)) {
+    errorDiv.textContent = 'Invalid email format';
+    errorDiv.classList.remove("display-none");
+    loginDropdown.classList.add("has-error");
+    return false;
+  }
+
+  validateCredentials(email, password).then((response) => {
+    if (response.status) {
+      document.getElementById("login-form").submit();
     } else {
-      validateCredentials(email, password).then((status) => {
-        if (status) {
-          document.getElementById("login-form").submit();
-        } else {
-          error_notify('<?php echo get_phrase("credentials_incorrect") ?>');
-        }
-      });
+      errorDiv.textContent = response.message || 'Invalid email or password';
+      errorDiv.classList.remove("display-none");
+      loginDropdown.classList.add("has-error");
     }
   });
+
+  return false;
 }
 
 function validateCredentials(email, password) {
-  return new Promise((resolve, reject) => {
-    var emailInput = document.getElementById("loginEmail");
-    var passwordInput = document.getElementById("loginPassword");
-    var csrfName = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').attr('name');
-    var csrfHash = $('input[name="<?= $this->security->get_csrf_token_name(); ?>"]').val();
+  return new Promise((resolve) => {
+    const csrfName = $('input[name="' + csrfTokenName + '"]').attr('name');
+    const csrfHash = $('input[name="' + csrfTokenName + '"]').val();
 
     $.ajax({
       type: "POST",
-      url: "<?php echo site_url('login/validate_credentials'); ?>",
-      data: {email: email, password: password, [csrfName]: csrfHash},
+      url: loginValidateUrl,
+      data: { email: email, password: password, [csrfName]: csrfHash },
       dataType: 'json',
-      success: function(response){
-        if (response.status == true) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-        var newCsrfName = response.csrf.csrfName;
-        var newCsrfHash = response.csrf.csrfHash;
+      success: function (response) {
+        const newCsrfName = response.csrf.csrfName;
+        const newCsrfHash = response.csrf.csrfHash;
         $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
+
+        resolve({
+          status: response.status,
+          message: response.message || 'Invalid email or password'
+        });
       },
-      error: function(error) {
+      error: function (error) {
         console.error("Error:", error);
-        resolve(false);
+        resolve({ status: false, message: 'Server error occurred' });
+      }
+    });
+  });
+}
+
+// Function to adjust login-dropdown height based on error messages
+function adjustLoginDropdownHeight($form) {
+  const $loginDropdown = $form.closest('.login-dropdown');
+  const $errorMessage = $form.find('.email-error, .school-error');
+  
+  if ($errorMessage.length > 0) {
+    // Error message is present, increase height
+    $loginDropdown.css('height', '310px');
+  } else {
+    // No error message, revert to default height
+    $loginDropdown.css('height', '270px');
+  }
+}
+
+function checkEmailExists(email) {
+  return new Promise((resolve) => {
+    const csrfName = $('input[name="' + csrfTokenName + '"]').attr('name');
+    const csrfHash = $('input[name="' + csrfTokenName + '"]').val();
+
+    $.ajax({
+      type: "POST",
+      url: checkEmailExistsUrl,
+      data: { email: email, [csrfName]: csrfHash },
+      dataType: 'json',
+      success: function (response) {
+        const newCsrfName = response.csrf.csrfName;
+        const newCsrfHash = response.csrf.csrfHash;
+        $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
+        resolve({ exists: response.exists });
+      },
+      error: function (error) {
+        console.error("Error:", error);
+        resolve({ exists: false }); // Assume email doesn't exist on error
+      }
+    });
+  });
+}
+
+// Function to check if school name exists
+function checkSchoolNameExists(schoolName) {
+  return new Promise((resolve) => {
+    const csrfName = $('input[name="' + csrfTokenName + '"]').attr('name');
+    const csrfHash = $('input[name="' + csrfTokenName + '"]').val();
+
+    $.ajax({
+      type: "POST",
+      url: checkSchoolNameExistsUrl,
+      data: { school_name: schoolName, [csrfName]: csrfHash },
+      dataType: 'json',
+      success: function (response) {
+        const newCsrfName = response.csrf.csrfName;
+        const newCsrfHash = response.csrf.csrfHash;
+        $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
+        resolve({ exists: response.exists });
+      },
+      error: function (error) {
+        console.error("Error:", error);
+        resolve({ exists: false }); // Assume school name doesn't exist on error
       }
     });
   });
