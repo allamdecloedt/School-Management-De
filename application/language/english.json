@@ -1714,5 +1714,6 @@
     "please_add_an_appointment_in_the_calendar": "Please add an appointment in the calendar.",
     "back_to_list_room": "Back to list room",
     "invalid_email_format": "Invalid email format",
-    "invalid_email_or_password": "Invalid email or password"
+    "invalid_email_or_password": "Invalid email or password",
+    "votre_inscription_a_été_effectuée_avec_succès.": "Votre inscription a été effectuée avec succès."
 }
