@@ -68,7 +68,7 @@ $links = json_decode($social);
         <!-- Logo -->
         <div class="d-flex justify-content-center col-12 col-sm-4 mb-4 mb-sm-0">
           <a href="<?php echo base_url(); ?>">
-            <img src="<?php echo $logo_dark; ?>" style="height:45px;" />
+            <img src="<?php echo $this->settings_model->get_logo_light(); ?>" style="height:45px;" />
           </a>
         </div>
         <!-- End Logo -->
