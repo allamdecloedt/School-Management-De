@@ -8,4 +8,4 @@
     <meta name="google-site-verification" content="x3eKErXcyx6Umefjdw45FBGJo8YVk_Ly8dKWLWy0C74" />
 
     <!-- App favicon -->
-<link rel="shortcut icon" href="<?php echo base_url('uploads/images/decloedt/logo/wayo_acadmy.png'); ?>">
+<link rel="shortcut icon" href="<?php echo$this->settings_model->get_favicon(); ?>">
