@@ -60,13 +60,14 @@
         <div class="col-md-9">
             <select name="day" id = "day_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
                 <option value=""><?php echo get_phrase('select_a_day'); ?></option>
-                <option value="saturday"><?php echo get_phrase('saturday'); ?></option>
-                <option value="sunday"><?php echo get_phrase('sunday'); ?></option>
                 <option value="monday"><?php echo get_phrase('monday'); ?></option>
                 <option value="tuesday"><?php echo get_phrase('tuesday'); ?></option>
                 <option value="wednesday"><?php echo get_phrase('wednesday'); ?></option>
                 <option value="thursday"><?php echo get_phrase('thursday'); ?></option>
                 <option value="friday"><?php echo get_phrase('friday'); ?></option>
+                <option value="saturday"><?php echo get_phrase('saturday'); ?></option>
+                <option value="sunday"><?php echo get_phrase('sunday'); ?></option>             
+                
             </select>
         </div>
     </div>
