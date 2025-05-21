@@ -1,4 +1,6 @@
 <div class="login-section nav-link">
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+  </div>
   <!-- Login Section -->
   <div class="login-dropdown hidden-section display-none">
     <svg class="login-exit-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
@@ -268,10 +270,44 @@
     </div>
   </form>
 </div>
+<div class="loading-spinner display-none">
+    <div class="spinner"></div>
+  </div>
     </div>
   </div>
 </div>
 <style>
+  /* Loading Spinner */
+.loading-spinner {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  z-index: 1001; /* Above other content (z-index 1000 for .register-dropdown) */
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid rgba(210, 130, 45, 0.7); /* Match your theme color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .visibility-selector {
   list-style-type: none;
   position: relative;
@@ -502,6 +538,10 @@
   var inputs = document.querySelectorAll('.information');
   var passwordInputs = document.querySelectorAll('.password');
   var selects = document.getElementsByTagName('select');
+  window.baseUrl = '<?php echo base_url(); ?>';
+    if (!window.baseUrl.endsWith('/')) {
+        window.baseUrl += '/';
+    }
 
   for (var i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener('input', function () {
