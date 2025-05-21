@@ -51,8 +51,8 @@ class Login extends CI_Controller
 		} elseif ($this->session->userdata('parent_login') == true) {
 			redirect(route('dashboard'), 'refresh');
 		} elseif ($this->session->userdata('student_login') == true) {
-			redirect(route('dashboard'), 'refresh');
-		} elseif ($this->session->userdata('accountant_login') == true) {
+    redirect(site_url('home'), 'refresh');
+} elseif ($this->session->userdata('accountant_login') == true) {
 			redirect(route('dashboard'), 'refresh');
 		} elseif ($this->session->userdata('librarian_login') == true) {
 			redirect(route('dashboard'), 'refresh');
@@ -147,16 +147,10 @@ class Login extends CI_Controller
     $password = $this->input->post('login_password');
     $credential = array('email' => $email, 'password' => sha1($password));
 
-    // Prepare CSRF token for response
-    $csrf = array(
-        'csrfName' => $this->security->get_csrf_token_name(),
-        'csrfHash' => $this->security->get_csrf_hash()
-    );
-
-    // Check login credentials
     $query = $this->db->get_where('users', $credential);
     if ($query->num_rows() > 0) {
         $row = $query->row();
+        $this->session->set_userdata('user', $row);
         $this->session->set_userdata('user_login_type', true);
         if ($row->role == 'superadmin') {
             $this->session->set_userdata('superadmin_login', true);
@@ -164,103 +158,112 @@ class Login extends CI_Controller
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'superadmin');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'admin') {
             $this->session->set_userdata('admin_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'admin');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'teacher') {
             $this->session->set_userdata('teacher_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'teacher');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'student') {
             if ($row->status != 1) {
-                echo json_encode(array(
-                    'status' => false,
-                    'message' => get_phrase('your_account_has_been_disabled'),
-                    'csrf' => $csrf
-                ));
-                return;
+                $this->session->set_flashdata('error_message', get_phrase('your_account_has_been_disabled'));
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    redirect($_SERVER['HTTP_REFERER'], 'refresh');
+                } else {
+                    redirect(site_url('login'), 'refresh');
+                }
             }
             $this->session->set_userdata('student_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'student');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'parent') {
             $this->session->set_userdata('parent_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'parent');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'librarian') {
             $this->session->set_userdata('librarian_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'librarian');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'accountant') {
             $this->session->set_userdata('accountant_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'accountant');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         } elseif ($row->role == 'driver') {
             $this->session->set_userdata('driver_login', true);
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('school_id', $row->school_id);
             $this->session->set_userdata('user_name', $row->name);
             $this->session->set_userdata('user_type', 'driver');
-            echo json_encode(array(
-                'status' => true,
-                'message' => get_phrase('welcome_back'),
-                'csrf' => $csrf
-            ));
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
         }
     } else {
-        echo json_encode(array(
-            'status' => false,
-            'message' => get_phrase('invalid_your_email_or_password'),
-            'csrf' => $csrf
-        ));
+        $this->session->set_flashdata('error_message', get_phrase('invalid_your_email_or_password'));
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            redirect($_SERVER['HTTP_REFERER'], 'refresh');
+        } else {
+            redirect(site_url('login'), 'refresh');
+        }
     }
 }
 

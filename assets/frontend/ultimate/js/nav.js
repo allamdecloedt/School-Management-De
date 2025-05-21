@@ -360,150 +360,147 @@ $(document).ready(function () {
     });
 
     // Gestion du formulaire learner
-    const learnerForm = document.getElementById("learner-form");
-    if (learnerForm) {
-        const registerBtn = document.querySelector('#learner-form .register-btn');
-        if (registerBtn) {
-            registerBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                if (learnerForm.checkValidity()) {
-                    const password = document.getElementById('password-student')?.value;
-                    const repeatPassword = document.getElementById('repeat-password-student')?.value;
-                    if (password !== repeatPassword) {
-                        const errorMessage = document.getElementById('errorMessage');
-                        if (errorMessage) errorMessage.classList.remove('display-none');
-                        return;
-                    } else {
-                        const errorMessage = document.getElementById('errorMessage');
-                        if (errorMessage) errorMessage.classList.add('display-none');
-                    }
+// Gestion du formulaire learner
+const learnerForm = document.getElementById("learner-form");
+if (learnerForm) {
+    const registerBtn = document.querySelector('#learner-form .register-btn');
+    if (registerBtn) {
+        registerBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (learnerForm.checkValidity()) {
+                const password = document.getElementById('password-student')?.value;
+                const repeatPassword = document.getElementById('repeat-password-student')?.value;
+                if (password !== repeatPassword) {
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage) errorMessage.classList.remove('display-none');
+                    return;
+                } else {
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage) errorMessage.classList.add('display-none');
+                }
 
-                    const email = document.querySelector('#learner-form input[name="student_email"]')?.value;
-                    if (!email) {
-                        toastr.error('Adresse e-mail manquante.', 'Erreur', { timeOut: 3000 });
-                        return;
-                    }
+                const email = document.querySelector('#learner-form input[name="student_email"]')?.value;
+                if (!email) {
+                    toastr.error('Adresse e-mail manquante.', 'Erreur', { timeOut: 3000 });
+                    return;
+                }
 
-                    // Show loading spinner and disable button
-                    const $spinner = $('.register-dropdown .loading-spinner');
-                    if ($spinner.length) $spinner.removeClass('display-none');
-                    registerBtn.disabled = true;
+                // Show loading spinner and disable button
+                const $spinner = $('.register-dropdown .loading-spinner');
+                if ($spinner.length) $spinner.removeClass('display-none');
+                registerBtn.disabled = true;
 
-                    // Fetch fresh CSRF token
-                    $.ajax({
-                        type: "GET",
-                        url: window.baseUrl + 'login/get_csrf_token',
-                        dataType: 'json',
-                        success: function (response) {
-                            if (!response.csrfName || !response.csrfHash) {
-                                if ($spinner.length) $spinner.addClass('display-none');
-                                registerBtn.disabled = false;
-                                registerBtn.innerHTML = 'S\'inscrire';
-                                toastr.error('Jeton CSRF invalide.', 'Erreur', { timeOut: 3000 });
-                                return;
-                            }
-
-                            // Update CSRF token in form
-                            $('input[name="' + response.csrfName + '"]').val(response.csrfHash);
-
-                            // Submit form via AJAX
-                            $.ajax({
-                                type: "POST",
-                                url: learnerForm.action,
-                                data: new FormData(learnerForm),
-                                contentType: false,
-                                processData: false,
-                                dataType: 'json',
-                                success: function (response) {
-                                    if (response.status) {
-                                        // Show toast immediately with reduced duration
-                                        toastr.success(response.message || 'Votre inscription a été effectuée avec succès.', 'Inscription réussie !', { timeOut: 1500 });
-
-                                        // Perform auto-login immediately
-                                        $.ajax({
-                                            type: "POST",
-                                            url: window.baseUrl + 'login/validate_login_frontend',
-                                            data: {
-                                                login_email: email,
-                                                login_password: password,
-                                                [response.csrf.csrfName]: response.csrf.csrfHash
-                                            },
-                                            dataType: 'json',
-                                            success: function (loginResponse) {
-                                                // Update CSRF token
-                                                const newCsrfName = loginResponse.csrf?.csrfName;
-                                                const newCsrfHash = loginResponse.csrf?.csrfHash;
-                                                if (newCsrfName && newCsrfHash) {
-                                                    $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
-                                                }
-
-                                                // Hide spinner and re-enable button
-                                                if ($spinner.length) $spinner.addClass('display-none');
-                                                registerBtn.disabled = false;
-                                                registerBtn.innerHTML = 'S\'inscrire';
-
-                                                if (loginResponse.status) {
-                                                    // Reset form and hide dropdown
-                                                    learnerForm.reset();
-                                                    $('.register-dropdown').css('opacity', '0');
-                                                    setTimeout(() => {
-                                                        $('.register-dropdown').addClass("display-none");
-                                                        // Redirect to dashboard with delay
-                                                        setTimeout(() => {
-                                                            console.log("Learner redirect triggered");
-                                                            window.location.href = window.baseUrl + '/';
-                                                        }, 1500); // Delay redirect by 1.5s
-                                                    }, 100); // Dropdown animation
-                                                } else {
-                                                    toastr.error(loginResponse.message || 'Échec de la connexion automatique.', 'Erreur', { timeOut: 3000 });
-                                                    window.location.href = window.baseUrl + 'login';
-                                                }
-                                            },
-                                            error: function (error) {
-                                                console.error("Error during auto-login:", error);
-                                                if ($spinner.length) $spinner.addClass('display-none');
-                                                registerBtn.disabled = false;
-                                                registerBtn.innerHTML = 'S\'inscrire';
-                                                toastr.error('Une erreur serveur s\'est produite lors de la connexion automatique.', 'Erreur', { timeOut: 3000 });
-                                                window.location.href = window.baseUrl + 'login';
-                                            }
-                                        });
-                                    } else {
-                                        if ($spinner.length) $spinner.addClass('display-none');
-                                        registerBtn.disabled = false;
-                                        registerBtn.innerHTML = 'S\'inscrire';
-                                        toastr.error(response.message || 'Une erreur s\'est produite lors de l\'inscription.', 'Erreur', { timeOut: 3000 });
-                                    }
-                                    // Update CSRF token
-                                    const newCsrfName = response.csrf?.csrfName;
-                                    const newCsrfHash = response.csrf?.csrfHash;
-                                    if (newCsrfName && newCsrfHash) {
-                                        $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
-                                    }
-                                },
-                                error: function (error) {
-                                    console.error("Error:", error);
-                                    if ($spinner.length) $spinner.addClass('display-none');
-                                    registerBtn.disabled = false;
-                                    registerBtn.innerHTML = 'S\'inscrire';
-                                    toastr.error('Une erreur serveur s\'est produite. Vérifiez reCAPTCHA ou contactez l\'administrateur.', 'Erreur', { timeOut: 3000 });
-                                }
-                            });
-                        },
-                        error: function (error) {
-                            console.error("Error fetching CSRF token:", error);
+                // Fetch fresh CSRF token
+                $.ajax({
+                    type: "GET",
+                    url: window.baseUrl + 'login/get_csrf_token',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (!response.csrfName || !response.csrfHash) {
                             if ($spinner.length) $spinner.addClass('display-none');
                             registerBtn.disabled = false;
                             registerBtn.innerHTML = 'S\'inscrire';
-                            toastr.error('Impossible de récupérer le jeton CSRF.', 'Erreur', { timeOut: 3000 });
+                            toastr.error('Jeton CSRF invalide.', 'Erreur', { timeOut: 3000 });
+                            return;
                         }
-                    });
-                } else {
-                    learnerForm.reportValidity();
-                }
-            });
-        }
+
+                        // Update CSRF token in form
+                        $('input[name="' + response.csrfName + '"]').val(response.csrfHash);
+
+                        // Submit form via AJAX
+                        $.ajax({
+                            type: "POST",
+                            url: learnerForm.action,
+                            data: new FormData(learnerForm),
+                            contentType: false,
+                            processData: false,
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.status) {
+                                    toastr.success(response.message || 'Votre inscription a été effectuée avec succès.', 'Inscription réussie !', {
+                                        timeOut: 2000,
+                                        onHidden: function () {
+                                            // Perform auto-login after success toast
+                                            $.ajax({
+                                                type: "POST",
+                                                url: window.baseUrl + 'login/validate_login_frontend',
+                                                data: {
+                                                    login_email: email,
+                                                    login_password: password,
+                                                    [response.csrf.csrfName]: response.csrf.csrfHash
+                                                },
+                                                dataType: 'json',
+                                                success: function (loginResponse) {
+                                                    // Update CSRF token
+                                                    const newCsrfName = loginResponse.csrf?.csrfName;
+                                                    const newCsrfHash = loginResponse.csrf?.csrfHash;
+                                                    if (newCsrfName && newCsrfHash) {
+                                                        $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
+                                                    }
+
+                                                    if ($spinner.length) $spinner.addClass('display-none');
+                                                    registerBtn.disabled = false;
+                                                    registerBtn.innerHTML = 'S\'inscrire';
+
+                                                    if (loginResponse.status) {
+                                                        learnerForm.reset();
+                                                        $('.register-dropdown').css('opacity', '0');
+                                                        setTimeout(() => {
+                                                            $('.register-dropdown').addClass("display-none");
+                                                            window.location.href = window.baseUrl + 'home';
+                                                        }, 100);
+                                                    } else {
+                                                        toastr.error(loginResponse.message || 'Échec de la connexion automatique.', 'Erreur', { timeOut: 3000 });
+                                                        window.location.href = window.baseUrl + 'login';
+                                                    }
+                                                },
+                                                error: function (error) {
+                                                    console.error("Error during auto-login:", error);
+                                                    if ($spinner.length) $spinner.addClass('display-none');
+                                                    registerBtn.disabled = false;
+                                                    registerBtn.innerHTML = 'S\'inscrire';
+                                                    window.location.href = window.baseUrl + 'login';
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    if ($spinner.length) $spinner.addClass('display-none');
+                                    registerBtn.disabled = false;
+                                    registerBtn.innerHTML = 'S\'inscrire';
+                                    toastr.error(response.message || 'Une erreur s\'est produite lors de l\'inscription.', 'Erreur', { timeOut: 3000 });
+                                }
+
+                                // Update CSRF token
+                                const newCsrfName = response.csrf?.csrfName;
+                                const newCsrfHash = response.csrf?.csrfHash;
+                                if (newCsrfName && newCsrfHash) {
+                                    $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
+                                }
+                            },
+                            error: function (error) {
+                                console.error("Error:", error);
+                                if ($spinner.length) $spinner.addClass('display-none');
+                                registerBtn.disabled = false;
+                                registerBtn.innerHTML = 'S\'inscrire';
+                                toastr.error('Une erreur serveur s\'est produite. Vérifiez reCAPTCHA ou contactez l\'administrateur.', 'Erreur', { timeOut: 3000 });
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        console.error("Error fetching CSRF token:", error);
+                        if ($spinner.length) $spinner.addClass('display-none');
+                        registerBtn.disabled = false;
+                        registerBtn.innerHTML = 'S\'inscrire';
+                        toastr.error('Impossible de récupérer le jeton CSRF.', 'Erreur', { timeOut: 3000 });
+                    }
+                });
+            } else {
+                learnerForm.reportValidity();
+            }
+        });
     }
+}
 
     // Gestion du formulaire mentor
 const mentorForm = document.getElementById("mentor-form");
