@@ -560,7 +560,7 @@ class Frontend_model extends CI_Model
 {
     $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
 
-    // Valider les champs requis
+    // Validate required fields
     if (
         $this->input->post('email') == '' ||
         !preg_match($emailPattern, $this->input->post('email')) ||
@@ -579,9 +579,20 @@ class Frontend_model extends CI_Model
         ]);
     }
 
-    // Vérifier la duplication du nom de l'école et de l'email
+    // Check for duplicate school name and email
     $school_duplication = $this->user_model->check_duplication_school('on_create', $this->input->post('school_name'));
     $email_duplication = $this->user_model->check_duplication('on_create', $this->input->post('email'));
+
+    if (!$school_duplication && !$email_duplication) {
+    return json_encode([
+        'status' => false,
+        'message' => get_phrase('this_school_name_and_email_already_exist'),
+        'csrf' => [
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        ]
+    ]);
+}
 
     if (!$school_duplication) {
         return json_encode([
@@ -605,22 +616,22 @@ class Frontend_model extends CI_Model
         ]);
     }
 
-    // Préparer les données de l'école
+    // Prepare school data
     $school_data = [
         'name' => htmlspecialchars($this->input->post('school_name')),
         'address' => htmlspecialchars($this->input->post('school_adress')),
         'phone' => htmlspecialchars($this->input->post('school_phone')),
-        'status' => 0, // École en attente d'approbation
+        'status' => 0, // School pending approval
         'description' => htmlspecialchars($this->input->post('school_description')),
         'access' => htmlspecialchars($this->input->post('visibility')),
         'category' => htmlspecialchars($this->input->post('category'))
     ];
 
-    // Insérer l'école
+    // Insert school
     $this->db->insert('schools', $school_data);
     $school_id = $this->db->insert_id();
 
-    // Insérer les paramètres de paiement
+    // Insert payment settings
     $payment_settings = [
         [
             'key' => 'stripe_settings',
@@ -635,7 +646,7 @@ class Frontend_model extends CI_Model
     ];
     $this->db->insert_batch('payment_settings', $payment_settings);
 
-    // Insérer les paramètres de l'école
+    // Insert school settings
     $settings_school = [
         'school_id' => $school_id,
         'system_currency' => 'USD',
@@ -644,7 +655,7 @@ class Frontend_model extends CI_Model
     ];
     $this->db->insert('settings_school', $settings_school);
 
-    // Préparer les données de l'utilisateur (admin/mentor)
+    // Prepare user (admin/mentor) data
     $admin_data = [
         'name' => htmlspecialchars($this->input->post('name')),
         'email' => htmlspecialchars($this->input->post('email')),
@@ -653,15 +664,15 @@ class Frontend_model extends CI_Model
         'password' => sha1($this->input->post('password')),
         'role' => 'admin',
         'school_id' => $school_id,
-        'status' => 3, // Statut en attente
+        'status' => 3, // Pending status
         'watch_history' => '[]'
     ];
 
-    // Insérer l'utilisateur
+    // Insert user
     $this->db->insert('users', $admin_data);
     $user_id = $this->db->insert_id();
 
-    // Gérer l'upload de l'image de l'école
+    // Handle school image upload
     if (isset($_FILES['school_image']) && $_FILES['school_image']['error'] == UPLOAD_ERR_OK) {
         $upload_path = 'Uploads/schools/' . $school_id . '.jpg';
         if (!move_uploaded_file($_FILES['school_image']['tmp_name'], $upload_path)) {
@@ -676,11 +687,11 @@ class Frontend_model extends CI_Model
         }
     }
 
-    // Envoyer les emails de confirmation
+    // Send confirmation emails
     $this->email_model->School_online_admission($admin_data['email'], $school_data['name'], $admin_data['name']);
     $this->email_model->School_online_admission_superadmin($admin_data['email'], $school_data['name'], $admin_data['name']);
 
-    // Réponse JSON pour succès
+    // Success response
     return json_encode([
         'status' => true,
         'message' => get_phrase('Votre inscription a été effectuée avec succès.'),

@@ -1642,6 +1642,17 @@ public function register_user_form()
     // Envoyer un email de confirmation
     $this->email_model->Add_online_admission($data['email'], $user_id, $data['name']);
 
+	// Auto-login
+$this->session->set_userdata([
+    'user_login_type' => true,
+    'student_login' => true,
+    'user_id' => $user_id,
+    'school_id' => $data['school_id'],
+    'user_name' => $data['name'],
+    'user_type' => 'student',
+    'is_logged_in' => true
+]);
+
     // Réponse JSON pour succès
     return json_encode([
         'status' => true,
