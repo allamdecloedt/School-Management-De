@@ -1716,5 +1716,8 @@
     "invalid_email_format": "Invalid email format",
     "invalid_email_or_password": "Invalid email or password",
     "votre_inscription_a_été_effectuée_avec_succès.": "Votre inscription a été effectuée avec succès.",
-    "this_school_name_and_email_already_exist": "This school name and email already exist"
+    "this_school_name_and_email_already_exist": "This school name and email already exist",
+    "quiz_submitted_successfully": "Quiz submitted successfully",
+    "your_results_have_been_submitted": "Your results have been submitted",
+    "online_cours": "Online cours"
 }
