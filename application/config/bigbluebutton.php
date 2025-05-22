@@ -6,7 +6,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // $config['bbb_secret'] = 'mNPemKRmyLZlmVlQ4AafeUB5IBrHFYtfS5T3HU370';
 
 // version production
-$config['bbb_url'] = 'https://6d74-41-250-136-62.ngrok-free.app/bigbluebutton/api/';
+$config['bbb_url'] = 'https://15438f7e121022aaed0ebae0565c23ac.serveo.net/bigbluebutton/api/';
 $config['bbb_url_play'] = 'https://6d74-41-250-136-62.ngrok-free.app';
 $config['bbb_url_old'] = 'https://6d74-41-250-136-62.ngrok-free.app:80/';
 $config['bbb_secret'] = 'wgVh7JyComkib7tNlmt92GYUmGnpfJ73AXXqp4g6U';
