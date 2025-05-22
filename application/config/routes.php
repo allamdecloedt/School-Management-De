@@ -636,3 +636,6 @@ $route['bigbluebutton/join_room/(:any)'] = 'BigBlueButtonController/join_room/$1
 
 $route['bigbluebutton/create_room'] = 'BigBlueButton/create_room';
 // $route['bigbluebutton/delete_room'] = 'BigBlueButton/delete_room';
+
+$route['notificationcontroller/fetch'] = 'NotificationController/fetch';
+$route['notificationcontroller/markAllAsRead'] = 'NotificationController/markAllAsRead';
