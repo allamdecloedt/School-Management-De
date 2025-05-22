@@ -346,44 +346,125 @@
     <div class="general-container-ol-bot"></div>
   </div>
 
-  <script>
-  const studentform = document.getElementById("studentform");
-  
-  if (studentform) {
-    document.getElementById('submitBtn').addEventListener('click', function (event) {
-   
-     if (studentform.checkValidity()) {
-     
-       
-       setTimeout(function () {
-        studentform.reset(); 
-        location.reload();
-      }, 500);
+  <style>
+  /* Ensure Toastr is fully opaque and matches Bootstrap styling */
+  .toast {
+    margin-top: 50px !important;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 1 !important; /* Remove transparency */
+  }
+  .toast-success {
+    background-color: #28a745 !important; /* Bootstrap success green, solid */
+  }
+  .toast-error {
+    background-color: #dc3545 !important; /* Bootstrap danger red, solid */
+  }
+  .toast-close-button {
+    color: #fff !important;
+    opacity: 0.8 !important; /* Slightly transparent for aesthetics */
+  }
+  .toast-close-button:hover {
+    color: #f0f0f0 !important;
+    opacity: 1 !important; /* Fully opaque on hover */
+  }
+</style>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Configure Toastr options
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: 'toast-top-right',
+    timeOut: 5000,
+    showMethod: 'fadeIn',
+    hideMethod: 'fadeOut'
+  };
+
+  const studentForm = document.getElementById('studentform');
+  const submitBtn = document.getElementById('submitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  if (studentForm && submitBtn) {
+    studentForm.addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Validate form
+      if (!studentForm.checkValidity()) {
+        studentForm.reportValidity();
+        return;
+      }
+
+      // Get CSRF token from the hidden input
+      const csrfName = document.querySelector(`input[name="<?php echo $this->security->get_csrf_token_name(); ?>"]`).name;
+      const csrfHash = document.querySelector(`input[name="<?php echo $this->security->get_csrf_token_name(); ?>"]`).value;
+
+      // Prepare form data
+      const formData = new FormData(studentForm);
+      formData.append(csrfName, csrfHash); // Ensure CSRF token is included
+
+      // Perform AJAX submission
+      fetch(studentForm.action, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json()) // Expect JSON response
+      .then(data => {
+        // Update CSRF token for the next request
+        if (data.csrf) {
+          document.querySelector(`input[name="${data.csrf.csrfName}"]`).value = data.csrf.csrfHash;
+        }
+
+        if (data.status) {
+          // Success case
+          toastr.success(data.message); // Show success toast
+          resetBtn.click(); // Reset form
+          setTimeout(() => {
+            window.location.href = '<?php echo site_url('home'); ?>'; // Redirect to home page
+          }, 2000); // Wait 2 seconds to show the toast
+        } else {
+          // Error case (e.g., duplicate email, validation error)
+          toastr.error(data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        toastr.error('<?php echo get_phrase('an_error_occurred'); ?>');
+      });
+    });
+  }
+
+  // Password match validation
+  const password = document.getElementById('password-student');
+  const repeatPassword = document.getElementById('repeat-password-student');
+  const errorMessage = document.getElementById('errorMessage');
+
+  if (password && repeatPassword && errorMessage) {
+    repeatPassword.addEventListener('input', function () {
+      if (password.value !== repeatPassword.value) {
+        errorMessage.classList.remove('display-none');
+        submitBtn.disabled = true;
       } else {
-        
-        studentform.reportValidity(); 
+        errorMessage.classList.add('display-none');
+        submitBtn.disabled = false;
       }
     });
   }
-</script>
 
-
- <script>
-
+  // Image preview
   document.getElementById('student_image').addEventListener('change', function(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const preview = document.getElementById('photo-preview');
-      preview.innerHTML = '<img src="' + e.target.result + '" alt="Photo preview" />';
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('photo-preview');
+        preview.innerHTML = '<img src="' + e.target.result + '" alt="Photo preview" />';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 });
-
 </script>
-
-
- 
