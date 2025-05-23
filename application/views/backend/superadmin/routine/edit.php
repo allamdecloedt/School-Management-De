@@ -66,13 +66,14 @@
             <div class="col-md-9">
                 <select name="day" id = "day_on_routine_creation" class="form-control" required>
                     <option value=""><?php echo get_phrase('select_a_day'); ?></option>
-                    <option value="saturday" <?php if($routine['day'] == 'saturday') echo 'selected'; ?>><?php echo get_phrase('saturday'); ?></option>
-                    <option value="sunday" <?php if($routine['day'] == 'sunday') echo 'selected'; ?>><?php echo get_phrase('sunday'); ?></option>
                     <option value="monday" <?php if($routine['day'] == 'monday') echo 'selected'; ?>><?php echo get_phrase('monday'); ?></option>
                     <option value="tuesday" <?php if($routine['day'] == 'tuesday') echo 'selected'; ?>><?php echo get_phrase('tuesday'); ?></option>
                     <option value="wednesday" <?php if($routine['day'] == 'wednesday') echo 'selected'; ?>><?php echo get_phrase('wednesday'); ?></option>
                     <option value="thursday" <?php if($routine['day'] == 'thursday') echo 'selected'; ?>><?php echo get_phrase('thursday'); ?></option>
                     <option value="friday" <?php if($routine['day'] == 'friday') echo 'selected'; ?>><?php echo get_phrase('friday'); ?></option>
+                    <option value="saturday" <?php if($routine['day'] == 'saturday') echo 'selected'; ?>><?php echo get_phrase('saturday'); ?></option>
+                    <option value="sunday" <?php if($routine['day'] == 'sunday') echo 'selected'; ?>><?php echo get_phrase('sunday'); ?></option>             
+                
                 </select>
             </div>
         </div>
