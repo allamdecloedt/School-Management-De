@@ -103,7 +103,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 <main class="" id="content" role="main">
   <!-- Intro Section -->
   <div class="intro-section">
-  <div id="intro-container" class="intro-container position-relative" style="min-height: 100vh;">
+  <div id="intro-container" class="intro-container position-relative" style="min-height: 90vh;">
     <!-- Background -->
     <div class="position-absolute top-0 start-0 end-0 bottom-0 opacity-75" style="background-image: url('uploads/images/decloedt/home/main_bg.jpg'); background-size: cover; background-position: center; filter: brightness(40%); z-index: 0;"></div>
     <!-- Container for content -->
@@ -141,15 +141,12 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <!-- Right Column -->
             <div class="col-lg-6 mt-3 mb-lg-0 d-flex align-items-center">
                 <div class="text-container text-center text-lg-center w-100">
-                    <p class="text-white fw-bold fs-4 fs-md-4">Enjoy 30 days free to explore Wayo Academy!</p>
-                    <p class="text-white fw-bold fs-4 fs-md-4">Offer valid until June 28th</p>
+                    <p class="text-white fw-bold fs-4 fs-md-4">Enjoy 7 days free to explore Wayo Academy!</p>
                     <a class="btn text-white border-5 shadow-sm rounded-3 w-75 w-md-auto px-5 py-3 fw-bold " style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('home/courses'); ?>">START NOW</a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Image positioned bottom-right -->
-    <img src="uploads/images/decloedt/home/bg_ClaimYourFreeTrial.png" class="position-absolute bottom-0 end-0 claim-free-trial" alt="Claim Your Free Trial">
 </div>
 
 
@@ -385,13 +382,14 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
     <div class="text-container_wayo">
       <h1 class="text-black marg_wayo" style="font-family: 'Playfair Display', serif; font-size: 34px;">Easier, faster and more accessible mentoring at your fingertips !</h1>
       <div class="promo-buttons ">
-        <a href="#" class="store-button">
+        <a class="store-button">
           <img src="<?php echo $App_store; ?>" alt="Download on App Store">
         </a>
-        <a href="#" class="store-button">
+        <a class="store-button">
           <img src="<?php echo $App_Google_play; ?>" alt="Get it on Google Play">
         </a>
       </div>
+      <h1 class="text-black marg_wayo text-center mt-5" style="font-family: 'Playfair Display', serif; font-size: 65px;">Coming soon!</h1>
     </div>
   </div>
   <style>
@@ -414,7 +412,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-3 py-2 rounded">
           <i class="fab fa-facebook-f fs-4"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
+        <a href="https://www.facebook.com/people/Wayo-Academy/61572524656807/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</a>
       </div>
 
       <!-- LinkedIn -->
@@ -422,7 +420,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-linkedin-in fs-4"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
+        <a href="https://www.linkedin.com/company/wayoacademy/about/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</a>
       </div>
 
       <!-- Instagram -->
@@ -430,7 +428,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-instagram fs-3"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">@wayo_academy</span>
+        <a href="https://www.instagram.com/wayo_academy/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">wayo_academy</a>
       </div>
     </div>
   </div>
@@ -642,6 +640,14 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         content: "-";
         transform: rotate(180deg);
     }
+    .follow-us {
+      text-decoration: none !important;
+      color: #ffffff;
+    }
+    .follow-us:hover {
+      text-decoration: none !important;
+      color: rgba(210, 130, 45, 0.937);
+    }
     @media (max-width: 1024px) {
         .question-marks {
             display: none; /* Masque les images */
@@ -697,7 +703,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
   <!-- Title -->
   <div class="event-title-section">
     <div class=" text-center event-title-section-text">
-      <h2 style="font-family: 'Playfair Display', serif; font-size: 45px;"> <?php echo get_phrase('Upcomig Events'); ?> </h2>
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 45px;"> <?php echo get_phrase('Upcoming Events'); ?> </h2>
       <div class="content">
         <svg id="more-arrows">
           <polygon class="arrow-top" points="37.6,27.9 1.8,1.3 3.3,0 37.6,25.3 71.9,0 73.7,1.3 " />
@@ -891,21 +897,21 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <div class="carousel-item active" style="background-image: url('uploads/images/decloedt/placeholders/Image_01.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Work Smarter, Not Harder Online Course</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
             <!-- Slide 2 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_02.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">From Awkward To Awesome: Secrets To Success</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
             <!-- Slide 3 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_03.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Virtual Learning In Modern Scrum Environments</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
         </div>

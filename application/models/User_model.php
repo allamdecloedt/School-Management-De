@@ -1159,7 +1159,7 @@ class User_model extends CI_Model
 
 	public function get_schools_per_category($category, $limit, $start)
 	{
-		$result = $this->db->limit($limit, $start)->get_where('schools', array('status' => 1, 'category' => $category));
+		$result = $this->db->limit($limit, $start)->get_where('schools', array('status' => 1, 'Etat' => 1, 'category' => $category));
 		return $result;
 	}
 
@@ -1662,6 +1662,21 @@ $this->session->set_userdata([
             'csrfHash' => $this->security->get_csrf_hash()
         ]
     ]);
+}
+
+public function get_schools_count()
+{
+    $this->db->where('status', 1);
+    $this->db->where('Etat', 1);
+    return $this->db->count_all_results('schools');
+}
+
+public function get_schools_per_category_count($category)
+{
+    $this->db->where('category', $category);
+    $this->db->where('status', 1);
+    $this->db->where('Etat', 1);
+    return $this->db->count_all_results('schools');
 }
 
 }
