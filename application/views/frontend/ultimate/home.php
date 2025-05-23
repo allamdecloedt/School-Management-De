@@ -375,12 +375,13 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
  $App_store = base_url('uploads/images/decloedt/logo/App_Store_Bouton.svg');
  $telephone_wayo = base_url('uploads/images/decloedt/home/bg_download.png');
 
-?> <div class="section" style="min-height: 50vh;">
+?> <div class="section" style="min-height: 70vh;">
     <div class="image-container">
       <img src="<?php echo $telephone_wayo; ?>" class="hide-on-mobile" style="width: 100%;" alt="Image description">
     </div>
     <div class="text-container_wayo">
       <h1 class="text-black marg_wayo" style="font-family: 'Playfair Display', serif; font-size: 34px;">Easier, faster and more accessible mentoring at your fingertips !</h1>
+      <h1 class="text-black marg_wayo text-center" style="font-family: 'Playfair Display', serif; font-size: 50px;">Coming soon!</h1>
       <div class="promo-buttons ">
         <a class="store-button">
           <img src="<?php echo $App_store; ?>" alt="Download on App Store">
@@ -389,7 +390,6 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
           <img src="<?php echo $App_Google_play; ?>" alt="Get it on Google Play">
         </a>
       </div>
-      <h1 class="text-black marg_wayo text-center mt-5" style="font-family: 'Playfair Display', serif; font-size: 65px;">Coming soon!</h1>
     </div>
   </div>
   <style>
