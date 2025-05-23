@@ -1717,7 +1717,12 @@
     "invalid_email_or_password": "Invalid email or password",
     "votre_inscription_a_été_effectuée_avec_succès.": "Votre inscription a été effectuée avec succès.",
     "this_school_name_and_email_already_exist": "This school name and email already exist",
+    "0_courses_found_in_category": "0 courses found in category",
+    "upcoming_events": "Upcoming events",
+    "mentor_information": "Mentor information",
+
     "quiz_submitted_successfully": "Quiz submitted successfully",
     "your_results_have_been_submitted": "Your results have been submitted",
     "online_cours": "Online cours"
+
 }

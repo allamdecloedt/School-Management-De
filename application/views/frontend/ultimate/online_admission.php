@@ -286,7 +286,7 @@
 
       <div class="row justify-content-center">
         <p class="text-white h5 pb-5 text-uppercase d-flex justify-content-center form-label">
-          <?php echo get_phrase('personal_information'); ?>
+          <?php echo get_phrase('mentor_information'); ?>
         </p>
       </div>
 
