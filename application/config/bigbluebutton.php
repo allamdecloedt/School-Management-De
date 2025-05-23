@@ -6,10 +6,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // $config['bbb_secret'] = 'mNPemKRmyLZlmVlQ4AafeUB5IBrHFYtfS5T3HU370';
 
 // version production
-$config['bbb_url'] = 'http://visio.wayo.site/bigbluebutton/api/';
-$config['bbb_url_play'] = 'http://visio.wayo.site';
-$config['bbb_url_old'] = 'http://visio.wayo.site:80/';
-$config['bbb_secret'] = 'gAPgPviGGDF8KT6UhYThsM7HKdafz5uvAYVKj8IMLk';
+$config['bbb_url'] = 'https://visio.wayo.site/bigbluebutton/api/';
+$config['bbb_url_play'] = 'https://visio.wayo.site';
+$config['bbb_url_old'] = 'https://visio.wayo.site:80/';
+$config['bbb_secret'] = 'AnvikgYDf1o0eJwO5qzNhWYGAoatXoZfgxMfotilc';
 // version pre production
 // $config['bbb_url'] = 'https://hawaiian-poems-based-soundtrack.trycloudflare.com/bigbluebutton/api/';
 // $config['bbb_url_play'] = 'hawaiian-poems-based-soundtrack.trycloudflare.com';
