@@ -97,8 +97,8 @@
                             if (startButton) {
                                 startButton.innerText = isRunning ? "Join" : "Start";
                                 startButton.href = isRunning 
-                                    ? "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
-                                    : "<?php // echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
+                                    ? "<?php  echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
+                                    : "<?php  echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
                             }
 
                             if (participantElement) {
