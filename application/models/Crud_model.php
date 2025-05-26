@@ -1571,4 +1571,42 @@ public function exam_update($param1 = '')
 		$this->db->where('exam_id', $exam_id);
 		return $this->db->count_all_results('exam_questions');
 	}
+
+	public function ensure_admin_in_teachers($school_id) {
+    // Récupérer l'administrateur depuis la table users
+    $admin = $this->db->get_where('users', array('school_id' => $school_id, 'role' => 'admin'))->row_array();
+    
+    if ($admin) {
+        // Vérifier si l'admin existe déjà dans la table teachers
+        $existing_teacher = $this->db->get_where('teachers', array('user_id' => $admin['id'], 'school_id' => $school_id))->row_array();
+        
+        if (!$existing_teacher) {
+            // Insérer l'admin comme enseignant
+            $teacher_data = array(
+                'user_id' => $admin['id'],
+                'school_id' => $school_id
+            );
+            $this->db->insert('teachers', $teacher_data);
+        	}
+    	}
+	}
+
+	public function ensure_super_admin_in_teachers($school_id) {
+    // Récupérer l'administrateur depuis la table users
+    $admin = $this->db->get_where('users', array('school_id' => $school_id, 'role' => 'superadmin'))->row_array();
+    
+    if ($admin) {
+        // Vérifier si l'admin existe déjà dans la table teachers
+        $existing_teacher = $this->db->get_where('teachers', array('user_id' => $admin['id'], 'school_id' => $school_id))->row_array();
+        
+        if (!$existing_teacher) {
+            // Insérer l'admin comme enseignant
+            $teacher_data = array(
+                'user_id' => $admin['id'],
+                'school_id' => $school_id
+            );
+            $this->db->insert('teachers', $teacher_data);
+        	}
+    	}
+	}
 }
