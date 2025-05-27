@@ -710,6 +710,7 @@ class User_model extends CI_Model
  
                 $student_data['session'] = $this->active_session;
                 $student_data['school_id'] = $this->school_id;
+				$student_data['status'] = '1';
                 $this->db->insert('students', $student_data);
                 $student_id = $this->db->insert_id();
  
@@ -801,6 +802,7 @@ class User_model extends CI_Model
 						// $student_data['parent_id'] = html_escape($all_data[4]);				
 						$student_data['session'] = $session_id;
 						$student_data['school_id'] = $school_id;
+						$student_data['status'] = '1';
 						$this->db->insert('students', $student_data);
 						$student_id = $this->db->insert_id();
 
@@ -1480,10 +1482,10 @@ class User_model extends CI_Model
 				$this->db->where('school_id', $school_id);
 				$this->db->where_in('role', array('admin', 'superadmin'));
 				$user_email_admin = $this->db->get('users')->row('email');
-				$email_ex = "soukaina.atif1949@gmail.com";
+			
 				
 				$this->email_model->join_student_email($user_email,$user_name, $data['code'],$row ->name,$school_id);
-				$this->email_model->join_student_email_for_admin($email_ex,$user_name, $data['code'],$row ->name,$school_id);
+				$this->email_model->join_student_email_for_admin($user_email_admin,$user_name, $data['code'],$row ->name,$school_id);
 				
 
 				if (isset($_SERVER['HTTP_REFERER'])) {

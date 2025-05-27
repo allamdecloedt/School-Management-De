@@ -115,6 +115,29 @@ class Student extends CI_Controller {
 			echo $output;
 		}
 	}
+    public function section_course($action = "", $id = "") {
+		if ($action == 'list') {
+			$user_id = $this->session->userdata('user_id');
+			$session_id = active_session();
+	
+			// Récupérer les sections où l'étudiant est inscrit pour la classe donnée
+			$this->db->select('sections.id, sections.name');
+			$this->db->from('sections');
+			// $this->db->join('enrols', 'enrols.section_id = sections.id', 'left');
+			// $this->db->join('students', 'students.id = enrols.student_id', 'left');
+			$this->db->where('sections.class_id', $id);
+			// $this->db->where('students.user_id', $user_id);
+			// $this->db->where('enrols.session', $session_id);
+			$sections = $this->db->get()->result_array();
+	
+			$output = '<option value="">' . get_phrase('select_section') . '</option>';
+			foreach ($sections as $section) {
+				$output .= '<option value="' . $section['id'] . '">' . $section['name'] . '</option>';
+			}
+			echo $output;
+		}
+	}
+    
 	//	SECTION ENDED
       //START student Create_Join bigbleubutton 
       public function Recording($param1 = '', $param2 = '', $param3 = '')
