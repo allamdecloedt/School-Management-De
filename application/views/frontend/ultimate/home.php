@@ -170,98 +170,97 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 </div>
     </div>
   </section>
-  <section class="py-3 position-relative" style="min-height: 100vh;">
+  <section class="py-3 position-relative" style="min-height: 120vh;">
     <!-- Background Image -->
-    <div class="position-absolute top-0 start-0 end-0 bottom-0" style="background-image: url('uploads/images/decloedt/home/bg_WhyChooseAcademy.jpg'); background-size: cover; background-position: center; filter: brightness(75%); z-index: -1;"></div>
-    
+    <div class="position-absolute top-0 start-0 end-0 bottom-0 bg-wcwa"></div>
     <div class="container position-relative" style="z-index: 1;">
         <!-- Title -->
-        <h2 class="text-center text-white mb-5" style="font-family: 'Playfair Display', serif; font-size: 34px;">Why choose Wayo Academy as a...</h2>
-
+        <h2 class="text-center text-white mb-5 mt-5" style=" font-size: 45px; font-weight: bold;">Why choose Wayo Academy as a...</h2>
         <!-- Mentor Section -->
         <div class="mb-5">
-            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Mentor</h3>
+            <h3 class="text-center text-white mb-4" style=" font-size: 34px; font-weight: bold;">Mentor</h3>
             <div class="row g-4">
                 <!-- Mentor Item 1 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Create and customize interactive courses in just a few clicks</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Create and customize interactive courses in just a few clicks</p>
                     </div>
                 </div>
                 <!-- Mentor Item 2 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Easily schedule online classes and track attendance</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Easily schedule online classes and track attendance</p>
                     </div>
                 </div>
                 <!-- Mentor Item 3 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access an intuitive calendar to organize your events</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Access an intuitive calendar to organize your events</p>
                     </div>
                 </div>
                 <!-- Mentor Item 4 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Evaluate learners with automated quizzes & reports</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Evaluate learners with automated quizzes & reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 5 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Analyze performance with detailed reports</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Analyze performance with detailed reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 6 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Build a community around your expertise</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Build a community around your expertise</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Learner Section -->
-        <div>
-            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Learner</h3>
+        <div class="mb-5">
+            <h3 class="text-center text-white mb-4" style=" font-size: 34px; font-weight: bold;">Learner</h3>
             <div class="row g-4">
-                <!-- Learner Item 1 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Learn at your own pace with online courses</p>
+                <!-- Mentor Item 1 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Learn at your own pace with online courses</p>
                     </div>
                 </div>
-                <!-- Learner Item 2 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Follow a clear and motivating class routine</p>
+                <!-- Mentor Item 2 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Follow a clear and motivating class routine</p>
                     </div>
                 </div>
-                <!-- Learner Item 3 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access a variety of multimedia resources (videos, quizzes, etc.)</p>
+                <!-- Mentor Item 3 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Access a variety of multimedia resources (videos, quizzes, etc.)</p>
                     </div>
                 </div>
-                <!-- Learner Item 4 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Stay organized with event reminders & deadlines</p>
+                <!-- Mentor Item 4 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Stay organized with event reminders & deadlines &nbsp;</p>
                     </div>
                 </div>
-                <!-- Learner Item 5 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Join interactive classes with your mentors</p>
+                <!-- Mentor Item 5 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Join interactive classes with your mentors</p>
                     </div>
                 </div>
-                <!-- Learner Item 6 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Progress with instant feedback on your results</p>
+                <!-- Mentor Item 6 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Progress with instant feedback on your results</p>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </section>
@@ -917,7 +916,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         </div>
     </div>
 </div>
-<style>
+<style type="text/css">
         /* Style personnalisé pour le carrousel */
         .carousel-container {
             position: relative;
@@ -994,6 +993,40 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             margin-top: 25rem;
             font-weight: bold;
             color: white;
+        }
+
+        .bg-wcwa::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: url('uploads/images/decloedt/home/bg_WhyChooseAcademy_2.jpg') no-repeat center center/cover;
+          z-index: 0;
+        }
+        .bg-wcwa::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom right, #ED9939, #e57c1f55); /* overlay plus discret */
+          z-index: 1;
+          
+        }
+
+       .card-wcwa {
+          color: #000 !important; /* Couleur par défaut du texte */
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+          transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .card-wcwa p{
+          color: #000 !important;
+        }
+
+        .card-wcwa:hover {
+          transform: translateY(-3px);
+        }
+
+        .card-wcwa:hover p {
+          color: rgba(210, 130, 45, 0.937) !important;
         }
     </style>
     <!------------------------------------------------------------------------------------------------>
