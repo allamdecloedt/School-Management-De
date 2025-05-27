@@ -33,7 +33,7 @@
     });
     function classWiseSectionOnAcademy(classId) {
         $.ajax({
-            url: "<?php echo route('section/list/'); ?>"+classId,
+            url: "<?php echo route('section_course/list/'); ?>"+classId,
             success: function(response){
                 $('#section_id_on_academy').html(response);
             }
