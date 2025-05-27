@@ -440,19 +440,17 @@ class Crud_model extends CI_Model {
 }
 
 	public function routine_delete($param1 = '')
-{
-    $this->db->where('id', $param1);
-    $this->db->delete('routines');
+	{
+		$this->db->where('id', $param1);
+		$this->db->delete('routines');
 
-    $response = array(
-        'status' => true,
-        'notification' => get_phrase('class_routine_deleted_successfully'),
-        'csrf_token_name' => $this->security->get_csrf_token_name(),
-        'csrf_token_hash' => $this->security->get_csrf_hash()
-    );
+		$response = array(
+			'status' => true,
+			'notification' => get_phrase('class_routine_deleted_successfully')
+		);
 
-    return json_encode($response);
-}
+		return json_encode($response);
+	}
 	//END CLASS ROUTINE section
 
 
