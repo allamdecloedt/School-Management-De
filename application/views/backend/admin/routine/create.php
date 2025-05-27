@@ -35,7 +35,7 @@
             <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
             <?php
             // S'assurer que l'admin est dans la table teachers
-            $this->crud_model->ensure_admin_in_teachers($school_id);
+            $this->crud_model->check_admins_in_teachers($school_id);
             
             // Récupérer les enseignants (y compris l'admin)
             $teachers = $this->db->select('t.id, u.name, u.role')
