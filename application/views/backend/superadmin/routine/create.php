@@ -30,17 +30,28 @@
  
 
     <div class="form-group row mb-2">
-        <label for="teacher" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
-            <select name="teacher_id" id = "teacher_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
-                <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
-                <?php $teachers = $this->db->get_where('teachers', array('school_id' => $school_id))->result_array(); ?>
-                <?php foreach($teachers as $teacher): ?>
-                    <option value="<?php echo $teacher['id']; ?>"><?php echo $this->user_model->get_user_details($teacher['user_id'], 'name'); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+    <label for="teacher" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
+    <div class="col-md-9">
+        <select name="teacher_id" id="teacher_on_routine_creation" class="form-control select2" data-bs-toggle="select2" required>
+            <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
+            <?php
+            // S'assurer que l'admin est dans la table teachers
+            $this->crud_model->check_admins_in_teachers($school_id);
+            
+            // Récupérer les enseignants (y compris l'admin)
+            $teachers = $this->db->select('t.id, u.name, u.role')
+                                ->from('teachers t')
+                                ->join('users u', 'u.id = t.user_id', 'left')
+                                ->where('t.school_id', $school_id)
+                                ->get()->result_array();
+            foreach ($teachers as $teacher): ?>
+                <option value="<?php echo $teacher['id']; ?>">
+                    <?php echo $teacher['name'] . ($teacher['role'] == 'superadmin' ? ' (SuperAdmin)' : ' (Teacher)'); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
+</div>
 
     <div class="form-group row mb-2">
         <label for="class_room_id" class="col-md-3 col-form-label"><?php echo get_phrase('class_room'); ?><span class="required"> * </span></label>

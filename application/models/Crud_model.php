@@ -1571,4 +1571,28 @@ public function exam_update($param1 = '')
 		$this->db->where('exam_id', $exam_id);
 		return $this->db->count_all_results('exam_questions');
 	}
+
+	public function check_admins_in_teachers($school_id) {
+    // Définir les rôles à vérifier
+    $roles = ['admin', 'superadmin'];
+    
+    foreach ($roles as $role) {
+        // Récupérer l'utilisateur avec le rôle spécifié
+        $user = $this->db->get_where('users', array('school_id' => $school_id, 'role' => $role))->row_array();
+        
+        if ($user) {
+            // Vérifier si l'utilisateur existe déjà dans la table teachers
+            $existing_teacher = $this->db->get_where('teachers', array('user_id' => $user['id'], 'school_id' => $school_id))->row_array();
+            
+            if (!$existing_teacher) {
+                // Insérer l'utilisateur comme enseignant
+                $teacher_data = array(
+                    'user_id' => $user['id'],
+                    'school_id' => $school_id
+                );
+                $this->db->insert('teachers', $teacher_data);
+            }
+        }
+    }
+}
 }
