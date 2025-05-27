@@ -1481,5 +1481,7 @@
     "operation_successful": "Opération réussie",
     "invalid_response_format": "Format de réponse invalide",
     "creating": "Création",
-    "Please_add_an_appointment_in_the_calendar": "Veuillez ajouter un rendez-vous dans le calendrier."
+    "Please_add_an_appointment_in_the_calendar": "Veuillez ajouter un rendez-vous dans le calendrier.",
+    "upcoming_events": "Upcoming events",
+    "failed_to_delete_exam": "Failed to delete exam"
 }
