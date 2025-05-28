@@ -21,7 +21,7 @@
     <div class="form-group row mb-2 gap-3">
         <label for="section_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('section'); ?><span class="required"> * </span></label>
         <div class="col-md-8">
-            <select name="section_id" id = "section_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
+            <select name="section_id[]" id = "section_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  multiple required>
                 <option value=""><?php echo get_phrase('select_section'); ?></option>
             </select>
         </div>
