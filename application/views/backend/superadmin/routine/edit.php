@@ -23,17 +23,20 @@
         <div class="form-group row mb-2 gap-3">
             <label for="section_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('section'); ?><span class="required"> * </span></label>
             <div class="col-md-8">
-                <select name="section_id" id = "section_id_on_routine_creation" class="form-control" required>
-                    <option value=""><?php echo get_phrase('select_a_section'); ?></option>
-                    <?php $sections = $this->db->get_where('sections', array('class_id' => $routine['class_id']))->result_array(); ?>
-                    <?php foreach($sections as $section): ?>
-                        <option value="<?php echo $section['id']; ?>" <?php if($routine['section_id'] == $section['id']) echo 'selected'; ?>><?php echo $section['name']; ?></option>
-                    <?php endforeach; ?>
-                </select>
+                 <select name="section_id[]" id="section_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2" multiple required>
+                     <option value=""><?php echo get_phrase('select_a_section'); ?></option>
+                     <?php 
+                      $sections = $this->db->get_where('sections', array('class_id' => $routine['class_id']))->result_array();
+                     // Récupérer les sections associées à cette routine
+                       $routine_sections = $this->db->get_where('routines', array('class_id' => $routine['class_id'], 'day' => $routine['day'], 'starting_hour' => $routine['starting_hour'], 'starting_minute' => $routine['starting_minute'], 'ending_hour' => $routine['ending_hour'], 'ending_minute' => $routine['ending_minute'], 'teacher_id' => $routine['teacher_id'], 'room_id' => $routine['room_id']))->result_array();
+                       $selected_section_ids = array_column($routine_sections, 'section_id');
+                       ?>
+                       <?php foreach($sections as $section): ?>
+                         <option value="<?php echo $section['id']; ?>" <?php if(in_array($section['id'], $selected_section_ids)) echo 'selected'; ?>><?php echo $section['name']; ?></option>
+                       <?php endforeach; ?>
+                 </select>
             </div>
         </div>
-
-
 
         <div class="form-group row mb-2 gap-3">
     <label for="teacher_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
