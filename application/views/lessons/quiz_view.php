@@ -8,25 +8,20 @@ $lesson_progress = lesson_progress($lesson_details['id']);
         <strong><?php echo get_phrase("number_of_questions"); ?></strong> :
         <?php echo count($quiz_questions->result_array()); ?><br>
         <?php if (count($quiz_questions->result_array()) > 0): ?>
-            <button type="button" name="button" class="btn start-exam-btn mt-2 text-white" <?php if($lesson_progress == 1):?> disabled <?php endif; ?>
+            <button type="button" name="button" class="btn start-exam-btn mt-2 text-white"
                 onclick="getStarted(1); ">
-                <?php if ($lesson_progress == 1) {
-                    echo get_phrase("already_passed");
-                } else {
-                    echo get_phrase("get_started");
-                } ?>
+                <?php echo get_phrase("get_started"); ?>
             </button>
-            <?php if ($lesson_progress == 1): ?>
-                <button type="button" name="button" class="btn start-exam-btn mt-2 text-white" onclick="check_result(); ">
-                    <?php echo get_phrase("check_result"); ?>
-                </button>
-            <?php endif; ?>
+            <button type="button" name="button" class="btn start-exam-btn mt-2 text-white" onclick="check_result(); ">
+                <?php echo get_phrase("check_result"); ?>
+            </button>
         <?php endif; ?>
     </div>
 
     <form class="" id="quiz_form" action="" method="post">
         <!-- Champ caché pour le jeton CSRF -->
         <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
+        <input type="hidden" name="overwrite_results" value="1" />
         <?php if (count($quiz_questions->result_array()) > 0): ?>
             <?php foreach ($quiz_questions->result_array() as $key => $quiz_question):
                 $options = json_decode($quiz_question['options']);
@@ -343,39 +338,12 @@ function showNextQuestion(nextQuestionNumber) {
 function submitQuiz() {
     stopAllTimers();
     let form = document.getElementById('quiz_form');
-    let formData = new FormData(form);
-    fetch(form.action, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur réseau: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-        // Mettre à jour le jeton CSRF
-        document.querySelector('input[name="<?php echo $this->security->get_csrf_token_name(); ?>"]').value = data.csrf_hash;
-
-        // Afficher les résultats
-        let quizResult = document.getElementById('quiz-result');
-        quizResult.innerHTML = `
-            <div class="confirmation-container">
-                <i class="fas fa-check-circle confirmation-icon"></i>
-                <h5><?php echo get_phrase('quiz_submitted_successfully'); ?></h5>
-                <p><?php echo get_phrase('your_results_have_been_submitted'); ?></p>
-            </div>
-        `;
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue lors de la soumission: ' + error.message);
-    });
+    let submitButton = form.querySelector('button:not([disabled])'); // Find the active submit button
+    if (submitButton) {
+        submitButton.disabled = true; // Disable to prevent multiple submissions
+    }
+    // Submit the form synchronously
+    form.submit();
 }
 
 // Gérer le clic sur le bouton "Get Started"
@@ -387,7 +355,36 @@ function getStarted(questionNumber) {
 
 // Gérer le clic sur le bouton "Check Result"
 function check_result() {
-    // Implémenter la logique pour afficher les résultats (non fournie dans l'original)
-    alert('Vérification des résultats...');
+    fetch('/quiz/results?lesson_id=<?php echo $lesson_details['id']; ?>', {
+        method: 'GET',
+        headers: {
+            'X-CSRF-Token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur réseau: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        let quizResult = document.getElementById('quiz-result');
+        if (data.error) {
+            quizResult.innerHTML = `<p>${data.error}</p>`;
+            return;
+        }
+        // Afficher les résultats
+        quizResult.innerHTML = `
+            <div class="confirmation-container">
+                <h5><?php echo get_phrase('your_quiz_results'); ?></h5>
+                <p>Score: ${data.score}%</p>
+                <p>Correct Answers: ${data.correct_answers} / ${data.total_questions}</p>
+            </div>
+        `;
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la récupération des résultats: ' + error.message);
+    });
 }
 </script>

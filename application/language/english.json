@@ -1723,5 +1723,7 @@
     "quiz_submitted_successfully": "Quiz submitted successfully",
     "your_results_have_been_submitted": "Your results have been submitted",
     "online_cours": "Online cours",
-    "please_login_before_continuing": "Please login before continuing"
+    "please_login_before_continuing": "Please login before continuing",
+    "your_quiz_results": "Your quiz results"
+
 }
