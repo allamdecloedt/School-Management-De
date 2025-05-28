@@ -5,9 +5,9 @@
     <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
     
     <?php $school_id = school_id(); ?>
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="class_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('class'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <select name="class_id" id="class_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required onchange="classWiseSectionForRoutineCreate(this.value)">
                 <option value=""><?php echo get_phrase('select_a_class'); ?></option>
                 <?php $classes = $this->db->get_where('classes', array('school_id' => $school_id))->result_array(); ?>
@@ -18,9 +18,9 @@
         </div>
     </div>
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="section_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('section'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <select name="section_id" id = "section_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
                 <option value=""><?php echo get_phrase('select_section'); ?></option>
             </select>
@@ -29,9 +29,9 @@
 
  
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
     <label for="teacher" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
-    <div class="col-md-9">
+    <div class="col-md-8">
         <select name="teacher_id" id="teacher_on_routine_creation" class="form-control select2" data-bs-toggle="select2" required>
             <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
             <?php
@@ -53,9 +53,9 @@
     </div>
 </div>
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="class_room_id" class="col-md-3 col-form-label"><?php echo get_phrase('class_room'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <select name="class_room_id" id = "class_room_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
                 <option value=""><?php echo get_phrase('select_a_class_room'); ?></option>
                 <?php $class_rooms = $this->db->get_where('class_rooms', array('school_id' => $school_id))->result_array(); ?>
@@ -66,9 +66,9 @@
         </div>
     </div>
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="day" class="col-md-3 col-form-label"><?php echo get_phrase('day'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <select name="day" id = "day_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
                 <option value=""><?php echo get_phrase('select_a_day'); ?></option>
                 <option value="monday"><?php echo get_phrase('monday'); ?></option>
@@ -85,17 +85,17 @@
 
 
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="starting_minute" class="col-md-3 col-form-label"><?php echo get_phrase('starting'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
         <input type="time" name="starting_hour" id = "starting_minute_on_routine_creation"  class="form-control select2" data-bs-toggle="select2" required />
 
         </div>
     </div>
 
-    <div class="form-group row mb-2">
+    <div class="form-group row mb-2 gap-3">
         <label for="ending_hour" class="col-md-3 col-form-label"><?php echo get_phrase('ending'); ?><span class="required"> * </span></label>
-        <div class="col-md-9">
+        <div class="col-md-8">
         <input type="time" name="ending_hour" id = "ending_hour_on_routine_creation"  class="form-control select2" data-bs-toggle="select2" required />
 
         
@@ -104,11 +104,23 @@
 
   
 
-    <div class="form-group  col-md-12">
+    <div class="form-group  col-md-12 d-flex justify-content-center mt-4">
         <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-plus"></i><?php echo get_phrase('add_class_routine'); ?></button>
     </div>
 </form>
 
+<style>
+    .required {
+    display: inline;
+    vertical-align: middle;
+    color: red;
+    }
+
+    .col-form-label {
+    white-space: nowrap;
+    }
+
+</style>
 
 <script>
 $(document).ready(function () {

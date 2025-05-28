@@ -369,52 +369,75 @@ class Crud_model extends CI_Model {
 	//END SYLLABUS section
 
 	//START CLASS ROUTINE section
-	public function routine_create()
-	{
-		$data['class_id'] = html_escape($this->input->post('class_id'));
-		$data['section_id'] = html_escape($this->input->post('section_id'));
-		// $data['subject_id'] = html_escape($this->input->post('subject_id'));
-		$data['teacher_id'] = html_escape($this->input->post('teacher_id'));
-		$data['room_id'] = html_escape($this->input->post('class_room_id'));
-		$data['day'] = html_escape($this->input->post('day'));
-		$data['starting_hour'] = html_escape($this->input->post('starting_hour'));
-		// $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
-		$data['ending_hour'] = html_escape($this->input->post('ending_hour'));
-		// $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
-		$data['school_id'] = $this->school_id;
-		$data['session_id'] = $this->active_session;
-		$this->db->insert('routines', $data);
+	 public function routine_create()
+    {
+        $section_ids = $this->input->post('section_id'); // Récupère le tableau des section_id
+        $data['class_id'] = html_escape($this->input->post('class_id'));
+        $data['teacher_id'] = html_escape($this->input->post('teacher_id'));
+        $data['room_id'] = html_escape($this->input->post('class_room_id'));
+        $data['day'] = html_escape($this->input->post('day'));
+        $data['starting_hour'] = html_escape($this->input->post('starting_hour'));
+        $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
+        $data['ending_hour'] = html_escape($this->input->post('ending_hour'));
+        $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
+        $data['school_id'] = $this->school_id;
+        $data['session_id'] = $this->active_session;
 
-		return array(
-			'status' => true,
-			'notification' => get_phrase('class_routine_added_successfully')
-		);
+        // Insérer une entrée pour chaque section sélectionnée
+        foreach ($section_ids as $section_id) {
+            $data['section_id'] = html_escape($section_id);
+            $this->db->insert('routines', $data);
+        }
 
-		//return json_encode($response);
-	}
+        return array(
+            'status' => true,
+            'notification' => get_phrase('class_routine_added_successfully')
+        );
+    }
 
 	public function routine_update($param1 = '')
-	{
-		$data['class_id'] = html_escape($this->input->post('class_id'));
-		$data['section_id'] = html_escape($this->input->post('section_id'));
-		// $data['subject_id'] = html_escape($this->input->post('subject_id'));
-		$data['teacher_id'] = html_escape($this->input->post('teacher_id'));
-		$data['room_id'] = html_escape($this->input->post('class_room_id'));
-		$data['day'] = html_escape($this->input->post('day'));
-		$data['starting_hour'] = html_escape($this->input->post('starting_hour'));
-		$data['starting_minute'] = html_escape($this->input->post('starting_minute'));
-		$data['ending_hour'] = html_escape($this->input->post('ending_hour'));
-		$data['ending_minute'] = html_escape($this->input->post('ending_minute'));
-		$this->db->where('id', $param1);
-		$this->db->update('routines', $data);
+{
+    // Récupérer les données du formulaire
+    $section_ids = $this->input->post('section_id'); // Tableau des section_id
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['teacher_id'] = html_escape($this->input->post('teacher_id'));
+    $data['room_id'] = html_escape($this->input->post('class_room_id'));
+    $data['day'] = html_escape($this->input->post('day'));
+    $data['starting_hour'] = html_escape($this->input->post('starting_hour'));
+    $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
+    $data['ending_hour'] = html_escape($this->input->post('ending_hour'));
+    $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
+    $data['school_id'] = $this->school_id;
+    $data['session_id'] = $this->active_session;
 
-		$response = array(
-			'status' => true,
-			'notification' => get_phrase('class_routine_updated_successfully')
-		);
+    // Supprimer les anciennes entrées pour cette routine
+    $this->db->where('id', $param1);
+    $routine = $this->db->get('routines')->row_array();
+    if ($routine) {
+        $this->db->where('class_id', $routine['class_id']);
+        $this->db->where('day', $routine['day']);
+        $this->db->where('starting_hour', $routine['starting_hour']);
+        $this->db->where('starting_minute', $routine['starting_minute']);
+        $this->db->where('ending_hour', $routine['ending_hour']);
+        $this->db->where('ending_minute', $routine['ending_minute']);
+        $this->db->where('teacher_id', $routine['teacher_id']);
+        $this->db->where('room_id', $routine['room_id']);
+        $this->db->delete('routines');
+    }
 
-		return json_encode($response);
-	}
+    // Insérer une nouvelle entrée pour chaque section sélectionnée
+    foreach ($section_ids as $section_id) {
+        $data['section_id'] = html_escape($section_id);
+        $this->db->insert('routines', $data);
+    }
+
+    $response = array(
+        'status' => true,
+        'notification' => get_phrase('class_routine_updated_successfully')
+    );
+
+    return json_encode($response);
+}
 
 	public function routine_delete($param1 = '')
 	{
