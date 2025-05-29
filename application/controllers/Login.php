@@ -185,25 +185,6 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'admin');
-				// 4) On stocke l’objet complet pour la SSO
-			//	$this->session->set_userdata('user', $row); // indispensable
-
-				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
-				// redirect($iframeUrl);
-			
-
-				// Génère une seule fois l'URL SSO
-				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
-				// $this->session->set_userdata('humhub_iframe', $iframeUrl);
-			
-				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
-				// // redirect($iframeUrl);
-				// $page_data['folder_name'] = 'humhub';
-				// $page_data['page_title'] = 'humhub';
-				// $page_data['page_name']  = 'central';
-				// $page_data['iframe_url'] = $iframeUrl;
-				// $this->load->view('backend/index', $page_data);
-
 
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				if (isset($_SERVER['HTTP_REFERER'])) {

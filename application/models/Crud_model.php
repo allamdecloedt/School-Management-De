@@ -50,10 +50,6 @@ class Crud_model extends CI_Model {
 		$section_data['class_id'] = $insert_id;
 		$this->db->insert('sections', $section_data);
 
-		// Charger la bibliothèque Humhub_sso
-		// $CI = &get_instance();
-		// $CI->load->library('Humhub_sso');
-		
 		// Créer un espace correspondant dans HumHub
 		$spaceData = [
 			'name' => $data['name'],
@@ -123,15 +119,6 @@ class Crud_model extends CI_Model {
                 'name'                        => $data['name'],
                 'description'                 => 'Classe mise à jour depuis Wayo Academy',
                 'defaultStreamSort'           => $existing['defaultStreamSort'], //on garde la valeur actuelle Je ne veux pas modifier ce champ → je réutilise ce qu’il y avait déjà avant(Null).
-                // 'visibility'                  => $existing['visibility'],
-                // 'join_policy'                 => $existing['join_policy'],
-                // 'default_content_visibility'  => $existing['default_content_visibility'],
-                // 'hideMembers'                 => (bool)$existing['hideMembers'],
-                // 'hideAbout'                   => (bool)$existing['hideAbout'],
-                // 'hideActivities'              => (bool)$existing['hideActivities'],
-                // 'hideFollowers'               => (bool)$existing['hideFollowers'],
-                // 'indexUrl'                    => $existing['indexUrl'],
-                // 'indexGuestUrl'               => $existing['indexGuestUrl'],
             ];
 
 			log_message('debug', 'Données envoyées à HumHub updateSpace: ' . json_encode($spaceUpdate));

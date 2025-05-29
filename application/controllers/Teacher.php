@@ -50,9 +50,7 @@ class Teacher extends CI_Controller {
 
 	public function dashboard(){
 
-		// $page_data['page_title'] = 'Dashboard';
-		// $page_data['folder_name'] = 'dashboard';
-		// $this->load->view('backend/index', $page_data);
+		
 		// 1) Vérifier que c'est bien un admin
 			if (! $this->session->userdata('teacher_login')) {
 				show_error('Accès réservé aux enseignants.');

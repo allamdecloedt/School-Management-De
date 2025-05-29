@@ -15,14 +15,6 @@ class Humhub_sso {
     
     }
 
-    private function handleCurlError($ch, $url) {
-        
-        $error = curl_error($ch);
-        $errno = curl_errno($ch);
-        log_message('error', "cURL Error ($errno): $error - URL: $url");
-        return null;
-    }
-
    
     /**
      * Envoie une requête HTTP à l'API HumHub
@@ -151,15 +143,11 @@ class Humhub_sso {
                 'exp'            => time() + 3600, // Expiration : 1 heure après la génération
                 'authMode'       => 'external', // Indique à HumHub que c'est une authentification externe
                 'disableSession' => false,   // Permet à HumHub de créer une session utilisateur
-              //  'returnUrl'      => $returnPath,
             ];
     
             $token = JWT::encode($payload, HUMHUB_JWT_SECRET, 'HS256');//Génère  un nouveau token JWT signé avec la clé secrète et l'algorithme HS256
           
-           // return HUMHUB_BASE_URL . '/user/auth/login?jwt=' . urlencode($token) . '&returnUrl=' . urlencode($returnPath);
-
             // Génère une URL de connexion automatique à HumHub via JWT (sans mot de passe)
-           //  return HUMHUB_BASE_URL . '/user/auth/external' . '?authclient=jwt'. '&jwt=' . urlencode($token). '&returnUrl=' . urlencode($returnPath);
          return HUMHUB_BASE_URL . '/user/auth/external' . '?authclient=jwt'. '&jwt=' . urlencode($token);
     
         } catch (Exception $e) {
@@ -261,122 +249,5 @@ class Humhub_sso {
         return $u ?: 'user' . rand(1000,9999);
     }
 
-
-
-       /* === Méthode DB direct (recommandée si config database.php) ===
-       $dbHumhub = $this->ci->load->database('humhub', TRUE);
-       $wUser = $this->user;
-       $exists = $dbHumhub->where('email', $wUser->email)
-                            ->get('user')
-                            ->row();
-       if (! $exists) {
-           // Insère directement l'utilisateur dans la table `user` de HumHub
-           $now = date('Y-m-d H:i:s');
-           $guid = bin2hex(random_bytes(16)); // UUID-like, 32 hex, HumHub n’en génère pas automatiquement
-           $authKey = bin2hex(random_bytes(20)); 
-     // Vérification de la propriété "username"
-        $name = isset($wUser->name) ? $wUser->name : 'utilisateur' . rand(1000, 9999);
-
-        // Insertion sans mot de passe
-        $dbHumhub->insert('user', [
-            'guid'               => $guid,
-            'status'             => 1,
-            'email'              => $wUser->email,
-            'username'           => $name,
-            //'password'           => password_hash(...), ❌ À retirer
-            'auth_mode'          => 'external',
-            'language'           => 'fr',
-            'visibility'         => 1,
-            'created_at'         => $now,
-            'created_by'         => 0,
-            'updated_at'         => $now,
-            'updated_by'         => 0,
-            'auth_key'    => $authKey
-
-        ]);
-
-           $humhubId = $dbHumhub->insert_id();
-             // Log the creation for debugging
-        log_message('debug', "Created new HumHub user with ID: {$humhubId}");
-       } else {
-           $humhubId = $exists->id;
-       }
-
-       // === Génération du JWT pour SSO ===
-       $payload = [
-           'sub' => $humhubId,
-           'user_id' => $humhubId,
-           'email' => $wUser->email,
-           'iat' => time(),
-           'exp' => time() + 3600,
-           'authMode' => 'external',
-           'disableSession' => true
-       ];
-       try {
-           $jwt = JWT::encode($payload, HUMHUB_JWT_SECRET, 'HS256');
-       } catch (Exception $e) {
-           log_message('error', 'JWT Generation Error: ' . $e->getMessage());
-           show_error('Erreur d\'authentification');
-       }
-
-      return HUMHUB_BASE_URL . '/s/jwt?token=' . urlencode($jwt);
-      // return HUMHUB_BASE_URL . '/s/jwt?token=' . urlencode($jwt) . '&targetUrl=' . urlencode('/admin/central');
-   }
-
-    //    syncAfterAuth()
-    // Objectif principal :
-
-    // Déclencher le provisionnement uniquement après une authentification (login ou inscription).
-
-    // Préparer l’affichage de l’iframe HumHub immédiatement après l’authentification.
-    public function syncAfterAuth()
-    {
-        // On ne déclenche que sur les contrôleurs d'authentification
-        $controller = $this->ci->router->fetch_class();
-        $method     = $this->ci->router->fetch_method();
-        if (! in_array($controller, ['auth', 'user']) || ! in_array($method, ['login', 'register'])) {
-            return;
-        }
-
-        // Récupère l'utilisateur Wayo
-        $wUser = $this->ci->session->userdata('user');
-        if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
-            return;
-        }
-
-        // Provisionne dans HumHub et récupère l'URL SSO
-        $iframeUrl = $this->provisionAndGetIframeUrl();
-
-    //     // Duplique aussi en base HumHub
-    //     $dbHumhub = $this->ci->load->database('humhub', TRUE);
-    //     $exists = $dbHumhub->where('email', $wUser->email)->get('user')->row();
-    //     if (! $exists) {
-    //        // Insère directement l'utilisateur dans la table `user` de HumHub
-    //        $now = date('Y-m-d H:i:s');
-    //        $guid = bin2hex(random_bytes(16)); // UUID-like, 32 hex, HumHub n’en génère pas automatiquement
-    //        $authKey = bin2hex(random_bytes(20)); 
-    //  // Vérification de la propriété "username"
-    //     $name = isset($wUser->name) ? $wUser->name : 'utilisateur' . rand(1000, 9999);
-
-    //     // Insertion sans mot de passe
-    //     $dbHumhub->insert('user', [
-    //         'guid'               => $guid,
-    //         'status'             => 1,
-    //         'email'              => $wUser->email,
-    //         'username'           => $name,
-    //         //'password'           => password_hash(...), ❌ À retirer
-    //         'auth_mode'          => 'external',
-    //         'language'           => 'fr',
-    //         'visibility'         => 1,
-    //         'created_at'         => $now,
-    //         'created_by'         => 0,
-    //         'updated_at'         => $now,
-    //         'updated_by'         => 0,
-    //         'auth_key'          => $authKey
-    //     ]);
-
-        // On stocke l'URL SSO en flashdata pour le contrôleur
-        $this->ci->session->set_flashdata('humhub_iframe', $iframeUrl);
-    }*/
   
 }

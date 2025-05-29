@@ -406,10 +406,7 @@ class Admin extends CI_Controller
 	{
 
 		// $this->msg91_model->clickatell();
-		// $page_data['page_title'] = 'Dashboard';
-		// $page_data['folder_name'] = 'dashboard';
-
-		// $this->load->view('backend/index', $page_data);
+		
 			// 1) Vérifier que c'est bien un admin
 			if (! $this->session->userdata('admin_login')) {
 				show_error('Accès réservé aux administrateurs.');

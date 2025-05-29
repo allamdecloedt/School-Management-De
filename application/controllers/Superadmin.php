@@ -67,9 +67,7 @@ class Superadmin extends CI_Controller
   {
 
     // $this->msg91_model->clickatell();
-    // $page_data['page_title'] = 'Dashboard';
-    // $page_data['folder_name'] = 'dashboard';
-    // $this->load->view('backend/index', $page_data);
+
     // 1) Vérifier que c'est bien un admin
 			if (! $this->session->userdata('superadmin_login')) {
 				show_error('Accès réservé aux superadmins.');
@@ -99,7 +97,6 @@ class Superadmin extends CI_Controller
 			$page_data = [
 				'folder_name' => 'dashboard',
 				'page_title'  => 'Dashboard',
-				//'page_name'   => 'central',
 				'iframe_url'  => $iframeUrl,
 			];
 			$this->load->view('backend/index', $page_data);

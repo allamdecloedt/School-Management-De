@@ -762,13 +762,6 @@ class Student extends CI_Controller {
         log_message('error', "Échec du paiement pour invoice #{$invoice_id} via {$payment_method}");
     }
 
-		// if($payment_status == true && $payment_method == 'stripe'){
-		// 	$this->crud_model->payment_success($data);
-		// }elseif($payment_method == 'paystack'){
-		// 	$this->crud_model->payment_success($data);
-		// }elseif($payment_method == 'paypal'){
-		// 	$this->crud_model->payment_success($data);
-		// }
 
 		redirect(route('invoice'), 'refresh');
 	}
