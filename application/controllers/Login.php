@@ -52,8 +52,8 @@ class Login extends CI_Controller
 		} elseif ($this->session->userdata('parent_login') == true) {
 			redirect(route('dashboard'), 'refresh');
 		} elseif ($this->session->userdata('student_login') == true) {
-			redirect(route('dashboard'), 'refresh');
-		} elseif ($this->session->userdata('accountant_login') == true) {
+    redirect(site_url('home'), 'refresh');
+} elseif ($this->session->userdata('accountant_login') == true) {
 			redirect(route('dashboard'), 'refresh');
 		} elseif ($this->session->userdata('librarian_login') == true) {
 			redirect(route('dashboard'), 'refresh');
@@ -281,6 +281,132 @@ class Login extends CI_Controller
 			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
+=======
+{
+    $email = htmlspecialchars($this->input->post('login_email'));
+    $password = $this->input->post('login_password');
+    $credential = array('email' => $email, 'password' => sha1($password));
+
+    $query = $this->db->get_where('users', $credential);
+    if ($query->num_rows() > 0) {
+        $row = $query->row();
+        $this->session->set_userdata('user', $row);
+        $this->session->set_userdata('user_login_type', true);
+        if ($row->role == 'superadmin') {
+            $this->session->set_userdata('superadmin_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'superadmin');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'admin') {
+            $this->session->set_userdata('admin_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'admin');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'teacher') {
+            $this->session->set_userdata('teacher_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'teacher');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'student') {
+            if ($row->status != 1) {
+                $this->session->set_flashdata('error_message', get_phrase('your_account_has_been_disabled'));
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    redirect($_SERVER['HTTP_REFERER'], 'refresh');
+                } else {
+                    redirect(site_url('login'), 'refresh');
+                }
+            }
+            $this->session->set_userdata('student_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'student');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'parent') {
+            $this->session->set_userdata('parent_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'parent');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'librarian') {
+            $this->session->set_userdata('librarian_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'librarian');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'accountant') {
+            $this->session->set_userdata('accountant_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'accountant');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        } elseif ($row->role == 'driver') {
+            $this->session->set_userdata('driver_login', true);
+            $this->session->set_userdata('user_id', $row->id);
+            $this->session->set_userdata('school_id', $row->school_id);
+            $this->session->set_userdata('user_name', $row->name);
+            $this->session->set_userdata('user_type', 'driver');
+            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            } else {
+                redirect(site_url('home'), 'refresh');
+            }
+        }
+    } else {
+        $this->session->set_flashdata('error_message', get_phrase('invalid_your_email_or_password'));
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            redirect($_SERVER['HTTP_REFERER'], 'refresh');
+        } else {
+            redirect(site_url('login'), 'refresh');
+        }
+    }
+}
+
 
 	public function logout()
 	{
@@ -498,26 +624,32 @@ class Login extends CI_Controller
 
 
 		 public function validate_credentials()
-    {
-        // $json_data = json_decode(file_get_contents('php://input'), true);
-        $email = $this->input->post('email');
-		$password = $this->input->post('password');
-        $query = $this->db->get_where('users', array('email' => $email, 'password' => sha1($password)));
-        $num_rows = $query->num_rows();
-		// Préparer le nouveau jeton CSRF
-	    $csrf = array(
-			'csrfName' => $this->security->get_csrf_token_name(),
-			'csrfHash' => $this->security->get_csrf_hash(),
-			);
-		  
+			{
+				$email = $this->input->post('email');
+				$password = $this->input->post('password');
+				$query = $this->db->get_where('users', array('email' => $email, 'password' => sha1($password)));
+				$num_rows = $query->num_rows();
 
+				// Préparer le nouveau jeton CSRF
+				$csrf = array(
+					'csrfName' => $this->security->get_csrf_token_name(),
+					'csrfHash' => $this->security->get_csrf_hash(),
+				);
 
-        if ($num_rows > 0) {
-            echo json_encode(array('status' => true, 'debug' => 'Welcome' , 'csrf' => $csrf));
-        } else {
-            echo json_encode(array('status' => false, 'debug' => 'Credentials incorrect' , 'csrf' => $csrf));
-        }
-    }
+				if ($num_rows > 0) {
+					echo json_encode(array(
+						'status' => true,
+						'message' => get_phrase('welcome'),
+						'csrf' => $csrf
+					));
+				} else {
+					echo json_encode(array(
+						'status' => false,
+						'message' => get_phrase('invalid_email_or_password'),
+						'csrf' => $csrf
+					));
+				}
+			}
 	public function validate_code() {
 		$user_id = $this->input->post('user_id');
 		$code = $this->input->post('validation_code');
@@ -542,5 +674,45 @@ class Login extends CI_Controller
 		redirect($_SERVER['HTTP_REFERER'], 'refresh');
 	}
 	
+
+	public function check_email_exists() {
+    $email = $this->input->post('email');
+    $query = $this->db->get_where('users', array('email' => $email));
+    
+    $response = array(
+        'exists' => $query->num_rows() > 0,
+        'csrf' => array(
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        )
+    );
+    
+    echo json_encode($response);
+}
+
+public function check_school_name_exists() {
+    $school_name = $this->input->post('school_name');
+    $query = $this->db->get_where('schools', array('name' => $school_name));
+    
+    $response = array(
+        'exists' => $query->num_rows() > 0,
+        'csrf' => array(
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        )
+    );
+    
+    echo json_encode($response);
+}
+
+public function get_csrf_token()
+{
+    $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode([
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        ]));
+}
 
 }

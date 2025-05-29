@@ -5,7 +5,7 @@
     <meta name="keywords" content="Wayo Academy, online learning, training, coaching ,school">
     <meta name="robots" content="index, follow">
     <meta content="Wayo Acadmy" name="author" />
-    <meta name="google-site-verification" content="K7DuMo26Y6ocODe_Gv18MDsypa_06Zmr--CzQ_XVy-8" />
+    <meta name="google-site-verification" content="x3eKErXcyx6Umefjdw45FBGJo8YVk_Ly8dKWLWy0C74" />
 
     <!-- App favicon -->
-<link rel="shortcut icon" href="<?php echo base_url('uploads/images/decloedt/logo/wayo_acadmy.png'); ?>">
+<link rel="shortcut icon" href="<?php echo$this->settings_model->get_favicon(); ?>">

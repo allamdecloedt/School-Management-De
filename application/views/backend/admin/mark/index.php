@@ -23,7 +23,7 @@
                         $school_id = $this->db->get_where('users', array('id' => $user_id))->row('school_id');
                         $exams = $this->db->get_where('exams', array('school_id' => $school_id, 'session' => active_session()))->result_array();
                         foreach($exams as $exam){ ?>
-                            <option value="<?php echo $exam['id']; ?>"><?php echo $exam['name'];?>fff</option>
+                            <option value="<?php echo $exam['id']; ?>"><?php echo $exam['name'];?></option>
                         <?php } ?>
                     </select>
                 </div>

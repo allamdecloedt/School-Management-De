@@ -625,7 +625,7 @@ $route['bigbluebutton/create/(:num)'] = 'bigbluebutton/create_meeting/$1';
 $route['bigbluebutton/start_meeting/(:num)'] = 'bigbluebutton/start_meeting/$1';
 
 $route['bigbluebutton/start'] = 'BigBlueButton/join_meeting';
-$route['bigbluebutton/get_active_meetings'] = 'BigBlueButton/get_active_meetings';
+$route['bigbluebutton/get_active_meetings'] = 'Bigbluebutton/get_active_meetings';
 $route['bigbluebutton/check_active_meetings'] = 'BigBlueButton/check_active_meetings';
 
 $route['bigbluebutton/get_meetings'] = 'BigBlueButton/get_meetings';

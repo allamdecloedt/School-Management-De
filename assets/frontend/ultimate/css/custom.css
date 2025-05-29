@@ -232,7 +232,7 @@ First Section Styling
 }
 
 .section-height {
-  height: 90vh !important;
+  height: 80vh !important;
 }
 
 .gap-xl-5 {
@@ -1062,6 +1062,11 @@ Responsive Styling
   .spacer-bottom-event-section {
     bottom: -110px;
   }
+
+  .section-height {
+  height: 90vh !important;
+}
+
 }
 
 /*-----------------------------------------max-1200px-------------------------------------------------------------*/
@@ -1082,6 +1087,9 @@ Responsive Styling
     z-index: -2;
     padding-top: 60px;
   }
+   .section-height {
+  height: 100vh !important;
+}
 }
 
 /*-----------------------------------------min-1400px-------------------------------------------------------------*/

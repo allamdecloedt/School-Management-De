@@ -27,16 +27,14 @@ class Crud_model extends CI_Model {
 
 	//START CLASS section
 	public function get_classes($id = "") {
-
 		$this->db->where('school_id', $this->school_id);
-
 		if ($id > 0) {
 			$this->db->where('id', $id);
-
 		}
-		return $this->db->get('classes');
-
-
+		$query = $this->db->get('classes');
+		foreach ($query->result_array() as $class) {
+		}
+		return $query;
 	}
 	public function class_create()
 	{
@@ -94,11 +92,14 @@ class Crud_model extends CI_Model {
 
 		
 		$response = array(
+
+		return array(
+
 			'status' => true,
 			'notification' => get_phrase('class_added_successfully'),
 			'humhub_space' => $humhubResponse // Optionnel : pour retour debug
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 		
 	public function class_update($param1 = '')
@@ -236,11 +237,11 @@ class Crud_model extends CI_Model {
 		$data['school_id'] = html_escape($this->input->post('school_id'));
 		$this->db->insert('class_rooms', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('classroom_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function class_room_update($param1 = '')
@@ -276,12 +277,12 @@ class Crud_model extends CI_Model {
 		$data['name'] = html_escape($this->input->post('session_title'));
 		$this->db->insert('sessions', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('session_has_been_created_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function session_update($param1 = '')
@@ -383,12 +384,12 @@ class Crud_model extends CI_Model {
 		$data['school_id'] = html_escape($this->input->post('school_id'));
 		$this->db->insert('departments', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('department_has_been_added_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function department_update($param1 = '')
@@ -434,11 +435,11 @@ class Crud_model extends CI_Model {
 		move_uploaded_file($_FILES['syllabus_file']['tmp_name'], 'uploads/syllabus/'.$data['file']);
 		$this->db->insert('syllabuses', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('syllabus_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 	public function syllabus_delete($param1){
 		$syllabus_details = $this->get_syllabus_by_id($param1);
@@ -461,52 +462,75 @@ class Crud_model extends CI_Model {
 	//END SYLLABUS section
 
 	//START CLASS ROUTINE section
-	public function routine_create()
-	{
-		$data['class_id'] = html_escape($this->input->post('class_id'));
-		$data['section_id'] = html_escape($this->input->post('section_id'));
-		// $data['subject_id'] = html_escape($this->input->post('subject_id'));
-		$data['teacher_id'] = html_escape($this->input->post('teacher_id'));
-		$data['room_id'] = html_escape($this->input->post('class_room_id'));
-		$data['day'] = html_escape($this->input->post('day'));
-		$data['starting_hour'] = html_escape($this->input->post('starting_hour'));
-		// $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
-		$data['ending_hour'] = html_escape($this->input->post('ending_hour'));
-		// $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
-		$data['school_id'] = $this->school_id;
-		$data['session_id'] = $this->active_session;
-		$this->db->insert('routines', $data);
+	 public function routine_create()
+    {
+        $section_ids = $this->input->post('section_id'); // Récupère le tableau des section_id
+        $data['class_id'] = html_escape($this->input->post('class_id'));
+        $data['teacher_id'] = html_escape($this->input->post('teacher_id'));
+        $data['room_id'] = html_escape($this->input->post('class_room_id'));
+        $data['day'] = html_escape($this->input->post('day'));
+        $data['starting_hour'] = html_escape($this->input->post('starting_hour'));
+        $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
+        $data['ending_hour'] = html_escape($this->input->post('ending_hour'));
+        $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
+        $data['school_id'] = $this->school_id;
+        $data['session_id'] = $this->active_session;
 
-		$response = array(
-			'status' => true,
-			'notification' => get_phrase('class_routine_added_successfully')
-		);
+        // Insérer une entrée pour chaque section sélectionnée
+        foreach ($section_ids as $section_id) {
+            $data['section_id'] = html_escape($section_id);
+            $this->db->insert('routines', $data);
+        }
 
-		return json_encode($response);
-	}
+        return array(
+            'status' => true,
+            'notification' => get_phrase('class_routine_added_successfully')
+        );
+    }
 
 	public function routine_update($param1 = '')
-	{
-		$data['class_id'] = html_escape($this->input->post('class_id'));
-		$data['section_id'] = html_escape($this->input->post('section_id'));
-		// $data['subject_id'] = html_escape($this->input->post('subject_id'));
-		$data['teacher_id'] = html_escape($this->input->post('teacher_id'));
-		$data['room_id'] = html_escape($this->input->post('class_room_id'));
-		$data['day'] = html_escape($this->input->post('day'));
-		$data['starting_hour'] = html_escape($this->input->post('starting_hour'));
-		$data['starting_minute'] = html_escape($this->input->post('starting_minute'));
-		$data['ending_hour'] = html_escape($this->input->post('ending_hour'));
-		$data['ending_minute'] = html_escape($this->input->post('ending_minute'));
-		$this->db->where('id', $param1);
-		$this->db->update('routines', $data);
+{
+    // Récupérer les données du formulaire
+    $section_ids = $this->input->post('section_id'); // Tableau des section_id
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['teacher_id'] = html_escape($this->input->post('teacher_id'));
+    $data['room_id'] = html_escape($this->input->post('class_room_id'));
+    $data['day'] = html_escape($this->input->post('day'));
+    $data['starting_hour'] = html_escape($this->input->post('starting_hour'));
+    $data['starting_minute'] = html_escape($this->input->post('starting_minute'));
+    $data['ending_hour'] = html_escape($this->input->post('ending_hour'));
+    $data['ending_minute'] = html_escape($this->input->post('ending_minute'));
+    $data['school_id'] = $this->school_id;
+    $data['session_id'] = $this->active_session;
 
-		$response = array(
-			'status' => true,
-			'notification' => get_phrase('class_routine_updated_successfully')
-		);
+    // Supprimer les anciennes entrées pour cette routine
+    $this->db->where('id', $param1);
+    $routine = $this->db->get('routines')->row_array();
+    if ($routine) {
+        $this->db->where('class_id', $routine['class_id']);
+        $this->db->where('day', $routine['day']);
+        $this->db->where('starting_hour', $routine['starting_hour']);
+        $this->db->where('starting_minute', $routine['starting_minute']);
+        $this->db->where('ending_hour', $routine['ending_hour']);
+        $this->db->where('ending_minute', $routine['ending_minute']);
+        $this->db->where('teacher_id', $routine['teacher_id']);
+        $this->db->where('room_id', $routine['room_id']);
+        $this->db->delete('routines');
+    }
 
-		return json_encode($response);
-	}
+    // Insérer une nouvelle entrée pour chaque section sélectionnée
+    foreach ($section_ids as $section_id) {
+        $data['section_id'] = html_escape($section_id);
+        $this->db->insert('routines', $data);
+    }
+
+    $response = array(
+        'status' => true,
+        'notification' => get_phrase('class_routine_updated_successfully')
+    );
+
+    return json_encode($response);
+}
 
 	public function routine_delete($param1 = '')
 	{
@@ -551,12 +575,12 @@ class Crud_model extends CI_Model {
 
 		$this->settings_model->last_updated_attendance_data();
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('attendance_updated_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function get_todays_attendance() {
@@ -581,12 +605,12 @@ class Crud_model extends CI_Model {
 		$data['session'] = $this->active_session;
 		$this->db->insert('event_calendars', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('event_has_been_added_successfully')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function event_calendar_update($param1 = '')
@@ -673,12 +697,12 @@ class Crud_model extends CI_Model {
 		}
 		$this->db->insert('noticeboard', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('notice_has_been_created')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_notice($notice_id) {
@@ -693,12 +717,12 @@ class Crud_model extends CI_Model {
 		$this->db->where('id', $notice_id);
 		$this->db->update('noticeboard', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('notice_has_been_updated')
 		);
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function delete_notice($notice_id) {
@@ -729,35 +753,205 @@ class Crud_model extends CI_Model {
 	//START EXAM section
 	public function exam_create()
 {
+    // Générer un identifiant unique pour la requête
+    $request_id = uniqid('exam_create_');
+
+    // Prepare exam data
     $data['name'] = html_escape($this->input->post('exam_name'));
-    $data['starting_date'] = strtotime($this->input->post('starting_date'));
-    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
-    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
+    $starting_date_input = $this->input->post('starting_date');
+    // Convertir datetime-local (YYYY-MM-DDTHH:MM) en timestamp
+    $data['starting_date'] = $starting_date_input ? strtotime(str_replace('T', ' ', $starting_date_input)) : false;
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['section_id'] = html_escape($this->input->post('section_id'));
     $data['school_id'] = $this->school_id;
     $data['session'] = $this->active_session;
 
-    $this->db->insert('exams', $data);
+    // Validate required fields
+    if (empty($data['name'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_name_required')
+        );
+        return json_encode($response);
+    }
+    if (empty($data['class_id'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('class_required')
+        );
+        return json_encode($response);
+    }
+    if (empty($data['section_id'])) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('section_required')
+        );
+        return json_encode($response);
+    }
+    if (!$data['starting_date']) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_date_format')
+        );
+        return json_encode($response);
+    }
 
+    // Verify class_id exists
+    $class_exists = $this->db->get_where('classes', ['id' => $data['class_id'], 'school_id' => $this->school_id])->num_rows();
+    if (!$class_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_class')
+        );
+        return json_encode($response);
+    }
+
+    // Verify section_id exists and belongs to the class
+    $section_exists = $this->db->get_where('sections', ['id' => $data['section_id'], 'class_id' => $data['class_id']])->num_rows();
+    if (!$section_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_section')
+        );
+        return json_encode($response);
+    }
+
+    // Check for duplicate exam
+    $this->db->where('name', $data['name']);
+    $this->db->where('starting_date', $data['starting_date']);
+    $this->db->where('class_id', $data['class_id']);
+    $this->db->where('section_id', $data['section_id']);
+    $this->db->where('school_id', $data['school_id']);
+    $this->db->where('session', $data['session']);
+    $existing_exam = $this->db->get('exams')->row_array();
+
+    if ($existing_exam) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_already_exists')
+        );
+        return json_encode($response);
+    }
+
+    // Insert the exam
+    $this->db->insert('exams', $data);
+    $exam_id = $this->db->insert_id();
+
+    if (!$exam_id) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('failed_to_create_exam')
+        );
+        return json_encode($response);
+    }
+
+
+    // Fetch the newly created exam details
+    $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
+    $this->db->from('exams');
+    $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+    $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+    $this->db->where('exams.id', $exam_id);
+    $exam = $this->db->get()->row_array();
+
+    // Prepare response
     $response = array(
+
         'status' => true,
-        'notification' => get_phrase('exam_created_successfully')
+        'notification' => get_phrase('exam_created_successfully'),
+        'class_id' => $data['class_id'], // Added for filtering in frontend
+        'exam' => array(
+            'id' => $exam['id'],
+            'name' => $exam['name'] ?: 'Unnamed Exam',
+            'starting_date' => $exam['starting_date'],
+            'formatted_date' => $exam['starting_date'] ? date('D, d-M-Y H:i', $exam['starting_date']) : 'No Date',
+            'class_name' => $exam['class_name'] ?: get_phrase('no_class'),
+            'section_name' => $exam['section_name'] ?: get_phrase('no_section'),
+            'calendar_event' => array(
+                'title' => $exam['name'] ?: 'Unnamed Exam',
+                'start' => $exam['starting_date'] ? date('Y-m-d H:i:s', $exam['starting_date']) : ''
+            )
+        )
     );
+
+
     return json_encode($response);
+
 }
 public function exam_update($param1 = '')
 {
+    // Prepare exam data
     $data['name'] = html_escape($this->input->post('exam_name'));
     $data['starting_date'] = strtotime($this->input->post('starting_date'));
-    $data['class_id'] = $this->input->post('class_id'); // Ajout de class_id
-    $data['section_id'] = $this->input->post('section_id'); // Ajout de section_id
+    $data['class_id'] = html_escape($this->input->post('class_id'));
+    $data['section_id'] = html_escape($this->input->post('section_id'));
 
+    // Validate required fields
+    if (empty($data['name']) || empty($data['class_id']) || empty($data['section_id']) || !$data['starting_date']) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('all_fields_are_required')
+        );
+        return json_encode($response);
+    }
+
+    // Verify class_id exists
+    $class_exists = $this->db->get_where('classes', ['id' => $data['class_id'], 'school_id' => $this->school_id])->num_rows();
+    if (!$class_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_class')
+        );
+        return json_encode($response);
+    }
+
+    // Verify section_id exists and belongs to the class
+    $section_exists = $this->db->get_where('sections', ['id' => $data['section_id'], 'class_id' => $data['class_id']])->num_rows();
+    if (!$section_exists) {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('invalid_section')
+        );
+        return json_encode($response);
+    }
+
+    // Update the exam
     $this->db->where('id', $param1);
-    $this->db->update('exams', $data);
+    $update_result = $this->db->update('exams', $data);
 
-    $response = array(
-        'status' => true,
-        'notification' => get_phrase('exam_updated_successfully')
-    );
+    // Fetch the updated exam details
+    $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
+    $this->db->from('exams');
+    $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+    $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+    $this->db->where('exams.id', $param1);
+    $exam = $this->db->get()->row_array();
+
+    if ($exam) {
+        $exam['formatted_date'] = $exam['starting_date'] ? date('D, d-M-Y H:i', $exam['starting_date']) : 'No Date';
+        $response = array(
+            'status' => $update_result,
+            'notification' => $update_result ? get_phrase('exam_updated_successfully') : get_phrase('failed_to_update_exam'),
+            'exam' => array(
+                'id' => $exam['id'],
+                'name' => $exam['name'] ?: 'Unnamed Exam',
+                'starting_date' => $exam['starting_date'],
+                'formatted_date' => $exam['formatted_date'],
+                'class_name' => $exam['class_name'] ?: get_phrase('no_class'),
+                'section_name' => $exam['section_name'] ?: get_phrase('no_section'),
+                'calendar_event' => array(
+                    'title' => $exam['name'] ?: 'Unnamed Exam',
+                    'start' => $exam['starting_date'] ? date('Y-m-d H:i:s', $exam['starting_date']) : ''
+                )
+            )
+        );
+    } else {
+        $response = array(
+            'status' => false,
+            'notification' => get_phrase('exam_not_found')
+        );
+    }
+
     return json_encode($response);
 }
 
@@ -855,11 +1049,11 @@ public function exam_update($param1 = '')
 		$data['session'] = $this->active_session;
 		$this->db->insert('grades', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('grade_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function grade_update($id = "") {
@@ -996,27 +1190,27 @@ public function exam_update($param1 = '')
 		}
 
 		if ($data['paid_amount'] > $data['total_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_can_not_get_bigger_than_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 		if ($data['status'] == 'paid' && $data['total_amount'] != $data['paid_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_is_not_equal_to_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		$this->db->insert('invoices', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('invoice_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function create_mass_invoice() {
@@ -1025,19 +1219,19 @@ public function exam_update($param1 = '')
 		$data['status'] = htmlspecialchars($this->input->post('status'));
 
 		if ($data['paid_amount'] > $data['total_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_can_not_get_bigger_than_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		if ($data['status'] == 'paid' && $data['total_amount'] != $data['paid_amount']) {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('paid_amount_is_not_equal_to_total_amount')
 			);
-			return json_encode($response);
+			//return json_encode($response);
 		}
 
 		$data['title'] = htmlspecialchars($this->input->post('title'));
@@ -1058,17 +1252,17 @@ public function exam_update($param1 = '')
 		}
 
 		if (sizeof($enrolments) > 0) {
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('invoice_added_successfully')
 			);
 		}else{
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('no_student_found')
 			);
 		}
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_invoice($id = "") {
@@ -1145,11 +1339,11 @@ public function exam_update($param1 = '')
 		$data['school_id'] = $this->school_id;
 		$data['session'] = $this->active_session;
 		$this->db->insert('expense_categories', $data);
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('expense_category_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_expense_category($id) {
@@ -1200,11 +1394,11 @@ public function exam_update($param1 = '')
 		$data['created_at'] = strtotime(date('d-M-Y'));
 		$this->db->insert('expenses', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('expense_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	// updating
@@ -1295,11 +1489,11 @@ public function exam_update($param1 = '')
 		$data['session']   = $this->active_session;
 		$this->db->insert('books', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('books_added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_book($id = "") {
@@ -1357,11 +1551,11 @@ public function exam_update($param1 = '')
 
 		$this->db->insert('book_issues', $data);
 
-		$response = array(
+		return array(
 			'status' => true,
 			'notification' => get_phrase('added_successfully')
 		);
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_book_issue($id = "") {
@@ -1488,4 +1682,33 @@ public function exam_update($param1 = '')
             return false;
         }
     }
+
+	public function get_total_questions($exam_id) {
+		$this->db->where('exam_id', $exam_id);
+		return $this->db->count_all_results('exam_questions');
+	}
+
+	public function check_admins_in_teachers($school_id) {
+    // Définir les rôles à vérifier
+    $roles = ['admin', 'superadmin'];
+    
+    foreach ($roles as $role) {
+        // Récupérer l'utilisateur avec le rôle spécifié
+        $user = $this->db->get_where('users', array('school_id' => $school_id, 'role' => $role))->row_array();
+        
+        if ($user) {
+            // Vérifier si l'utilisateur existe déjà dans la table teachers
+            $existing_teacher = $this->db->get_where('teachers', array('user_id' => $user['id'], 'school_id' => $school_id))->row_array();
+            
+            if (!$existing_teacher) {
+                // Insérer l'utilisateur comme enseignant
+                $teacher_data = array(
+                    'user_id' => $user['id'],
+                    'school_id' => $school_id
+                );
+                $this->db->insert('teachers', $teacher_data);
+            }
+        }
+    }
+}
 }

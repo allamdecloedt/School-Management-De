@@ -243,7 +243,7 @@ label div:last-child {
 
 .login-dropdown {
   position: absolute;
-  height: 300px !important;
+  height: 270px !important;
   width: 300px;
   top: 60px;
   padding-left: 20px;
@@ -256,9 +256,35 @@ label div:last-child {
   border: #ffffffcf solid 1px;
 }
 
+.email-error, .school-error {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.8em;
+  background-color: #fef2f2; 
+  border: none; 
+  border-radius: 12px; 
+  padding: 5px 8px; 
+  width: fit-content; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  color: #b91c1c; 
+  font-family: 'Inter', sans-serif; 
+  font-weight: 500; 
+  transition: all 0.3s ease; 
+  margin-left: auto; 
+  margin-right: auto;
+}
+
+.login-dropdown.has-error {
+  height: 320px !important; /* Hauteur lorsque l'erreur est affichée */
+}
+
+.login-form.has-error {
+  margin-bottom: 10px !important;
+}
+
 .register-dropdown {
   position: absolute;
-  height: 350px !important;
+  height: 390px !important;
   width: 400px;
   top: 60px;
   right: 0;
@@ -325,7 +351,7 @@ label div:last-child {
   text-decoration: none;
   font-size: 11px !important;
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   cursor: default;
   pointer-events: none;
 }

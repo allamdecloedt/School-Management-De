@@ -22,7 +22,7 @@
         <!-- Invoice Logo-->
         <div class="clearfix">
           <div class="float-start mb-3">
-            <img src="<?php echo $this->settings_model->get_logo_dark(); ?>" alt="" height="18">
+            <img src="<?php echo $this->settings_model->get_logo_dark(); ?>" alt="" height="40">
           </div>
         </div>
 
@@ -122,3 +122,49 @@
       </div> <!-- end card -->
     </div> <!-- end col-->
   </div>
+
+  <style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .card-body, .card-body * {
+            visibility: visible;
+        }
+        .card-body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+        .badge.bg-success {
+            background-color: #28a745 !important;
+            color: white;
+            padding: 5px;
+        }
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+            color: white;
+            padding: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+ 
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    }
+</style>

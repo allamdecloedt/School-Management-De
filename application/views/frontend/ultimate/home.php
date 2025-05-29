@@ -103,7 +103,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 <main class="" id="content" role="main">
   <!-- Intro Section -->
   <div class="intro-section">
-  <div id="intro-container" class="intro-container position-relative" style="min-height: 100vh;">
+  <div id="intro-container" class="intro-container position-relative" style="min-height: 90vh;">
     <!-- Background -->
     <div class="position-absolute top-0 start-0 end-0 bottom-0 opacity-75" style="background-image: url('uploads/images/decloedt/home/main_bg.jpg'); background-size: cover; background-position: center; filter: brightness(40%); z-index: 0;"></div>
     <!-- Container for content -->
@@ -141,15 +141,12 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <!-- Right Column -->
             <div class="col-lg-6 mt-3 mb-lg-0 d-flex align-items-center">
                 <div class="text-container text-center text-lg-center w-100">
-                    <p class="text-white fw-bold fs-4 fs-md-4">Enjoy 30 days free to explore Wayo Academy!</p>
-                    <p class="text-white fw-bold fs-4 fs-md-4">Offer valid until June 28th</p>
+                    <p class="text-white fw-bold fs-4 fs-md-4">Enjoy 7 days free to explore Wayo Academy!</p>
                     <a class="btn text-white border-5 shadow-sm rounded-3 w-75 w-md-auto px-5 py-3 fw-bold " style="background-color: rgba(210, 130, 45, 0.7); border-color: #A9A9A8; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(210, 130, 45, 0.55)'" onmouseout="this.style.backgroundColor='rgba(210, 130, 45, 0.7)'" href="<?php echo site_url('home/courses'); ?>">START NOW</a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Image positioned bottom-right -->
-    <img src="uploads/images/decloedt/home/bg_ClaimYourFreeTrial.png" class="position-absolute bottom-0 end-0 claim-free-trial" alt="Claim Your Free Trial">
 </div>
 
 
@@ -173,98 +170,97 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
 </div>
     </div>
   </section>
-  <section class="py-3 position-relative" style="min-height: 100vh;">
+  <section class="py-3 position-relative" style="min-height: 120vh;">
     <!-- Background Image -->
-    <div class="position-absolute top-0 start-0 end-0 bottom-0" style="background-image: url('uploads/images/decloedt/home/bg_WhyChooseAcademy.jpg'); background-size: cover; background-position: center; filter: brightness(75%); z-index: -1;"></div>
-    
+    <div class="position-absolute top-0 start-0 end-0 bottom-0 bg-wcwa"></div>
     <div class="container position-relative" style="z-index: 1;">
         <!-- Title -->
-        <h2 class="text-center text-white mb-5" style="font-family: 'Playfair Display', serif; font-size: 34px;">Why choose Wayo Academy as a...</h2>
-
+        <h2 class="text-center text-white mb-5 mt-5" style=" font-size: 45px; font-weight: bold;">Why choose Wayo Academy as a...</h2>
         <!-- Mentor Section -->
         <div class="mb-5">
-            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Mentor</h3>
+            <h3 class="text-center text-white mb-4" style=" font-size: 34px; font-weight: bold;">Mentor</h3>
             <div class="row g-4">
                 <!-- Mentor Item 1 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Create and customize interactive courses in just a few clicks</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Create and customize interactive courses in just a few clicks</p>
                     </div>
                 </div>
                 <!-- Mentor Item 2 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Easily schedule online classes and track attendance</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Easily schedule online classes and track attendance</p>
                     </div>
                 </div>
                 <!-- Mentor Item 3 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access an intuitive calendar to organize your events</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Access an intuitive calendar to organize your events</p>
                     </div>
                 </div>
                 <!-- Mentor Item 4 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Evaluate learners with automated quizzes & reports</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Evaluate learners with automated quizzes & reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 5 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Analyze performance with detailed reports</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Analyze performance with detailed reports</p>
                     </div>
                 </div>
                 <!-- Mentor Item 6 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Build a community around your expertise</p>
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Build a community around your expertise</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Learner Section -->
-        <div>
-            <h3 class="text-center text-white mb-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Learner</h3>
+        <div class="mb-5">
+            <h3 class="text-center text-white mb-4" style=" font-size: 34px; font-weight: bold;">Learner</h3>
             <div class="row g-4">
-                <!-- Learner Item 1 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Learn at your own pace with online courses</p>
+                <!-- Mentor Item 1 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Learn at your own pace with online courses</p>
                     </div>
                 </div>
-                <!-- Learner Item 2 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Follow a clear and motivating class routine</p>
+                <!-- Mentor Item 2 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Follow a clear and motivating class routine</p>
                     </div>
                 </div>
-                <!-- Learner Item 3 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Access a variety of multimedia resources (videos, quizzes, etc.)</p>
+                <!-- Mentor Item 3 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Access a variety of multimedia resources (videos, quizzes, etc.)</p>
                     </div>
                 </div>
-                <!-- Learner Item 4 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Stay organized with event reminders & deadlines</p>
+                <!-- Mentor Item 4 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Stay organized with event reminders & deadlines &nbsp;</p>
                     </div>
                 </div>
-                <!-- Learner Item 5 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Join interactive classes with your mentors</p>
+                <!-- Mentor Item 5 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Join interactive classes with your mentors</p>
                     </div>
                 </div>
-                <!-- Learner Item 6 -->
-                <div class="col-xl-2 col-md-4 col-sm-6">
-                    <div class="text-white p-4 rounded-3 h-100" style="background-color: rgba(255, 137, 3, 0.55);">
-                        <p class="text-white text-center fs-5 mb-0" style="font-weight: bold;"><span class="text-white me-2">✔</span>Progress with instant feedback on your results</p>
+                <!-- Mentor Item 6 -->
+                <div class="col-xl-4 col-md-4 col-sm-6">
+                    <div class="card-wcwa text-white p-4 rounded-4 h-100" style="background-color: rgba(255, 255, 255, 0.95);">
+                        <p class="text-center fs-5 mb-0">Progress with instant feedback on your results</p>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </section>
@@ -378,17 +374,18 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
  $App_store = base_url('uploads/images/decloedt/logo/App_Store_Bouton.svg');
  $telephone_wayo = base_url('uploads/images/decloedt/home/bg_download.png');
 
-?> <div class="section" style="min-height: 50vh;">
+?> <div class="section" style="min-height: 70vh;">
     <div class="image-container">
       <img src="<?php echo $telephone_wayo; ?>" class="hide-on-mobile" style="width: 100%;" alt="Image description">
     </div>
     <div class="text-container_wayo">
       <h1 class="text-black marg_wayo" style="font-family: 'Playfair Display', serif; font-size: 34px;">Easier, faster and more accessible mentoring at your fingertips !</h1>
+      <h1 class="text-black marg_wayo text-center" style="font-family: 'Playfair Display', serif; font-size: 50px;">Coming soon!</h1>
       <div class="promo-buttons ">
-        <a href="#" class="store-button">
+        <a class="store-button">
           <img src="<?php echo $App_store; ?>" alt="Download on App Store">
         </a>
-        <a href="#" class="store-button">
+        <a class="store-button">
           <img src="<?php echo $App_Google_play; ?>" alt="Get it on Google Play">
         </a>
       </div>
@@ -414,7 +411,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-3 py-2 rounded">
           <i class="fab fa-facebook-f fs-4"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
+        <a href="https://www.facebook.com/people/Wayo-Academy/61572524656807/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</a>
       </div>
 
       <!-- LinkedIn -->
@@ -422,7 +419,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-linkedin-in fs-4"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</span>
+        <a href="https://www.linkedin.com/company/wayoacademy/about/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">Wayo Academy</a>
       </div>
 
       <!-- Instagram -->
@@ -430,7 +427,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         <div class="bg-white text-black px-2 py-2 rounded">
           <i class="fab fa-instagram fs-3"></i>
         </div>
-        <span class="fs-4" style="font-family: 'Playfair Display', serif; font-size: 34px;">@wayo_academy</span>
+        <a href="https://www.instagram.com/wayo_academy/" target="_blank" class="fs-4 follow-us" style="font-family: 'Playfair Display', serif; font-size: 34px;">wayo_academy</a>
       </div>
     </div>
   </div>
@@ -642,6 +639,14 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
         content: "-";
         transform: rotate(180deg);
     }
+    .follow-us {
+      text-decoration: none !important;
+      color: #ffffff;
+    }
+    .follow-us:hover {
+      text-decoration: none !important;
+      color: rgba(210, 130, 45, 0.937);
+    }
     @media (max-width: 1024px) {
         .question-marks {
             display: none; /* Masque les images */
@@ -697,7 +702,7 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
   <!-- Title -->
   <div class="event-title-section">
     <div class=" text-center event-title-section-text">
-      <h2 style="font-family: 'Playfair Display', serif; font-size: 45px;"> <?php echo get_phrase('Upcomig Events'); ?> </h2>
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 45px;"> <?php echo get_phrase('Upcoming Events'); ?> </h2>
       <div class="content">
         <svg id="more-arrows">
           <polygon class="arrow-top" points="37.6,27.9 1.8,1.3 3.3,0 37.6,25.3 71.9,0 73.7,1.3 " />
@@ -891,27 +896,27 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             <div class="carousel-item active" style="background-image: url('uploads/images/decloedt/placeholders/Image_01.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Work Smarter, Not Harder Online Course</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
             <!-- Slide 2 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_02.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">From Awkward To Awesome: Secrets To Success</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
             <!-- Slide 3 -->
             <div class="carousel-item" style="background-image: url('uploads/images/decloedt/placeholders/Image_03.png');">
                 <div class="carousel-caption">
                     <h5 style="font-family: 'Playfair Display', serif; font-size: 30px;">Virtual Learning In Modern Scrum Environments</h5>
-                    <a href="#" class="btn">Read More</a>
+                    <!-- <a href="#" class="btn">Read More</a> -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-<style>
+<style type="text/css">
         /* Style personnalisé pour le carrousel */
         .carousel-container {
             position: relative;
@@ -988,6 +993,40 @@ $upcoming_events = $this->frontend_model->get_frontend_upcoming_events();
             margin-top: 25rem;
             font-weight: bold;
             color: white;
+        }
+
+        .bg-wcwa::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: url('uploads/images/decloedt/home/bg_WhyChooseAcademy_2.jpg') no-repeat center center/cover;
+          z-index: 0;
+        }
+        .bg-wcwa::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom right, #ED9939, #e57c1f55); /* overlay plus discret */
+          z-index: 1;
+          
+        }
+
+       .card-wcwa {
+          color: #000 !important; /* Couleur par défaut du texte */
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+          transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .card-wcwa p{
+          color: #000 !important;
+        }
+
+        .card-wcwa:hover {
+          transform: translateY(-3px);
+        }
+
+        .card-wcwa:hover p {
+          color: rgba(210, 130, 45, 0.937) !important;
         }
     </style>
     <!------------------------------------------------------------------------------------------------>

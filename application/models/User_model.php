@@ -266,18 +266,18 @@ class User_model extends CI_Model
 				move_uploaded_file($_FILES['image_file']['tmp_name'], 'uploads/users/' . $teacher_id . '.jpg');
 			}
 
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('teacher_added_successfully')
 			);
 		} else {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('sorry_this_email_has_been_taken')
 			);
 		}
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function update_teacher($param1 = '')
@@ -410,18 +410,18 @@ class User_model extends CI_Model
 		if ($duplication_status) {
 			$this->db->insert('users', $data);
 
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('accountant_added_successfully')
 			);
 		} else {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('sorry_this_email_has_been_taken')
 			);
 		}
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function accountant_update($param1 = '')
@@ -503,18 +503,18 @@ class User_model extends CI_Model
 		if ($duplication_status) {
 			$this->db->insert('users', $data);
 
-			$response = array(
+			return array(
 				'status' => true,
 				'notification' => get_phrase('librarian_added_successfully')
 			);
 		} else {
-			$response = array(
+			return array(
 				'status' => false,
 				'notification' => get_phrase('sorry_this_email_has_been_taken')
 			);
 		}
 
-		return json_encode($response);
+		//return json_encode($response);
 	}
 
 	public function librarian_update($param1 = '')
@@ -710,6 +710,7 @@ class User_model extends CI_Model
  
                 $student_data['session'] = $this->active_session;
                 $student_data['school_id'] = $this->school_id;
+				$student_data['status'] = '1';
                 $this->db->insert('students', $student_data);
                 $student_id = $this->db->insert_id();
  
@@ -801,6 +802,7 @@ class User_model extends CI_Model
 						// $student_data['parent_id'] = html_escape($all_data[4]);				
 						$student_data['session'] = $session_id;
 						$student_data['school_id'] = $school_id;
+						$student_data['status'] = '1';
 						$this->db->insert('students', $student_data);
 						$student_id = $this->db->insert_id();
 
@@ -1159,7 +1161,7 @@ class User_model extends CI_Model
 
 	public function get_schools_per_category($category, $limit, $start)
 	{
-		$result = $this->db->limit($limit, $start)->get_where('schools', array('status' => 1, 'category' => $category));
+		$result = $this->db->limit($limit, $start)->get_where('schools', array('status' => 1, 'Etat' => 1, 'category' => $category));
 		return $result;
 	}
 
@@ -1480,10 +1482,10 @@ class User_model extends CI_Model
 				$this->db->where('school_id', $school_id);
 				$this->db->where_in('role', array('admin', 'superadmin'));
 				$user_email_admin = $this->db->get('users')->row('email');
-				$email_ex = "soukaina.atif1949@gmail.com";
+			
 				
 				$this->email_model->join_student_email($user_email,$user_name, $data['code'],$row ->name,$school_id);
-				$this->email_model->join_student_email_for_admin($email_ex,$user_name, $data['code'],$row ->name,$school_id);
+				$this->email_model->join_student_email_for_admin($user_email_admin,$user_name, $data['code'],$row ->name,$school_id);
 				
 
 				if (isset($_SERVER['HTTP_REFERER'])) {
@@ -1573,61 +1575,110 @@ public function register_user_form()
 {
     $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
 
-    if ($this->input->post('student_email') == '' || !preg_match($emailPattern, $this->input->post('student_email')) || $this->input->post('password-student') == '' || $this->input->post('first_name') == '' || $this->input->post('last_name') == '' || $this->input->post('date_of_birth') == '' || $this->input->post('repeat-password-student') == '') {
-
-        $this->session->set_flashdata('error', get_phrase('validation_error'));
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            redirect($_SERVER['HTTP_REFERER'], 'refresh');
-        }
-
-    } else if ($this->db->get_where('users', array('email' => $this->input->post('student_email')))->num_rows() > 0) {
-
-        $this->session->set_flashdata('error', get_phrase('email_already_exists'));
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            redirect($_SERVER['HTTP_REFERER'], 'refresh');
-        }
-
-    } else {
-
-
-        $data['name'] = htmlspecialchars($this->input->post('first_name') . ' ' . $this->input->post('last_name'));
-        $data['email'] = htmlspecialchars($this->input->post('student_email'));
-        $data['birthday'] = htmlspecialchars($this->input->post('date_of_birth'));
-        $data['gender'] = htmlspecialchars($this->input->post('gender'));
-        $data['password'] = sha1($this->input->post('password-student'));
-		if($this->input->post('phone') != ''){
-			$data['phone'] = htmlspecialchars($this->input->post('phone'));
-		}
-		$data["address"] = htmlspecialchars($this->input->post('address'));
-        $data['role'] = 'student';
-        $data['status'] = 1;
-        $data['school_id'] = 1;
-        $data['watch_history'] = '[]';
-
-        $this->db->insert('users', $data);
-        $user_id = $this->db->insert_id();
-
-
-        if (isset($_FILES['student_image']) && $_FILES['student_image']['error'] == UPLOAD_ERR_OK) {
-		
-            $upload_path = 'uploads/users/' . $user_id . '.jpg';
-            move_uploaded_file($_FILES['student_image']['tmp_name'], $upload_path);
-        }
-		
-		$this->email_model->Add_online_admission($data['email'], $user_id,$data['name']);
-		$this->session->set_userdata('user_login_type', true);
-        $this->session->set_userdata('student_login', true);
-        $this->session->set_userdata('user_id', $user_id);
-        $this->session->set_userdata('school_id', 1);
-        $this->session->set_userdata('user_name', $data['name']);
-        $this->session->set_userdata('user_type', 'student');
-        $this->session->set_flashdata('success', get_phrase('registration_successful'));
-		
+    // Valider les champs requis
+    if (
+        $this->input->post('student_email') == '' ||
+        !preg_match($emailPattern, $this->input->post('student_email')) ||
+        $this->input->post('password-student') == '' ||
+        $this->input->post('first_name') == '' ||
+        $this->input->post('last_name') == '' ||
+        $this->input->post('date_of_birth') == '' ||
+        $this->input->post('repeat-password-student') == ''
+    ) {
+        return json_encode([
+            'status' => false,
+            'message' => get_phrase('validation_error'),
+            'csrf' => [
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash()
+            ]
+        ]);
     }
 
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        redirect($_SERVER['HTTP_REFERER'], 'refresh');
+    // Vérifier la duplication de l'email
+    if ($this->db->get_where('users', ['email' => $this->input->post('student_email')])->num_rows() > 0) {
+        return json_encode([
+            'status' => false,
+            'message' => get_phrase('email_already_exists'),
+            'csrf' => [
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash()
+            ]
+        ]);
     }
+
+    // Préparer les données de l'utilisateur
+    $data = [
+        'name' => htmlspecialchars($this->input->post('first_name') . ' ' . $this->input->post('last_name')),
+        'email' => htmlspecialchars($this->input->post('student_email')),
+        'birthday' => htmlspecialchars($this->input->post('date_of_birth')),
+        'gender' => htmlspecialchars($this->input->post('gender')),
+        'password' => sha1($this->input->post('password-student')),
+        'phone' => $this->input->post('phone') ? htmlspecialchars($this->input->post('phone')) : '',
+        'address' => htmlspecialchars($this->input->post('address')),
+        'role' => 'student',
+        'status' => 1,
+        'school_id' => 1, // Ajustez selon votre logique
+        'watch_history' => '[]'
+    ];
+
+    // Insérer l'utilisateur dans la base de données
+    $this->db->insert('users', $data);
+    $user_id = $this->db->insert_id();
+
+    // Gérer l'upload de l'image
+    if (isset($_FILES['student_image']) && $_FILES['student_image']['error'] == UPLOAD_ERR_OK) {
+        $upload_path = 'Uploads/users/' . $user_id . '.jpg';
+        if (!move_uploaded_file($_FILES['student_image']['tmp_name'], $upload_path)) {
+            return json_encode([
+                'status' => false,
+                'message' => get_phrase('image_upload_failed'),
+                'csrf' => [
+                    'csrfName' => $this->security->get_csrf_token_name(),
+                    'csrfHash' => $this->security->get_csrf_hash()
+                ]
+            ]);
+        }
+    }
+
+    // Envoyer un email de confirmation
+    $this->email_model->Add_online_admission($data['email'], $user_id, $data['name']);
+
+	// Auto-login
+$this->session->set_userdata([
+    'user_login_type' => true,
+    'student_login' => true,
+    'user_id' => $user_id,
+    'school_id' => $data['school_id'],
+    'user_name' => $data['name'],
+    'user_type' => 'student',
+    'is_logged_in' => true
+]);
+
+    // Réponse JSON pour succès
+    return json_encode([
+        'status' => true,
+        'message' => get_phrase('registration_successful'),
+        'csrf' => [
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        ]
+    ]);
+}
+
+public function get_schools_count()
+{
+    $this->db->where('status', 1);
+    $this->db->where('Etat', 1);
+    return $this->db->count_all_results('schools');
+}
+
+public function get_schools_per_category_count($category)
+{
+    $this->db->where('category', $category);
+    $this->db->where('status', 1);
+    $this->db->where('Etat', 1);
+    return $this->db->count_all_results('schools');
 }
 
 }

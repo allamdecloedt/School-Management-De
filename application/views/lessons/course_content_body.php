@@ -160,7 +160,7 @@
     <div class="margin-m" id = "lesson-summary">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><?php echo $lesson_details['lesson_type'] == 'quiz' ? get_phrase('instruction') : get_phrase("note"); ?>:</h5>
+                <strong class="card-title"><?php echo $lesson_details['lesson_type'] == 'quiz' ? get_phrase('instruction') : get_phrase("note"); ?>:</strong>
                 <?php if ($lesson_details['summary'] == ""): ?>
                     <p class="card-text"><?php echo $lesson_details['lesson_type'] == 'quiz' ? get_phrase('no_instruction_found') : get_phrase("no_summary_found"); ?></p>
                 <?php else: ?>
@@ -170,3 +170,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    .card-title {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+    }
+    .card {
+        padding: 0px 0px;
+        border-radius: 15px;
+    }
+
+</style>

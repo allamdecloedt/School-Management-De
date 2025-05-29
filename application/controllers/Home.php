@@ -245,119 +245,104 @@ class Home extends CI_Controller
 
 	//Courses Overview Page
 	function courses($param1 = null, $param2 = null)
-	{
-		$config = array();
-		$config['base_url'] = site_url('home/courses/');
-		$config['per_page'] = 8;
-		$config['use_page_numbers'] = true;
+{
+    $config = array();
+    $config['base_url'] = site_url('home/courses/');
+    $config['per_page'] = 8;
+    $config['use_page_numbers'] = true;
 
-		//check if a category is specified
-		if ($param1 != null) {
-			$cat_formated = str_replace("_", " ", $param1);
-			$param1 = $cat_formated;
-			$is_category = $this->frontend_model->contains("categories", "name", $param1);
-		}
+    // Vérifier si une catégorie est spécifiée
+    $is_category = false;
+    $category = null;
+    if ($param1 != null) {
+        $cat_formated = str_replace("_", " ", $param1);
+        $category = $cat_formated;
+        $is_category = $this->frontend_model->contains("categories", "name", $category);
+    }
 
-		//if a category is specified and schools exist in that category
-		if ($is_category && $this->db->get_where('schools', array('category' => $param1))->num_rows() > 0) {
+    // Déterminer la page actuelle et l'offset
+    if ($is_category) {
+        // Si c'est une catégorie, la page est dans le segment 4 (home/courses/category/page)
+        $page = $this->uri->segment(4) ? (int)$this->uri->segment(4) : 1;
+        $config['base_url'] = site_url('home/courses/' . str_replace(" ", "_", $category));
+    } else {
+        // Si ce n'est pas une catégorie, la page est dans le segment 3 (home/courses/page)
+        $page = ($param1 != null && is_numeric($param1)) ? (int)$param1 : ($this->uri->segment(3) ? (int)$this->uri->segment(3) : 1);
+    }
 
-			$config['uri_segment'] = 4;
-			$page = ($this->uri->segment($config['uri_segment'])) ? $this->uri->segment($config['uri_segment']) : 1;
-			$offset = ($page - 1) * $config['per_page'];
-			$page_data['schools'] = $this->user_model->get_schools_per_category($param1, $config['per_page'], $offset);
-			$config['total_rows'] = $this->db->where('category', $param1)->count_all_results('schools');
-			$page_data['statement'] = 1;
-		}
+    $offset = ($page - 1) * $config['per_page'];
 
-		//if a category is specified but no schools exist in that category
-		if ($is_category && $this->db->get_where('schools', array('category' => $param1))->num_rows() == 0) {
+    // Si une catégorie est spécifiée et qu'il y a des écoles dans cette catégorie
+    if ($is_category && $this->db->get_where('schools', array('category' => $category, 'status' => 1, 'Etat' => 1))->num_rows() > 0) {
+        $config['uri_segment'] = 4;
+        try {
+            $page_data['schools'] = $this->user_model->get_schools_per_category($category, $config['per_page'], $offset);
+            $config['total_rows'] = $this->user_model->get_schools_per_category_count($category);
+            $page_data['statement'] = 1;
+        } catch (Exception $e) {
+            log_message('error', 'Erreur dans get_schools_per_category : ' . $e->getMessage());
+            show_error('Une erreur est survenue lors du chargement des écoles pour la catégorie ' . $category, 500);
+        }
+    }
+    // Si une catégorie est spécifiée mais qu'il n'y a pas d'écoles
+    elseif ($is_category) {
+        $config['uri_segment'] = 4;
+        $page_data['schools'] = array();
+        $config['total_rows'] = 0;
+        $page_data['no_courses_found'] = get_phrase('0_courses_found_in_category') . ' ' . $category;
+        $page_data['statement'] = 2;
+    }
+    // Si aucune catégorie n'est spécifiée (cas "All")
+    else {
+        $config['uri_segment'] = 3;
+        $page_data['schools'] = $this->user_model->get_schools($config['per_page'], $offset);
+        $config['total_rows'] = $this->user_model->get_schools_count();
+        $page_data['statement'] = 4;
+    }
 
-			$config['uri_segment'] = 4;
-			$page = ($this->uri->segment($config['uri_segment'])) ? $this->uri->segment($config['uri_segment']) : 1;
-			$offset = ($page - 1) * $config['per_page'];
-			$config['total_rows'] = $this->db->count_all('schools');
-			$page_data['schools'] = array();
-			$page_data['no_courses_found'] = get_phrase('0_courses_found_in_category') . ' ' . $param1;
-			$page_data['statement'] = 2;
+    // Configuration de la pagination pour Bootstrap
+    $config['num_links'] = 1;
+    $config['first_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
+    </svg>';
+    $config['last_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z"/>
+    </svg>';
+    $config['next_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5"/>
+    </svg>';
+    $config['prev_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
+    </svg>';
+    $config['full_tag_open'] = '<nav aria-label="course page navigation"><div class="pagination-list">';
+    $config['full_tag_close'] = '</div></nav>';
+    $config['first_tag_open'] = '<div class="pagination-item">';
+    $config['first_tag_close'] = '</div>';
+    $config['last_tag_open'] = '<div class="pagination-item">';
+    $config['last_tag_close'] = '</div>';
+    $config['next_tag_open'] = '<div class="pagination-item">';
+    $config['next_tag_close'] = '</div>';
+    $config['prev_tag_open'] = '<div class="pagination-item">';
+    $config['prev_tag_close'] = '</div>';
+    $config['cur_tag_open'] = '<div class="pagination-item active"><a class="pagination-link" href="#">';
+    $config['cur_tag_close'] = '</a></div>';
+    $config['num_tag_open'] = '<div class="pagination-item">';
+    $config['num_tag_close'] = '</div>';
+    $config['attributes'] = array('class' => 'pagination-link');
 
-		}
+    // Initialiser la pagination
+    $this->pagination->initialize($config);
 
-		//if no caterory is specified, but a page number is
-		if ($param1 != null && is_numeric($param1)) {
+    // Créer les liens de pagination
+    $page_data['links'] = $this->pagination->create_links();
 
-			$config['uri_segment'] = 3;
-			$page = ($this->uri->segment($config['uri_segment'])) ? $this->uri->segment($config['uri_segment']) : 1;
-			$offset = ($page - 1) * $config['per_page'];
-			$page_data['schools'] = $this->user_model->get_schools($config['per_page'], $offset);
-			$config['total_rows'] = $this->db->count_all('schools');
-			$page_data['statement'] = 4;
-		}
-
-		//if no category or page number is specifieds
-		else if ($param1 == null) {
-
-			$config['uri_segment'] = 2;
-			$page = ($this->uri->segment($config['uri_segment'])) ? $this->uri->segment($config['uri_segment']) : 1;
-
-			$page_data['schools'] = $this->user_model->get_schools($config['per_page'], $offset);
-			$config['total_rows'] = $this->db->count_all('schools');
-			$page_data['statement'] = 5;
-		}
-
-		//pagination bootstrap settings
-		{
-
-			$config['num_links'] = 1;
-
-			$config['first_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
-  			<path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
-			</svg>';
-
-			$config['last_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
-  			<path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z"/>
-			</svg>';
-
-			$config['next_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class=bi bi-arrow-bar-right" viewBox="0 0 16 16">
-  			<path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5"/>
-			</svg>';
-
-			$config['prev_link'] = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
-  			<path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
-			</svg>';
-
-			$config['full_tag_open'] = '<nav aria-label="course page navigation "><div class="pagination-list">';
-			$config['full_tag_close'] = '</div></nav>';
-			$config['first_tag_open'] = '<div class="pagination-item">';
-			$config['first_tag_close'] = '</div>';
-			$config['last_tag_open'] = '<div class="pagination-item">';
-			$config['last_tag_close'] = '</div>';
-			$config['next_tag_open'] = '<div class="pagination-item">';
-			$config['next_tag_close'] = '</div>';
-			$config['prev_tag_open'] = '<div class="pagination-item">';
-			$config['prev_tag_close'] = '</div>';
-			$config['cur_tag_open'] = '<div class="pagination-item active"><a class="pagination-link" href="#">';
-			$config['cur_tag_close'] = '</a></div>';
-			$config['num_tag_open'] = '<div class="pagination-item">';
-			$config['num_tag_close'] = '</div>';
-			$config['attributes'] = array('class' => 'pagination-link');
-
-
-		}
-
-		//initialize pagination
-		$this->pagination->initialize($config);
-
-		//create pagination links
-		$page_data['links'] = $this->pagination->create_links();
-
-		//set page data
-		$page_data['selected_category'] = $param1;
-		$page_data['categories'] = $this->frontend_model->get_categories();
-		$page_data['page_name'] = 'courses';
-		$page_data['page_title'] = get_phrase('courses');
-		$this->load->view('frontend/' . $this->theme . '/index', $page_data);
-
-	}
+    // Définir les données de la page
+    $page_data['selected_category'] = $category;
+    $page_data['categories'] = $this->frontend_model->get_categories();
+    $page_data['page_name'] = 'courses';
+    $page_data['page_title'] = get_phrase('courses');
+    $this->load->view('frontend/' . $this->theme . '/index', $page_data);
+}
 
 	function courses_search()
 	{

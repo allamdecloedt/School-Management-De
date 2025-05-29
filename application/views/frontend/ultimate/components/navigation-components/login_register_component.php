@@ -1,11 +1,14 @@
 <div class="login-section nav-link">
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+  </div>
   <!-- Login Section -->
   <div class="login-dropdown hidden-section display-none">
     <svg class="login-exit-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
       <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
       <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
     </svg>
-    <form class="login-form mt-10" id="login-form" action="<?php echo site_url('login/validate_login_frontend'); ?>" method="post">
+    <form class="login-form mt-8" id="login-form" action="<?php echo site_url('login/validate_login_frontend'); ?>" method="post">
+<div id="loginError" class="text-danger display-none" style="background-color: #fef2f2; border: none; border-radius: 12px; padding: 5px 22px; width: fit-content; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); color: #b91c1c; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; transition: all 0.3s ease; margin-left: auto; margin-right: auto;"></div>
       <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
       <div class="mb-4 mt-4 login-input">
         <label for="loginEmail" class="login-input-label text-uppercase"><?php echo get_phrase("e-mail") ?> <span class="required"> * </span></label>
@@ -16,9 +19,10 @@
         <input type="password" class="form-control shadow-none" id="loginPassword" name="login_password">
       </div>
       <button type="submit" id="loginSubmit" class="login-button text-uppercase mb-3" style="background-color: rgba(210, 130, 45, 0.7);"><?php echo get_phrase("login") ?></button>
+      <!-- Conteneur pour le message d'erreur -->
     </form>
-    <a class="register-phrase text-uppercase"><?php echo get_phrase("no account yet? ") ?> <span class="ml-1 register-link"><span>(</span> <?php echo get_phrase("register") ?> <span class="ml-1">)</span></span></a>
-    <a class="forget-phrase text-uppercase"><?php echo get_phrase("Forgot account?") ?> <span class="ml-1 forget-link"><span>(</span> <?php echo get_phrase("forget password") ?> <span class="ml-1">)</span></span></a>
+    <a class="register-phrase text-uppercase"><?php echo get_phrase("no account yet? ") ?> <span class="ml-1 register-link"><span>(</span> <?php echo get_phrase("register") ?> <span>)</span></span></a>
+    <a class="forget-phrase text-uppercase"><?php echo get_phrase("Forgot account?") ?> <span class="ml-1 forget-link"><span>(</span> <?php echo get_phrase("forget password") ?> <span>)</span></span></a>
   </div>
 
   <!-- Forget Section (independent) -->
@@ -266,10 +270,44 @@
     </div>
   </form>
 </div>
+<div class="loading-spinner display-none">
+    <div class="spinner"></div>
+  </div>
     </div>
   </div>
 </div>
 <style>
+  /* Loading Spinner */
+.loading-spinner {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  z-index: 1001; /* Above other content (z-index 1000 for .register-dropdown) */
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid rgba(210, 130, 45, 0.7); /* Match your theme color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .visibility-selector {
   list-style-type: none;
   position: relative;
@@ -485,12 +523,25 @@
     object-fit: cover;
   }
 
+  #loginError {
+    font-size: 0.9em;
+    text-align: center !important;
+  }
 </style>
 
 <script type="text/javascript">
+  var checkEmailExistsUrl = '<?php echo site_url('login/check_email_exists'); ?>';
+  var checkSchoolNameExistsUrl = '<?php echo site_url('login/check_school_name_exists'); ?>';
+  var csrfTokenName = '<?php echo $this->security->get_csrf_token_name(); ?>';
+  var loginValidateUrl = '<?php echo site_url('login/validate_credentials'); ?>';
+  var csrfTokenName = '<?php echo $this->security->get_csrf_token_name(); ?>';
   var inputs = document.querySelectorAll('.information');
   var passwordInputs = document.querySelectorAll('.password');
   var selects = document.getElementsByTagName('select');
+  window.baseUrl = '<?php echo base_url(); ?>';
+    if (!window.baseUrl.endsWith('/')) {
+        window.baseUrl += '/';
+    }
 
   for (var i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener('input', function () {
