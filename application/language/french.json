@@ -1475,5 +1475,21 @@
     "department_has_been_deleted_successfully": "Department has been deleted successfully",
     "add_new_password": "Add new password",
     "enter_your_new_password_to_access_account": "Enter your new password to access account",
-    "password_add_successful": "Password add successful"
+    "password_add_successful": "Password add successful",
+    "appointment": "Appointment",
+    "start": "Start",
+    "select_an_appointment": "Select an appointment",
+    "no_lesson_found": "No lesson found",
+    "learner_admission": "Learner admission",
+    "learner_information": "Learner information",
+    "learner_email": "Learner email",
+    "central": "Centrale",
+    "people": "Personnes",
+    "membres_actifs": "Membres actifs",
+    "espaces": "Espaces",
+    "chat": "Chat",
+    "messages": "Messages",
+    "spaces": "Espaces",
+    "social": "Sociale",
+    "no_classe_found": "No classe found"
 }

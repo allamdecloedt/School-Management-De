@@ -20,6 +20,8 @@ class Crud_model extends CI_Model {
 		parent::__construct();
 		$this->school_id = school_id();
 		$this->active_session = active_session();
+		$this->load->library('Humhub_sso'); // Chargez la bibliothèque ici
+        $this->humhub_sso = $this->humhub_sso; // Initialisez la propriété
 	}
 
 
@@ -48,13 +50,57 @@ class Crud_model extends CI_Model {
 		$section_data['class_id'] = $insert_id;
 		$this->db->insert('sections', $section_data);
 
+		// Charger la bibliothèque Humhub_sso
+		// $CI = &get_instance();
+		// $CI->load->library('Humhub_sso');
+		
+		// Créer un espace correspondant dans HumHub
+		$spaceData = [
+			'name' => $data['name'],
+			'description' => 'Classe créée depuis Wayo Academy',
+			'join_policy' => 0, // 0 = 	Ouvert : tout le monde peut rejoindre l’espace sans validation / 1 = Sur demande : l’utilisateur doit faire une demande, validée par un admin de l’espace / 2 = Sur invitation uniquement : seul un admin peut inviter des membres
+			'visibility' => 2,  // 0 = privé: invisible pour les utilisateurs non membres /1 = Inscrits uniquement = visible pour les utilisateurs connectés  /2 = Public : visible par tout le monde (même sans compte)
+		];
+
+		$humhubResponse = $this->humhub_sso->createSpace($spaceData);
+  	  	log_message('debug', 'Réponse HumHub Space: ' . json_encode($humhubResponse));
+
+		// Ajouter l'admin comme membre
+		if (isset($humhubResponse['id'])) {
+			// Récupérer l'EMAIL de l'admin depuis la session
+			$adminEmail = $this->session->userdata('user')->email; 
+			
+			// 1. Récupérer l'ID HumHub de l'admin via son email
+			$adminHumhubUser = $this->humhub_sso->getUserByEmail($adminEmail);
+			
+			if ($adminHumhubUser && isset($adminHumhubUser['id'])) {
+				// 2. Appel API pour l'ajouter comme membre
+				$addResponse = $this->humhub_sso->addUserSpace(
+					$humhubResponse['id'], // l'ID unique de l'espace (space)
+					$adminHumhubUser['id'] // l'ID unique de l'utilisateur administrateur
+				);
+				log_message('debug', "Réponse HumHub addUserSpace: " . json_encode($addResponse));
+			} else {
+				log_message('error', 'Utilisateur HumHub introuvable pour email: ' . $adminEmail);
+			}
+		}
+
+		if (isset($humhubResponse['id'])) {
+        // 3. Récupérer l'ID HumHub et
+        // 4. Mettre à jour la classe avec cet ID
+        $this->db->where('id', $insert_id);
+        $this->db->update('classes', ['humhub_space_id' => $humhubResponse['id']]);
+    	}
+
+		
 		$response = array(
 			'status' => true,
-			'notification' => get_phrase('class_added_successfully')
+			'notification' => get_phrase('class_added_successfully'),
+			'humhub_space' => $humhubResponse // Optionnel : pour retour debug
 		);
 		return json_encode($response);
 	}
-
+		
 	public function class_update($param1 = '')
 	{
 		$data['name'] = html_escape($this->input->post('name'));
@@ -62,6 +108,42 @@ class Crud_model extends CI_Model {
 		$this->db->where('id', $param1);
 		$this->db->update('classes', $data);
 
+		 // 1. Récupérer le humhub_space_id
+		$class = $this->db->get_where('classes', ['id' => $param1])->row();
+		
+		if (!empty($class->humhub_space_id)) {
+
+			// 2) Récupération les valeurs actuelles de cet espace HumHub sous forme de tableau associatif $existing.
+		$existing = $this->humhub_sso->getSpace($class->humhub_space_id);
+
+			// 3. Préparer les données à envoyer à HumHub
+		  if ($existing) {
+            // 4. Construire le payload
+            $spaceUpdate = [
+                'name'                        => $data['name'],
+                'description'                 => 'Classe mise à jour depuis Wayo Academy',
+                'defaultStreamSort'           => $existing['defaultStreamSort'], //on garde la valeur actuelle Je ne veux pas modifier ce champ → je réutilise ce qu’il y avait déjà avant(Null).
+                // 'visibility'                  => $existing['visibility'],
+                // 'join_policy'                 => $existing['join_policy'],
+                // 'default_content_visibility'  => $existing['default_content_visibility'],
+                // 'hideMembers'                 => (bool)$existing['hideMembers'],
+                // 'hideAbout'                   => (bool)$existing['hideAbout'],
+                // 'hideActivities'              => (bool)$existing['hideActivities'],
+                // 'hideFollowers'               => (bool)$existing['hideFollowers'],
+                // 'indexUrl'                    => $existing['indexUrl'],
+                // 'indexGuestUrl'               => $existing['indexGuestUrl'],
+            ];
+
+			log_message('debug', 'Données envoyées à HumHub updateSpace: ' . json_encode($spaceUpdate));
+
+			// 4. Mettre à jour l'espace dans HumHub
+			$this->humhub_sso->updateSpace($class->humhub_space_id, $spaceUpdate);
+		} else {
+			log_message('error', "Erreur lors de la récupération de l’espace HumHub ID {$class->humhub_space_id}");
+		}
+	}else{
+		log_message('error', "ID HumHub manquant pour la classe ID {$param1}");
+	}
 		$response = array(
 			'status' => true,
 			'notification' => get_phrase('class_added_successfully')
@@ -107,6 +189,14 @@ class Crud_model extends CI_Model {
 
 	public function class_delete($param1 = '')
 	{
+			// 1. Récupérer la classe (pour récupérer son humhub_space_id)
+		$class = $this->db->get_where('classes', ['id' => $param1])->row();
+
+		// 2. Supprimer l’espace HumHub s’il existe
+		if (!empty($class->humhub_space_id)) {
+			$this->humhub_sso->deleteSpace($class->humhub_space_id);
+			log_message('debug', "Espace HumHub supprimé: ID {$class->humhub_space_id}");
+		}
 		$this->db->where('id', $param1);
 		$this->db->delete('classes');
 

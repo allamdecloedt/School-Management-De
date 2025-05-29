@@ -18,6 +18,7 @@ class Login extends CI_Controller
 		parent::__construct();
 
 		$this->load->database();
+		$this->load->library('Humhub_sso');
 		$this->load->library('session');
 
 		/*LOADING ALL THE MODELS HERE*/
@@ -69,10 +70,17 @@ class Login extends CI_Controller
 		$password = $this->input->post('password');
 		$credential = array('email' => $email, 'password' => sha1($password));
 
+		
 		// Checking login credential for admin
 		$query = $this->db->get_where('users', $credential);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
+
+				// On stocke l’objet complet pour la SSO
+				$this->session->set_userdata('user', $row);
+				$this->session->set_userdata('password', $password);
+			
+
 			$this->session->set_userdata('user_login_type', true);
 			if ($row->role == 'superadmin') {
 				$this->session->set_userdata('superadmin_login', true);
@@ -80,6 +88,7 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'superadmin');
+				
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				redirect(site_url('superadmin/dashboard'), 'refresh');
 			} elseif ($row->role == 'admin') {
@@ -88,6 +97,7 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'admin');
+
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				redirect(site_url('admin/dashboard'), 'refresh');
 			} elseif ($row->role == 'teacher') {
@@ -147,10 +157,15 @@ class Login extends CI_Controller
 		$password = $this->input->post('login_password');
 		$credential = array('email' => $email, 'password' => sha1($password));
 
-		// Checking login credential for admin
+		// Checking login credential 
 		$query = $this->db->get_where('users', $credential);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
+			// On stocke l’objet complet pour la SSO
+				$this->session->set_userdata('user', $row);
+				$this->session->set_userdata('password', $password);
+			
+
 			$this->session->set_userdata('user_login_type', true);
 			if ($row->role == 'superadmin') {
 				$this->session->set_userdata('superadmin_login', true);
@@ -158,6 +173,8 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'superadmin');
+			
+				
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				if (isset($_SERVER['HTTP_REFERER'])) {
 					redirect($_SERVER['HTTP_REFERER'], 'refresh');
@@ -168,6 +185,26 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'admin');
+				// 4) On stocke l’objet complet pour la SSO
+			//	$this->session->set_userdata('user', $row); // indispensable
+
+				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+				// redirect($iframeUrl);
+			
+
+				// Génère une seule fois l'URL SSO
+				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+				// $this->session->set_userdata('humhub_iframe', $iframeUrl);
+			
+				// $iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+				// // redirect($iframeUrl);
+				// $page_data['folder_name'] = 'humhub';
+				// $page_data['page_title'] = 'humhub';
+				// $page_data['page_name']  = 'central';
+				// $page_data['iframe_url'] = $iframeUrl;
+				// $this->load->view('backend/index', $page_data);
+
+
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				if (isset($_SERVER['HTTP_REFERER'])) {
 					redirect($_SERVER['HTTP_REFERER'], 'refresh');
