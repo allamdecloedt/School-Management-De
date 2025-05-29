@@ -1704,6 +1704,14 @@
     "calendar_failed_to_load": "Calendar failed to load",
     "failed_to_load_exams": "Failed to load exams",
     "an_error_occurred_please_try_again": "An error occurred please try again",
+    "central": "Central",
+    "people": "People",
+    "membres_actifs": "Active members",
+    "espaces": "Spaces",
+    "social": "Social",
+    "chat": "Chat",
+    "messages": "Messages",
+    "spaces": "Spaces"
     "session_has_been_deleted_successfully": "Session has been deleted successfully",
     "deleting": "Deleting",
     "export_csv": "Export csv",
@@ -1727,3 +1735,4 @@
     "your_quiz_results": "Your quiz results"
 
 }
+

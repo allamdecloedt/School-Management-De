@@ -83,3 +83,13 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+
+// URL de base de HumHub (à adapter à ton chemin local)
+defined('HUMHUB_BASE_URL') OR define('HUMHUB_BASE_URL', 'http://localhost/humhub/humhub-1.17.2');
+
+// Clé secrète pour signer les tokens JWT
+defined('HUMHUB_JWT_SECRET') OR define('HUMHUB_JWT_SECRET', 'Pz-UpjQKoCU_ETNpiwcoZB_C7L7cnVLFGvMbXmk4JfrBpff3DbYZcX2rSUAihZ8f7UGyOOIBz1kA4xbRzfphp1');
+
+// Token API de HumHub (pour créer des utilisateurs par API REST)
+defined('HUMHUB_API_TOKEN') OR define('HUMHUB_API_TOKEN', 'vteV1GVnuJiEccyF6ZfiZxogtfpfKnpyQlrRGtQmXb_GPrQW0zOpYCTx2q-TPVxiHwYz9tBx9TqXu5WACgyhoW');
