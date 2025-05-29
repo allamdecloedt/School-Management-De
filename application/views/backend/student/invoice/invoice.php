@@ -22,7 +22,7 @@
         <!-- Invoice Logo-->
         <div class="clearfix">
           <div class="float-start mb-3">
-            <img src="<?php echo $this->settings_model->get_logo_dark(); ?>" alt="" height="18">
+            <img src="<?php echo $this->settings_model->get_logo_dark(); ?>" alt="" height="40">
           </div>
         </div>
 
