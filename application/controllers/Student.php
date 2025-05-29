@@ -106,17 +106,8 @@ class Student extends CI_Controller {
 		$appointments = $this->room_model->get_all_appointments_student();
 		echo json_encode($appointments);
 	}
-	public function get_sections() {
-		$classe_id = $this->input->post('classe_id');
 	
-		if (!empty($classe_id)) {
-			$sections = $this->db->get_where('sections', array('class_id' => $classe_id))->result_array();
-		} else {
-			$sections = [];
-		}
-	
-		echo json_encode($sections);
-	}
+
 	//START CLASS secion
 	public function manage_class($param1 = '', $param2 = '', $param3 = ''){
 		if($param1 == 'section'){
@@ -138,22 +129,246 @@ class Student extends CI_Controller {
 	//END CLASS section
 	//	SECTION STARTED
 	public function section($action = "", $id = "") {
-
-		// PROVIDE A LIST OF SECTION ACCORDING TO CLASS ID
 		if ($action == 'list') {
-			$page_data['class_id'] = $id;
-			$this->load->view('backend/student/section/list', $page_data);
+			$user_id = $this->session->userdata('user_id');
+			$session_id = active_session();
+	
+			// Récupérer les sections où l'étudiant est inscrit pour la classe donnée
+			$this->db->select('sections.id, sections.name');
+			$this->db->from('sections');
+			$this->db->join('enrols', 'enrols.section_id = sections.id', 'left');
+			$this->db->join('students', 'students.id = enrols.student_id', 'left');
+			$this->db->where('sections.class_id', $id);
+			$this->db->where('students.user_id', $user_id);
+			$this->db->where('enrols.session', $session_id);
+			$sections = $this->db->get()->result_array();
+	
+			$output = '<option value="">' . get_phrase('select_section') . '</option>';
+			foreach ($sections as $section) {
+				$output .= '<option value="' . $section['id'] . '">' . $section['name'] . '</option>';
+			}
+			echo $output;
 		}
 	}
+    public function section_course($action = "", $id = "") {
+		if ($action == 'list') {
+			$user_id = $this->session->userdata('user_id');
+			$session_id = active_session();
+	
+			// Récupérer les sections où l'étudiant est inscrit pour la classe donnée
+			$this->db->select('sections.id, sections.name');
+			$this->db->from('sections');
+			// $this->db->join('enrols', 'enrols.section_id = sections.id', 'left');
+			// $this->db->join('students', 'students.id = enrols.student_id', 'left');
+			$this->db->where('sections.class_id', $id);
+			// $this->db->where('students.user_id', $user_id);
+			// $this->db->where('enrols.session', $session_id);
+			$sections = $this->db->get()->result_array();
+	
+			$output = '<option value="">' . get_phrase('select_section') . '</option>';
+			foreach ($sections as $section) {
+				$output .= '<option value="' . $section['id'] . '">' . $section['name'] . '</option>';
+			}
+			echo $output;
+		}
+	}
+    
 	//	SECTION ENDED
+      //START student Create_Join bigbleubutton 
+      public function Recording($param1 = '', $param2 = '', $param3 = '')
+      {
+    
+        $school_id = school_id();
 
+        // Récupère les données nécessaires
+        $page_data['appointments'] = $this->room_model->get_all_appointments_student();
+        $page_data['classes'] = $this->db->get_where('classes', array('school_id' => $school_id))->result_array();
+        $page_data['rooms'] = $this->db->get_where('rooms', array('school_id' => $school_id, 'Etat' => 1))->result_array();
+
+        // Récupère les enregistrements pour chaque rendez-vous
+        foreach ($page_data['appointments'] as &$appointment) {
+            $appointment['recordings'] = $this->room_model->get_bbb_recording_by_appointment($appointment['id']);
+           
+        }
+        unset($appointment); // Nettoie la référence
+    
+  
+        $page_data['page_name'] = 'bigbleubutton/Recording';
+        $page_data['page_title'] = 'Recording';
+
+        $this->load->view('backend/index', $page_data);
+
+   
+      }
+      //END student Create_Join bigbleubutton
+
+	  
+	  public function filter_recordings()
+	  {
+		  $this->load->config('bigbluebutton');
+		  $bbbUrl = $this->config->item('bbb_url');
+		  $bbbSecret = $this->config->item('bbb_secret');
+	  
+		  $meeting_name = $this->input->post('meeting_name', true);
+		  $date_range = $this->input->post('date_range', true);
+		  $school_id = $this->input->post('school_id', true);
+	  
+		  // $this->db->select('*')->from('appointments');
+		  $schoolID = school_id();
+		  // die($schoolID);
+		  // Sélection des colonnes nécessaires
+
+		  $this->db->select('
+			  appointments.id, 
+			  appointments.title, 
+			  appointments.start_date AS start, 
+			
+			  appointments.description, 
+			  appointments.sections_id AS section, 
+			  appointments.classe_id, 
+			  appointments.room_id, 
+			 
+			  rooms.name,
+			  meeting_id,
+
+		  ');
+		  $this->db->from('appointments');
+	  
+		  // Jointure avec la table rooms pour récupérer les informations des salles
+		  $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+	  
+		  // Filtre : récupérer uniquement les rendez-vous actifs
+		  $this->db->where('appointments.Etat', 1);
+		  //$this->db->where('rooms.school_id', $schoolID);
+		  $this->db->where('appointments.school_id', $school_id);
+	
+	  
+		
+	  
+		  if (!empty($meeting_name)) {
+			  $this->db->like('appointments.title', $meeting_name);
+		  }
+	  
+		  if (!empty($date_range)) {
+			  $dates = explode(' to ', $date_range);
+			  if (count($dates) === 2) {
+				  $this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
+				  $this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
+			  }
+		  }
+	  
+		  $appointments = $this->db->get()->result_array();
+	  
+		  foreach ($appointments as &$appointment_rec) {
+			  $meetingId = $appointment_rec['meeting_id'] ?? null;
+			  $appointment_rec['recordings'] = [];
+		
+			  if ($meetingId) {
+				  // Générer l’URL avec meetingID spécifique
+				  // $query = http_build_query(['meetingID' => $meetingId]);
+				  // $checksum = sha1('getRecordings' . $query . $bbbSecret);
+				  // $url = $bbbUrl . 'api/getRecordings?' . $query . '&checksum=' . $checksum;
+				  $params = ['meetingID' => $meetingId];
+				  $query = http_build_query($params);
+				  $checksum = sha1('getRecordings' . $query . $bbbSecret);
+				  $url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
+	  
+				  // Appel de l’API
+				  $ch = curl_init();
+				  curl_setopt($ch, CURLOPT_URL, $url);
+				  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+				  $response = curl_exec($ch);
+				  curl_close($ch);
+	  
+				  $xml = @simplexml_load_string($response);
+
+				  if ($xml && $xml->returncode == 'SUCCESS') {
+					  foreach ($xml->recordings->recording as $rec) {
+						  $appointment_rec['recordings'][] = [
+							  'meetingID' => (string) $rec->meetingID,
+							  'playback_url' => (string) $rec->playback->format->url,
+							  'duration' => (string) $rec->playback->format->length,
+							  'video_download_url' => (string) $rec->playback->format->url,
+							  'endTime' => (string) $rec->endTime
+						  ];
+					  }
+				  }
+			  }
+		  }
+	  
+		  // Affichage HTML comme avant
+		  foreach ($appointments as $appointment) {
+			$classe_name = $this->db->get_where('classes', array('id' => $appointment['classe_id']))->row('name');
+			$section = " - ";
+			  if (!empty($appointment['section'])) {
+						  $section_ids = explode(',', $appointment['section']);
+						  $section_names = [];
+							  foreach ($section_ids as $id) {
+										  $name = $this->db->get_where('sections', array('id' => $id))->row('name');
+										  if ($name) $section_names[] = $name;
+									  }
+									$section =  implode(', ', $section_names);
+								  } 
+			  echo '<tr>';
+			  echo '<td>' . htmlspecialchars($appointment['title']) . '</td>';
+			  echo '<td>' . htmlspecialchars($appointment['name']) . '</td>';
+			  echo '<td>' . htmlspecialchars($classe_name) . '</td>';
+			  echo '<td>' . htmlspecialchars($section) . '</td>';
+			  echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
+			  echo '<td>' . (!empty($appointment_rec['recordings']) ? $appointment_rec['recordings'][0]['duration'] : '—') . '</td>';
+			  echo '<td>';
+	  
+			  if (!empty($appointment['recordings'])) {
+				  $rec = $appointment_rec['recordings'][0];
+				  $endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
+				  $isExpired = $endTime ? (time() > ($endTime + (7 * 24 * 60 * 60))) : false;
+	  
+				  if ($isExpired) {
+					  echo '<span class="badge bg-warning text-dark"> Expired</span>';
+				  } elseif (!empty($rec['playback_url'])) {
+					  echo '<a href="' . htmlspecialchars($rec['playback_url']) . '" target="_blank" class="btn btn-sm btn-success">VIDEO</a>';
+				  } else {
+					  echo '<span class="badge bg-danger">NOT RECORDED</span>';
+				  }
+			  } else {
+				  echo '<span class="badge bg-danger">NOT RECORDED</span>';
+			  }
+	  
+			  echo '</td><td>';
+	  
+			  if (!empty($appointment_rec['recordings'])) {
+				  $rec = $appointment_rec['recordings'][0];
+				  echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
+			  }
+	  
+		
+			  echo '</td></tr>';
+		  }
+	  }
 		//	SECTION STARTED
 		public function exam_class($action = "", $id = "") {
-
-			// PROVIDE A LIST OF SECTION ACCORDING TO CLASS ID
 			if ($action == 'list') {
-				$page_data['exam_id'] = $id;
-				$this->load->view('backend/student/exam/list_select', $page_data);
+				$user_id = $this->session->userdata('user_id');
+				$session_id = active_session();
+		
+				// Récupérer les classes où l'étudiant est inscrit pour l'examen donné
+				$this->db->select('classes.id, classes.name');
+				$this->db->from('classes');
+				$this->db->join('enrols', 'enrols.class_id = classes.id', 'left');
+				$this->db->join('students', 'students.id = enrols.student_id', 'left');
+				$this->db->join('exams', 'exams.class_id = classes.id', 'left');
+				$this->db->where('exams.id', $id);
+				$this->db->where('students.user_id', $user_id);
+				$this->db->where('enrols.session', $session_id);
+				$classes = $this->db->get()->result_array();
+		
+				$output = '<option value="">' . get_phrase('select_a_class') . '</option>';
+				foreach ($classes as $class) {
+					$output .= '<option value="' . $class['id'] . '">' . $class['name'] . '</option>';
+				}
+				echo $output;
 			}
 		}
 		//	SECTION ENDED
@@ -809,4 +1024,833 @@ class Student extends CI_Controller {
 		$page_data['invoice_details'] = $this->crud_model->get_invoice_by_id($invoice_id);
 		$this->load->view('backend/payment_gateway/index', $page_data);
 	}
+
+	// Récupérer les classes par école pour l'étudiant connecté
+	public function get_classes_by_school() {
+		try {
+			$school_id = $this->input->post('school_id');
+			$user_id = $this->session->userdata('user_id');
+	
+			if (!$school_id || !$user_id) {
+				log_message('error', 'school_id ou user_id manquant dans get_classes_by_school');
+				echo json_encode(['classes' => [], 'csrf_hash' => $this->security->get_csrf_hash()]);
+				return;
+			}
+	
+			$session_id = active_session();
+			log_message('debug', 'Session active : ' . $session_id);
+	
+			$this->db->reset_query();
+			$this->db->select('classes.*');
+			$this->db->from('classes');
+			$this->db->join('enrols', 'enrols.class_id = classes.id', 'left');
+			$this->db->join('students', 'students.id = enrols.student_id', 'left');
+			$this->db->where('classes.school_id', $school_id);
+			$this->db->where('students.user_id', $user_id);
+			$this->db->where('enrols.session', $session_id);
+	
+			$db_temp = clone $this->db;
+			$query = $db_temp->get_compiled_select();
+			log_message('debug', 'Requête SQL compilée : ' . $query);
+	
+			$classes = $this->db->get()->result_array();
+	
+			log_message('debug', 'Requête SQL exécutée : ' . $this->db->last_query());
+			log_message('debug', 'Classes trouvées : ' . json_encode($classes));
+	
+			echo json_encode([
+				'classes' => $classes,
+				'csrf_hash' => $this->security->get_csrf_hash()
+			]);
+		} catch (Exception $e) {
+			log_message('error', 'Erreur dans get_classes_by_school : ' . $e->getMessage());
+			http_response_code(500);
+			echo json_encode([
+				'error' => 'Erreur serveur interne',
+				'csrf_hash' => $this->security->get_csrf_hash()
+			]);
+		}
+	}
+
+// Filtrer les examens en fonction des sélections
+public function filter_exams() {
+    try {
+        log_message('debug', 'Début de filter_exams');
+        log_message('debug', 'Données POST reçues : ' . json_encode($this->input->post()));
+        log_message('debug', 'Utilisateur connecté : ' . $this->session->userdata('user_id'));
+
+        $school_id = $this->input->post('school_id');
+        $class_id = $this->input->post('class_id');
+        $section_id = $this->input->post('section_id');
+        $date_filter = $this->input->post('date_filter');
+        $user_id = $this->session->userdata('user_id');
+
+        if (!$school_id || !$class_id || !$section_id || !$user_id) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => 'Données manquantes',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        $session_id = active_session();
+
+        if (!$session_id) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => 'Aucune session active',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        // Vérification des permissions
+        $this->db->select('students.id');
+        $this->db->from('students');
+        $this->db->join('enrols', 'enrols.student_id = students.id', 'left');
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.school_id', $school_id);
+        $this->db->where('enrols.class_id', $class_id);
+        $this->db->where('enrols.section_id', $section_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $student = $this->db->get()->row_array();
+
+        if (!$student) {
+            http_response_code(403);
+            echo json_encode([
+                'error' => 'Non autorisé',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        // Construire la requête pour récupérer les examens
+        $this->db->reset_query();
+        $this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->where('exams.school_id', $school_id);
+        $this->db->where('exams.class_id', $class_id);
+        $this->db->where('exams.section_id', $section_id);
+        $this->db->where('exams.session', $session_id);
+
+        // Gérer le filtre de date
+        if (!empty($date_filter)) {
+            // Parser le filtre de date
+            $dates = explode(' - ', $date_filter);
+            if (count($dates) == 1) {
+                // Date unique
+                $start_date = DateTime::createFromFormat('d-m-Y', trim($dates[0]));
+                if ($start_date) {
+                    $start_timestamp = $start_date->setTime(0, 0, 0)->getTimestamp();
+                    $end_timestamp = $start_date->setTime(23, 59, 59)->getTimestamp();
+                    $this->db->where('exams.starting_date >=', $start_timestamp);
+                    $this->db->where('exams.starting_date <=', $end_timestamp);
+                }
+            } elseif (count($dates) == 2) {
+                // Plage de dates
+                $start_date = DateTime::createFromFormat('d-m-Y', trim($dates[0]));
+                $end_date = DateTime::createFromFormat('d-m-Y', trim($dates[1]));
+                if ($start_date && $end_date) {
+                    $start_timestamp = $start_date->setTime(0, 0, 0)->getTimestamp();
+                    $end_timestamp = $end_date->setTime(23, 59, 59)->getTimestamp();
+                    $this->db->where('exams.starting_date >=', $start_timestamp);
+                    $this->db->where('exams.starting_date <=', $end_timestamp);
+                }
+            }
+        }
+
+        $exams = $this->db->get()->result_array();
+        $exam_calendar = [];
+        $current_time = time(); // Current timestamp
+
+        foreach ($exams as $exam) {
+            $exam_calendar[] = [
+                'title' => $exam['name'],
+                'start' => date('Y-m-d H:i:s', $exam['starting_date'])
+            ];
+        }
+
+        // Génération du tableau HTML
+        $table_html = '';
+        foreach ($exams as $exam) {
+            $exam_start_time = $exam['starting_date'];
+            $table_html .= '<tr>';
+            $table_html .= '<td>' . htmlspecialchars($exam['name']) . '</td>';
+            $table_html .= '<td>' . date('D, d-M-Y H:i', $exam_start_time) . '</td>';
+            $table_html .= '<td>' . (!empty($exam['class_name']) ? htmlspecialchars($exam['class_name']) : get_phrase('no_class')) . '</td>';
+            $table_html .= '<td>' . (!empty($exam['section_name']) ? htmlspecialchars($exam['section_name']) : get_phrase('no_section')) . '</td>';
+
+            // Vérifier si l'examen a déjà été soumis
+            $this->db->select('id');
+            $this->db->from('exam_responses');
+            $this->db->where('exam_id', $exam['id']);
+            $this->db->where('user_id', $user_id);
+            $has_submitted = $this->db->get()->row_array();
+
+            if ($has_submitted) {
+                // Bouton pour afficher les résultats dans un popup
+                $table_html .= '<td><button class="btn btn-sm btn-success view-results-btn" data-exam-id="' . $exam['id'] . '" data-student-id="' . $student['id'] . '">' . get_phrase('view_results') . '</button></td>';
+            } elseif ($exam_start_time > $current_time) {
+                // Afficher le compteur pour les examens futurs
+                $table_html .= '<td data-exam-start="' . $exam_start_time . '" data-exam-id="' . $exam['id'] . '" class="exam-countdown">';
+                $table_html .= get_phrase('exam_not_yet_available') . '<br>';
+                $table_html .= '<span class="countdown-text" style="background-color: #3A87AD; color:white; border-radius: 5px; padding:3px;"></span></td>';
+            } else {
+                // Afficher le bouton d'accès
+                $table_html .= '<td><a href="' . site_url('student/online_exam/' . $exam['id']) . '" target="_blank" class="btn btn-sm btn-primary access-exam-btn">' . get_phrase('access') . '</a></td>';
+            }
+
+            $table_html .= '</tr>';
+        }
+        log_message('debug', 'Tableau HTML généré : ' . $table_html);
+
+        echo json_encode([
+            'exam_calendar' => $exam_calendar,
+            'table_html' => $table_html,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    } catch (Exception $e) {
+        log_message('error', 'Erreur dans filter_exams : ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erreur serveur interne : ' . $e->getMessage(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    }
+}
+
+public function get_sections() {
+	try {
+		$class_id = $this->input->post('classe_id');
+		$user_id = $this->session->userdata('user_id');
+
+		if (!$class_id || !$user_id) {
+			log_message('error', 'class_id ou user_id manquant dans get_sections');
+			echo json_encode(['sections' => [], 'csrf_hash' => $this->security->get_csrf_hash()]);
+			return;
+		}
+
+		$session_id = active_session();
+		log_message('debug', 'Session active : ' . $session_id);
+
+		$this->db->select('sections.*');
+		$this->db->from('sections');
+		$this->db->join('enrols', 'enrols.section_id = sections.id', 'left');
+		$this->db->join('students', 'students.id = enrols.student_id', 'left');
+		$this->db->where('sections.class_id', $class_id);
+		$this->db->where('students.user_id', $user_id);
+		$this->db->where('enrols.session', $session_id);
+
+		$sections = $this->db->get()->result_array();
+
+		log_message('debug', 'Requête SQL exécutée : ' . $this->db->last_query());
+		log_message('debug', 'Sections trouvées : ' . json_encode($sections));
+
+		echo json_encode([
+			'sections' => $sections,
+			'csrf_hash' => $this->security->get_csrf_hash()
+		]);
+	} catch (Exception $e) {
+		log_message('error', 'Erreur dans get_sections : ' . $e->getMessage());
+		http_response_code(500);
+		echo json_encode([
+			'error' => 'Erreur serveur interne',
+			'csrf_hash' => $this->security->get_csrf_hash()
+		]);
+	}
+}
+
+// Dans Student.php
+public function online_exam($exam_id = "") {
+    try {
+        if (empty($exam_id)) {
+            log_message('error', 'ID de l\'examen manquant dans online_exam');
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Ajouter des en-têtes anti-cache
+        $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        $this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
+        $this->output->set_header("Pragma: no-cache");
+        $this->output->set_header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
+
+        $user_id = $this->session->userdata('user_id');
+        $session_id = active_session();
+
+        // Vérifier si l'étudiant a accès à cet examen
+        $this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->join('enrols', 'enrols.class_id = exams.class_id AND enrols.section_id = exams.section_id', 'left');
+        $this->db->join('students', 'students.id = enrols.student_id', 'left');
+        $this->db->where('exams.id', $exam_id);
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $exam = $this->db->get()->row_array();
+
+        if (!$exam) {
+            log_message('error', 'Examen non trouvé ou accès non autorisé pour exam_id: ' . $exam_id);
+            $this->session->set_flashdata('error_message', get_phrase('exam_not_found_or_unauthorized'));
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Vérifier si l'étudiant a déjà soumis l'examen
+        $this->db->select('id');
+        $this->db->from('exam_responses');
+        $this->db->where('exam_id', $exam_id);
+        $this->db->where('user_id', $user_id);
+        $existing_submission = $this->db->get()->row_array();
+
+        if ($existing_submission) {
+            // L'étudiant a déjà passé l'examen, rediriger vers la liste des examens
+            $this->session->set_flashdata('success_message', get_phrase('exam_already_submitted'));
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Vérifier si l'examen a commencé
+        $current_time = time();
+        if ($exam['starting_date'] > $current_time) {
+            log_message('error', 'L\'examen n\'a pas encore commencé pour exam_id: ' . $exam_id);
+            $this->session->set_flashdata('error_message', get_phrase('exam_not_yet_available'));
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Récupérer les questions de l'examen
+        $questions = $this->get_exam_questions($exam_id);
+
+        // Préparer les données pour la vue
+        $page_data['exam_id'] = $exam_id;
+        $page_data['exam_details'] = $exam;
+        $page_data['questions'] = $questions;
+        $page_data['page_title'] = $exam['name'];
+
+        // Charger la vue via online_exams/index.php
+        $this->load->view('online_exams/index', $page_data);
+    } catch (Exception $e) {
+        log_message('error', 'Erreur dans online_exam : ' . $e->getMessage());
+        $this->session->set_flashdata('error_message', get_phrase('server_error'));
+        redirect(site_url('student/exam'), 'refresh');
+    }
+}
+
+public function get_exam_questions($exam_id) {
+    $this->db->select('exam_questions.*');
+    $this->db->from('exam_questions');
+    $this->db->where('exam_id', $exam_id);
+    return $this->db->get()->result_array();
+}
+
+public function submit_exam() {
+    try {
+        // Vérifier si la requête est POST
+        if ($this->input->server('REQUEST_METHOD') !== 'POST') {
+            log_message('error', 'Méthode non autorisée dans submit_exam');
+            http_response_code(405);
+            echo json_encode(['error' => 'Méthode non autorisée']);
+            return;
+        }
+
+        $user_id = $this->session->userdata('user_id');
+        $exam_id = $this->input->post('exam_id');
+        $session_id = active_session();
+
+        if (!$user_id || !$exam_id) {
+            log_message('error', 'user_id ou exam_id manquant dans submit_exam');
+            http_response_code(400);
+            echo json_encode(['error' => 'Données manquantes']);
+            return;
+        }
+
+        // Vérifier si l'étudiant a le droit de soumettre cet examen
+        $this->db->select('exams.*, classes.id as class_id, sections.id as section_id, schools.id as school_id');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->join('enrols', 'enrols.class_id = exams.class_id AND enrols.section_id = exams.section_id', 'left');
+        $this->db->join('students', 'students.id = enrols.student_id', 'left');
+        $this->db->where('exams.id', $exam_id);
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $exam = $this->db->get()->row_array();
+
+        if (!$exam) {
+            log_message('error', 'Examen non trouvé ou accès non autorisé pour exam_id: ' . $exam_id);
+            http_response_code(403);
+            echo json_encode(['error' => 'Non autorisé']);
+            return;
+        }
+
+        // Récupérer l'étudiant
+        $student_data = $this->db->get_where('students', ['user_id' => $user_id, 'school_id' => $exam['school_id']])->row_array();
+        if (!$student_data) {
+            log_message('error', 'Étudiant non trouvé pour user_id: ' . $user_id);
+            http_response_code(400);
+            echo json_encode(['error' => 'Étudiant non trouvé']);
+            return;
+        }
+
+        // Récupérer les questions de l'examen
+        $questions = $this->get_exam_questions($exam_id);
+        $total_questions = count($questions);
+        $total_correct_answers = 0;
+        $submitted_answers = [];
+
+        if ($total_questions == 0) {
+            log_message('error', 'Aucune question trouvée pour exam_id: ' . $exam_id);
+            http_response_code(400);
+            echo json_encode(['error' => 'Aucune question trouvée']);
+            return;
+        }
+
+        // Étape 1 : Supprimer les anciennes réponses pour cet examen et cet utilisateur
+        $this->db->where('exam_id', $exam_id);
+        $this->db->where('user_id', $user_id);
+        $this->db->delete('exam_responses');
+        log_message('debug', 'Anciennes réponses supprimées pour exam_id: ' . $exam_id . ' et user_id: ' . $user_id);
+
+        // Étape 2 : Traiter les réponses soumises
+        foreach ($questions as $question) {
+            $question_id = $question['id'];
+
+            // Récupérer les options disponibles pour la question
+            $options = json_decode($question['options'], true);
+            if (!is_array($options) || empty($options)) {
+                log_message('error', 'Options mal formatées pour la question ID ' . $question_id . ': ' . $question['options']);
+                $options = [];
+            }
+
+            // Extraire les réponses correctes
+            $correct_answers_data = json_decode($question['correct_answers'], true);
+            if (!is_array($correct_answers_data) || empty($correct_answers_data)) {
+                $correct_answers_raw = is_array($correct_answers_data) ? $correct_answers_data[0] : $question['correct_answers'];
+                if (is_numeric($correct_answers_raw) && isset($options[$correct_answers_raw - 1])) {
+                    $correct_answers_index = (int)$correct_answers_raw - 1;
+                    $correct_answers = $options[$correct_answers_index];
+                    log_message('debug', 'Index base-1 détecté pour question ID ' . $question_id . ': ' . $correct_answers_raw . ' -> ' . $correct_answers);
+                } else {
+                    log_message('error', 'Réponses correctes mal formatées pour la question ID ' . $question_id . ': ' . $question['correct_answers']);
+                    $correct_answers = '';
+                }
+            } else {
+                $correct_answers = trim((string)$correct_answers_data[0]);
+                if (is_numeric($correct_answers) && isset($options[$correct_answers - 1])) {
+                    $correct_answers_index = (int)$correct_answers - 1;
+                    $correct_answers = $options[$correct_answers_index];
+                    log_message('debug', 'Index base-1 détecté pour question ID ' . $question_id . ': ' . $correct_answers_data[0] . ' -> ' . $correct_answers);
+                }
+            }
+
+            // Vérifier si la réponse correcte est dans les options
+            if (!in_array($correct_answers, $options) && $correct_answers !== '') {
+                log_message('error', 'Réponse correcte "' . $correct_answers . '" pour la question ID ' . $question_id . ' ne correspond à aucune option: ' . json_encode($options));
+                $correct_answers = '';
+            }
+
+            $submitted_answers_value = $this->input->post('question_' . $question_id);
+            $submitted_answers_value = trim((string)$submitted_answers_value);
+
+            $submitted_answer_status = ($submitted_answers_value == $correct_answers) ? 1 : 0;
+            log_message('debug', 'Comparaison pour question ID ' . $question_id . ': submitted="' . $submitted_answers_value . '", correct="' . $correct_answers . '", status=' . $submitted_answer_status);
+
+            if ($submitted_answer_status) {
+                $total_correct_answers++;
+            }
+
+            // Stocker les détails de la réponse dans exam_responses
+            $data = [
+                'user_id' => $user_id,
+                'exam_id' => $exam_id,
+                'exam_question_id' => $question_id,
+                'submitted_answers' => $submitted_answers_value ?: 'Aucune réponse',
+                'correct_answers' => $correct_answers,
+                'submitted_answer_status' => $submitted_answer_status,
+                'date_submitted' => date('Y-m-d H:i:s')
+            ];
+            $this->db->insert('exam_responses', $data);
+
+            $submitted_answers[] = [
+                'question_id' => $question_id,
+                'question_title' => $question['title'],
+                'submitted_answer' => $submitted_answers_value ?: 'Aucune réponse',
+                'correct_answer' => $correct_answers,
+                'status' => $submitted_answer_status,
+                'options' => $options
+            ];
+        }
+
+        // Calculer la note (sur 100, arrondie car mark_obtained est un int)
+        $mark_obtained = ($total_questions > 0) ? round(($total_correct_answers / $total_questions) * 100) : 0;
+
+        // Vérifier si une entrée existe déjà dans la table marks
+        $this->db->where([
+            'student_id' => $student_data['id'],
+            'exam_id' => $exam_id,
+            'class_id' => $exam['class_id'],
+            'section_id' => $exam['section_id'],
+            'school_id' => $exam['school_id'],
+            'session' => $session_id
+        ]);
+        $existing_mark = $this->db->get('marks')->row_array();
+
+        if ($existing_mark) {
+            // Mettre à jour la note existante
+            $this->db->where('id', $existing_mark['id']);
+            $this->db->update('marks', [
+                'mark_obtained' => $mark_obtained,
+            ]);
+        } else {
+            // Insérer une nouvelle entrée
+            $this->db->insert('marks', [
+                'student_id' => $student_data['id'],
+                'subject_id' => NULL, // Pas de matière pour les examens en ligne
+                'exam_id' => $exam_id,
+                'class_id' => $exam['class_id'],
+                'section_id' => $exam['section_id'],
+                'school_id' => $exam['school_id'],
+                'session' => $session_id,
+                'mark_obtained' => $mark_obtained,
+                'comment' => ''
+            ]);
+        }
+
+        // Réponse JSON pour le front-end
+        $response = [
+            'message' => get_phrase('exam_submitted_successfully'),
+            'total_questions' => $total_questions,
+            'total_correct_answers' => $total_correct_answers,
+            'mark_obtained' => $mark_obtained,
+            'submitted_answers' => $submitted_answers,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ];
+
+        log_message('debug', 'Examen soumis avec succès pour exam_id: ' . $exam_id);
+        echo json_encode($response);
+    } catch (Exception $e) {
+        log_message('error', 'Erreur dans submit_exam : ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erreur serveur interne : ' . $e->getMessage(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    }
+}
+
+public function exam_results($exam_id = "", $student_id = "") {
+    try {
+
+        if (!$this->session->userdata('student_login') || $this->session->userdata('user_type') != 'student') {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        $user_id = $this->session->userdata('user_id');
+        $session_id = active_session();
+
+        $this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->join('enrols', 'enrols.class_id = exams.class_id AND enrols.section_id = exams.section_id', 'left');
+        $this->db->join('students', 'students.id = enrols.student_id', 'left');
+        $this->db->where('exams.id', $exam_id);
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $exam = $this->db->get()->row_array();
+
+        if (!$exam) {
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Récupérer l'ID de l'étudiant à partir de user_id
+        $student_data = $this->db->get_where('students', ['user_id' => $user_id, 'school_id' => $exam['school_id']])->row_array();
+        if (!$student_data || $student_data['id'] != $student_id) {
+            redirect(site_url('student/exam'), 'refresh');
+        }
+
+        // Récupérer les réponses soumises
+        $this->db->select('er.*, eq.title as question_title');
+        $this->db->from('exam_responses er');
+        $this->db->join('exam_questions eq', 'er.exam_question_id = eq.id', 'left');
+        $this->db->where('er.exam_id', $exam_id);
+        $this->db->where('er.user_id', $user_id);
+        $submitted_answers = $this->db->get()->result_array();
+
+        // Préparer les données pour la vue
+        $page_data['exam_details'] = $exam;
+        $page_data['submitted_answers'] = $submitted_answers;
+        $page_data['page_title'] = $exam['name'] . ' - ' . get_phrase('results');
+
+        // Charger la vue partielle pour le modal
+        $this->load->view('backend/student/mark/exam_results_modal', $page_data);
+    } catch (Exception $e) {
+        redirect(site_url('student/exam'), 'refresh');
+    }
+}
+
+public function get_exam_results_popup($exam_id = "", $student_id = "") {
+    try {
+        if (!$this->session->userdata('student_login') || $this->session->userdata('user_type') != 'student') {
+            http_response_code(403);
+            echo json_encode(['error' => 'Non autorisé']);
+            return;
+        }
+
+        $user_id = $this->session->userdata('user_id');
+        $session_id = active_session();
+
+        // Vérifier si l'étudiant a accès à cet examen
+        $this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->join('enrols', 'enrols.class_id = exams.class_id AND enrols.section_id = exams.section_id', 'left');
+        $this->db->join('students', 'students.id = enrols.student_id', 'left');
+        $this->db->where('exams.id', $exam_id);
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $exam = $this->db->get()->row_array();
+
+        if (!$exam) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Examen non trouvé ou accès non autorisé']);
+            return;
+        }
+
+        // Vérifier si l'étudiant correspond
+        $student_data = $this->db->get_where('students', ['user_id' => $user_id, 'school_id' => $exam['school_id']])->row_array();
+        if (!$student_data || $student_data['id'] != $student_id) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Étudiant non autorisé']);
+            return;
+        }
+
+        // Récupérer les réponses soumises
+        $this->db->select('er.*, eq.title as question_title');
+        $this->db->from('exam_responses er');
+        $this->db->join('exam_questions eq', 'er.exam_question_id = eq.id', 'left');
+        $this->db->where('er.exam_id', $exam_id);
+        $this->db->where('er.user_id', $user_id);
+        $submitted_answers = $this->db->get()->result_array();
+
+        // Préparer les données pour la vue
+        $page_data['exam_details'] = $exam;
+        $page_data['submitted_answers'] = $submitted_answers;
+        $page_data['page_title'] = $exam['name'] . ' - ' . get_phrase('results');
+
+        // Rendre la vue partielle et retourner le HTML
+        $html_content = $this->load->view('backend/student/mark/exam_results_modal', $page_data, TRUE);
+
+        echo json_encode([
+            'html' => $html_content,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    } catch (Exception $e) {
+        log_message('error', 'Erreur dans get_exam_results_popup : ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erreur serveur interne : ' . $e->getMessage(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    }
+}
+
+public function load_initial_exams() {
+    try {
+        log_message('debug', 'Début de load_initial_exams');
+        log_message('debug', 'Données POST reçues : ' . json_encode($this->input->post()));
+        log_message('debug', 'Utilisateur connecté : ' . $this->session->userdata('user_id'));
+
+        $class_id = $this->input->post('class_id');
+        $section_id = $this->input->post('section_id');
+        $date_filter = $this->input->post('date_filter');
+        $user_id = $this->session->userdata('user_id');
+
+        if (!$class_id || !$section_id || !$user_id) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => 'Données manquantes',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        $session_id = active_session();
+        if (!$session_id) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => 'Aucune session active',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        // Récupérer les écoles auxquelles l'étudiant est inscrit
+        $this->db->select('schools.id');
+        $this->db->from('schools');
+        $this->db->join('enrols', 'enrols.school_id = schools.id');
+        $this->db->join('students', 'students.id = enrols.student_id');
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where('enrols.session', $session_id);
+        $school_ids = $this->db->get()->result_array();
+        $school_ids = array_column($school_ids, 'id');
+
+        if (empty($school_ids)) {
+            http_response_code(403);
+            echo json_encode([
+                'error' => 'Non autorisé',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        // Vérification des permissions
+        $this->db->select('students.id');
+        $this->db->from('students');
+        $this->db->join('enrols', 'enrols.student_id = students.id', 'left');
+        $this->db->where('students.user_id', $user_id);
+        $this->db->where_in('enrols.school_id', $school_ids);
+        $this->db->where('enrols.class_id', $class_id);
+        $this->db->where('enrols.section_id', $section_id);
+        $this->db->where('enrols.session', $session_id);
+
+        $student = $this->db->get()->row_array();
+
+        if (!$student) {
+            http_response_code(403);
+            echo json_encode([
+                'error' => 'Non autorisé',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ]);
+            return;
+        }
+
+        // Début de la journée actuelle (00:00:00)
+        $today_start = strtotime('today midnight');
+
+        // Construire la requête pour récupérer les examens
+        $this->db->reset_query();
+        $this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+        $this->db->from('exams');
+        $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+        $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+        $this->db->join('schools', 'exams.school_id = schools.id', 'left');
+        $this->db->where_in('exams.school_id', $school_ids);
+        $this->db->where('exams.class_id', $class_id);
+        $this->db->where('exams.section_id', $section_id);
+        $this->db->where('exams.session', $session_id);
+        $this->db->where('exams.starting_date >=', $today_start);
+
+        // Gérer le filtre de date
+        if (!empty($date_filter)) {
+            // Parser le filtre de date
+            $dates = explode(' - ', $date_filter);
+            if (count($dates) == 1) {
+                // Date unique
+                $start_date = DateTime::createFromFormat('d-m-Y', trim($dates[0]));
+                if ($start_date) {
+                    $start_timestamp = $start_date->setTime(0, 0, 0)->getTimestamp();
+                    $end_timestamp = $start_date->setTime(23, 59, 59)->getTimestamp();
+                    $this->db->where('exams.starting_date >=', $start_timestamp);
+                    $this->db->where('exams.starting_date <=', $end_timestamp);
+                }
+            } elseif (count($dates) == 2) {
+                // Plage de dates
+                $start_date = DateTime::createFromFormat('d-m-Y', trim($dates[0]));
+                $end_date = DateTime::createFromFormat('d-m-Y', trim($dates[1]));
+                if ($start_date && $end_date) {
+                    $start_timestamp = $start_date->setTime(0, 0, 0)->getTimestamp();
+                    $end_timestamp = $end_date->setTime(23, 59, 59)->getTimestamp();
+                    $this->db->where('exams.starting_date >=', $start_timestamp);
+                    $this->db->where('exams.starting_date <=', $end_timestamp);
+                }
+            }
+        }
+
+        $exams = $this->db->get()->result_array();
+        $exam_calendar = [];
+        $current_time = time();
+
+        foreach ($exams as $exam) {
+            $exam_calendar[] = [
+                'title' => $exam['name'],
+                'start' => date('Y-m-d H:i:s', $exam['starting_date'])
+            ];
+        }
+
+        // Génération du tableau HTML
+        $table_html = '';
+        foreach ($exams as $exam) {
+            $exam_start_time = $exam['starting_date'];
+            $table_html .= '<tr>';
+            $table_html .= '<td>' . htmlspecialchars($exam['name']) . '</td>';
+            $table_html .= '<td>' . date('D, d-M-Y H:i', $exam_start_time) . '</td>';
+            $table_html .= '<td>' . (!empty($exam['class_name']) ? htmlspecialchars($exam['class_name']) : get_phrase('no_class')) . '</td>';
+            $table_html .= '<td>' . (!empty($exam['section_name']) ? htmlspecialchars($exam['section_name']) : get_phrase('no_section')) . '</td>';
+
+            $this->db->select('id');
+            $this->db->from('exam_responses');
+            $this->db->where('exam_id', $exam['id']);
+            $this->db->where('user_id', $user_id);
+            $has_submitted = $this->db->get()->row_array();
+
+            if ($has_submitted) {
+                $table_html .= '<td><button class="btn btn-sm btn-success view-results-btn" data-exam-id="' . $exam['id'] . '" data-student-id="' . $student['id'] . '">' . get_phrase('view_results') . '</button></td>';
+            } elseif ($exam_start_time > $current_time) {
+                $table_html .= '<td data-exam-start="' . $exam_start_time . '" data-exam-id="' . $exam['id'] . '" class="exam-countdown">';
+                $table_html .= get_phrase('exam_not_yet_available') . '<br>';
+                $table_html .= '<span class="countdown-text" style="background-color: #3A87AD; color:white; border-radius: 5px; padding:3px;"></span></td>';
+            } else {
+                $table_html .= '<td><a href="' . site_url('student/online_exam/' . $exam['id']) . '" target="_blank" class="btn btn-sm btn-primary access-exam-btn">' . get_phrase('access') . '</a></td>';
+            }
+
+            $table_html .= '</tr>';
+        }
+        log_message('debug', 'Tableau HTML généré : ' . $table_html);
+
+        echo json_encode([
+            'exam_calendar' => $exam_calendar,
+            'table_html' => $table_html,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    } catch (Exception $e) {
+        log_message('error', 'Erreur dans load_initial_exams : ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erreur serveur interne : ' . $e->getMessage(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    }
+}
+
+public function get_classes_by_student() {
+    $user_id = $this->session->userdata('user_id');
+    $session_id = active_session();
+
+    $this->db->select('classes.id, classes.name');
+    $this->db->from('classes');
+    $this->db->join('enrols', 'enrols.class_id = classes.id');
+    $this->db->join('students', 'students.id = enrols.student_id');
+    $this->db->where('students.user_id', $user_id);
+    $this->db->where('enrols.session', $session_id);
+    $this->db->group_by('classes.id');
+
+    $classes = $this->db->get()->result_array();
+    echo json_encode([
+        'classes' => $classes,
+        'csrf_hash' => $this->security->get_csrf_hash()
+    ]);
+}
 }

@@ -134,6 +134,7 @@ class Admin extends CI_Controller
 		 
 		 public function add_appointment() {
 			// Récupération et sécurisation des données
+			$schoolID = school_id();
 			$title = $this->input->post('title', true);
 			$start_date = $this->input->post('start', true);
 			$description = $this->input->post('description', true);
@@ -156,7 +157,8 @@ class Admin extends CI_Controller
 				'description' => $description,
 				'classe_id' => $classe_id,
 				'sections_id' => $sections, // Stockage sous forme "1,2,3"
-				'room_id' => $room_id
+				'room_id' => $room_id,
+				'school_id' => $schoolID
 			);
 		
 			// Insertion dans la base de données avec gestion d'erreur
@@ -250,150 +252,6 @@ class Admin extends CI_Controller
 			   redirect(site_url('admin/Recording'), 'refresh');
 		   }
 	 
-		 
-		   
-		   public function filter_recordings()
-		   {
-			   $this->load->config('bigbluebutton');
-			   $bbbUrl = $this->config->item('bbb_url');
-			   $bbbSecret = $this->config->item('bbb_secret');
-		   
-			   $meeting_name = $this->input->post('meeting_name', true);
-			   $date_range = $this->input->post('date_range', true);
-		   
-			   // $this->db->select('*')->from('appointments');
-			   $schoolID = school_id();
-			   // die($schoolID);
-			   // Sélection des colonnes nécessaires
-	 
-			   $this->db->select('
-				   appointments.id, 
-				   appointments.title, 
-				   appointments.start_date AS start, 
-				 
-				   appointments.description, 
-				   appointments.sections_id AS section, 
-				   appointments.classe_id, 
-				   appointments.room_id, 
-				   rooms.name, 
-				   meeting_id,
-	 
-			   ');
-			   $this->db->from('appointments');
-		   
-			   // Jointure avec la table rooms pour récupérer les informations des salles
-			   $this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
-		   
-			   // Filtre : récupérer uniquement les rendez-vous actifs
-			   $this->db->where('appointments.Etat', 1);
-			   $this->db->where('rooms.school_id', $schoolID );
-		   
-			 
-		   
-			   if (!empty($meeting_name)) {
-				   $this->db->like('appointments.title', $meeting_name);
-			   }
-		   
-			   if (!empty($date_range)) {
-				   $dates = explode(' to ', $date_range);
-				   if (count($dates) === 2) {
-					   $this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
-					   $this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
-				   }
-			   }
-		   
-			   $appointments = $this->db->get()->result_array();
-		   
-			   foreach ($appointments as &$appointment) {
-				   $meetingId = $appointment['meeting_id'] ?? null;
-				   $appointment['recordings'] = [];
-			  // die( $meetingId);
-				   if ($meetingId) {
-					   // Générer l’URL avec meetingID spécifique
-					   // $query = http_build_query(['meetingID' => $meetingId]);
-					   // $checksum = sha1('getRecordings' . $query . $bbbSecret);
-					   // $url = $bbbUrl . 'api/getRecordings?' . $query . '&checksum=' . $checksum;
-					   $params = ['meetingID' => $meetingId];
-					   $query = http_build_query($params);
-					   $checksum = sha1('getRecordings' . $query . $bbbSecret);
-					   $url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
-		   
-					   // Appel de l’API
-					   $ch = curl_init();
-					   curl_setopt($ch, CURLOPT_URL, $url);
-					   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-					   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-					   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-					   $response = curl_exec($ch);
-					   curl_close($ch);
-		   
-					   $xml = @simplexml_load_string($response);
-			   // die($response);
-					   if ($xml && $xml->returncode == 'SUCCESS') {
-						   foreach ($xml->recordings->recording as $rec) {
-							   $appointment['recordings'][] = [
-								   'meetingID' => (string) $rec->meetingID,
-								   'playback_url' => (string) $rec->playback->format->url,
-								   'duration' => (string) $rec->playback->format->length,
-								   'video_download_url' => (string) $rec->playback->format->url,
-								   'endTime' => (string) $rec->endTime
-							   ];
-						   }
-					   }
-				   }
-			   }
-		   
-			   // Affichage HTML comme avant
-			   foreach ($appointments as $appointment) {
-				 $classe_name = $this->db->get_where('classes', array('id' => $appointment['classe_id']))->row('name');
-				 $section = " - ";
-				   if (!empty($appointment['section'])) {
-							   $section_ids = explode(',', $appointment['section']);
-							   $section_names = [];
-								   foreach ($section_ids as $id) {
-											   $name = $this->db->get_where('sections', array('id' => $id))->row('name');
-											   if ($name) $section_names[] = $name;
-										   }
-										 $section =  implode(', ', $section_names);
-									   } 
-				   echo '<tr>';
-				   echo '<td>' . htmlspecialchars($appointment['title']) . '</td>';
-				   echo '<td>' . htmlspecialchars($appointment['name']) . '</td>';
-				   echo '<td>' . htmlspecialchars($classe_name) . '</td>';
-				   echo '<td>' . htmlspecialchars($section) . '</td>';
-				   echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
-				   echo '<td>' . (!empty($appointment['recordings']) ? $appointment['recordings'][0]['duration'] : '—') . '</td>';
-				   echo '<td>';
-		   
-				   if (!empty($appointment['recordings'])) {
-					   $rec = $appointment['recordings'][0];
-					   $endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
-					   $isExpired = $endTime ? (time() > ($endTime + (7 * 24 * 60 * 60))) : false;
-		   
-					   if ($isExpired) {
-						   echo '<span class="badge bg-warning text-dark"> Expired</span>';
-					   } elseif (!empty($rec['playback_url'])) {
-						   echo '<a href="' . htmlspecialchars($rec['playback_url']) . '" target="_blank" class="btn btn-sm btn-success">VIDEO</a>';
-					   } else {
-						   echo '<span class="badge bg-danger">NOT RECORDED</span>';
-					   }
-				   } else {
-					   echo '<span class="badge bg-danger">NOT RECORDED</span>';
-				   }
-		   
-				   echo '</td><td>';
-		   
-				   if (!empty($appointment['recordings'])) {
-					   $rec = $appointment['recordings'][0];
-					   echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
-				   }
-		   
-				   echo '<a href="' . site_url('admin/delete_appointment_and_recording/' . $appointment['id']) . '" class="btn btn-sm btn-danger"
-						   onclick="return confirm(\'❗ Cette action supprimera le rendez-vous et l’enregistrement associé. Continuer ?\')">
-						   🗑️ Supprimer</a>';
-				   echo '</td></tr>';
-			   }
-		   }
 		   public function delete_room()
 		   {
 			   $data = json_decode(file_get_contents("php://input"), true);
@@ -445,46 +303,40 @@ class Admin extends CI_Controller
 	
 
 	public function get_csrf_token()
-{
-    $csrf = array(
-        'csrf_name' => $this->security->get_csrf_token_name(),
-        'csrf_hash' => $this->security->get_csrf_hash(),
-    );
-    echo json_encode($csrf);
-}
+	{
+		$csrf = array(
+			'csrf_name' => $this->security->get_csrf_token_name(),
+			'csrf_hash' => $this->security->get_csrf_hash(),
+		);
+		echo json_encode($csrf);
+	}
 
-  public function get_sections_by_class()
+public function get_sections_by_class()
 {
-    // Vérifier si l'utilisateur est connecté
     if ($this->session->userdata('admin_login') != 1) {
-        echo json_encode(['status' => 'error', 'message' => 'Session expired, please login again']);
+        echo json_encode(['error' => 'Unauthorized']);
         return;
     }
 
     $class_id = $this->input->post('class_id');
+    $school_id = school_id();
+
     if (empty($class_id)) {
-        echo json_encode(['sections' => []]);
+        echo json_encode(['sections' => [], 'message' => 'No class ID provided']);
         return;
     }
 
-    // Vérifier si la classe existe et appartient à l'école
-    $class = $this->crud_model->get_classes($class_id);
-    if ($class->num_rows() == 0) {
-        echo json_encode(['sections' => [], 'message' => 'Class not found']);
-        return;
-    }
+    $this->db->select('sections.id, sections.name');
+    $this->db->from('sections');
+    $this->db->join('classes', 'sections.class_id = classes.id', 'left');
+    $this->db->where('sections.class_id', $class_id);
+    $this->db->where('classes.school_id', $school_id);
+    $sections = $this->db->get()->result_array();
 
-    // Récupérer les sections en utilisant le modèle
-    $sections = $this->crud_model->get_section_details_by_id('class', $class_id)->result_array();
-
-    // Préparer un nouveau jeton CSRF pour la réponse
-    $csrf = array(
-        'csrfName' => $this->security->get_csrf_token_name(),
-        'csrfHash' => $this->security->get_csrf_hash(),
-    );
-
-    // Renvoyer la réponse JSON avec les sections et le nouveau jeton CSRF
-    echo json_encode(array('sections' => $sections, 'csrf' => $csrf));
+    echo json_encode([
+        'sections' => $sections,
+        'message' => empty($sections) ? 'No sections found for this class' : 'Sections retrieved successfully'
+    ]);
 }
 
 
@@ -493,16 +345,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->class_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->class_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'delete') {
@@ -557,6 +414,263 @@ class Admin extends CI_Controller
 	}
 	//END CLASS section
 
+
+
+	public function filter_recordings()
+	{
+		$this->load->config('bigbluebutton');
+		$bbbUrl = rtrim($this->config->item('bbb_url'), '/') . '/';
+		$bbbSecret = $this->config->item('bbb_secret');
+	
+		$meeting_name = trim($this->input->post('meeting_name', true));
+		$date_range = $this->input->post('date_range', true);
+		$schoolID = school_id();
+	
+		// Préparation de la requête principale
+		$this->db->select('
+			appointments.id,
+			appointments.title,
+			appointments.start_date AS start,
+			appointments.description,
+			appointments.sections_id AS section,
+			appointments.classe_id,
+			classes.name AS class_name,
+			appointments.room_id,
+			rooms.name AS room_name,
+			appointments.meeting_id
+		');
+		$this->db->from('appointments');
+		$this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+		$this->db->join('classes', 'classes.id = appointments.classe_id', 'left');
+		$this->db->where('appointments.Etat', 1);
+		$this->db->where('appointments.school_id', $schoolID);
+	
+		if (!empty($meeting_name)) {
+			$this->db->like('appointments.title', $meeting_name);
+		}
+	
+		if (!empty($date_range)) {
+			$dates = explode(' to ', $date_range);
+			if (count($dates) === 2) {
+				$this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
+				$this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
+			}
+		}
+	
+		$appointments = $this->db->get()->result_array();
+	
+		foreach ($appointments as &$appointment_rec) {
+			$appointment['recordings'] = [];
+			$meetingId = $appointment_rec['meeting_id'] ?? null;
+	
+			if ($meetingId) {
+				$params = ['meetingID' => $meetingId];
+				$query = http_build_query($params);
+				$checksum = sha1('getRecordings' . $query . $bbbSecret);
+				$url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
+	
+				$ch = curl_init($url);
+				curl_setopt_array($ch, [
+					CURLOPT_RETURNTRANSFER => 1,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_SSL_VERIFYHOST => false,
+				]);
+				$response = curl_exec($ch);
+				curl_close($ch);
+	
+				$xml = @simplexml_load_string($response);
+				if ($xml && $xml->returncode == 'SUCCESS') {
+					foreach ($xml->recordings->recording as $rec) {
+						$appointment_rec['recordings'][] = [
+							'meetingID' => (string)$rec->meetingID,
+							'playback_url' => (string)$rec->playback->format->url,
+							'duration' => (string)$rec->playback->format->length,
+							'video_download_url' => (string)$rec->playback->format->url,
+							'endTime' => (string)$rec->endTime,
+						];
+					}
+				}
+			}
+		}
+ 
+		// 🔽 Affichage HTML
+		foreach ($appointments as $appointment) {
+			// Traitement des sections
+			$section_label = '—';
+			if (!empty($appointment['section'])) {
+				$section_ids = explode(',', $appointment['section']);
+				$section_names = [];
+				foreach ($section_ids as $id) {
+					$name = $this->db->get_where('sections', ['id' => $id])->row('name');
+					if ($name) $section_names[] = $name;
+				}
+				$section_label = implode(', ', $section_names);
+			}
+	
+			// Affichage ligne
+			echo '<tr>';
+			echo '<td>' . htmlspecialchars($appointment['title']) . '</td>';
+			echo '<td>' . htmlspecialchars($appointment['room_name']) . '</td>';
+			echo '<td>' . htmlspecialchars($appointment['class_name']) . '</td>';
+			echo '<td>' . htmlspecialchars($section_label) . '</td>';
+			echo '<td>' . date('d-m-Y H:i', strtotime($appointment['start'])) . '</td>';
+			echo '<td>' . (!empty($appointment_rec['recordings']) ? $appointment_rec['recordings'][0]['duration'] : '—') . '</td>';
+	
+			echo '<td>';
+			if (!empty($appointment_rec['recordings'])) {
+				$rec = $appointment_rec['recordings'][0];
+				$endTime = !empty($rec['endTime']) ? (int)$rec['endTime'] / 1000 : null;
+				$isExpired = $endTime ? (time() > ($endTime + 7 * 24 * 3600)) : false;
+	
+				if ($isExpired) {
+					echo '<span class="badge bg-warning text-dark">Expired</span>';
+				} elseif (!empty($rec['playback_url'])) {
+					echo '<a href="' . htmlspecialchars($rec['playback_url']) . '" target="_blank" class="btn btn-sm btn-success">VIDEO</a>';
+				} else {
+					echo '<span class="badge bg-danger">NOT RECORDED</span>';
+				}
+			} else {
+				echo '<span class="badge bg-danger">NOT RECORDED</span>';
+			}
+			echo '</td>';
+	
+			echo '<td>';
+			if (!empty($appointment_rec['recordings'])) {
+				$rec = $appointment_rec['recordings'][0];
+				echo '<a href="' . htmlspecialchars($rec['video_download_url']) . '" class="btn btn-sm btn-success">Download</a> ';
+			}
+	
+			echo '<a href="' . site_url('superadmin/delete_appointment_and_recording/' . $appointment['id']) . '" class="btn btn-sm btn-danger" onclick="return confirm(\'❗ Cette action supprimera le rendez-vous et l’enregistrement associé. Continuer ?\')">🗑️ Supprimer</a>';
+			echo '</td></tr>';
+		}
+	}
+	
+
+	
+	public function export_recordings_csv() {
+		$this->load->config('bigbluebutton');
+		$bbbUrl = $this->config->item('bbb_url');
+		$bbbSecret = $this->config->item('bbb_secret');
+		$meeting_name = $this->input->get('meeting_name', true);
+		$date_range = $this->input->get('date_range', true);
+		$schoolID = school_id();
+		// $this->db->select('*')->from('appointments');
+
+		$this->db->select('
+			appointments.id,
+			appointments.title,
+			appointments.start_date AS start,
+			appointments.description,
+			appointments.sections_id AS section,
+			appointments.classe_id,
+			classes.name AS class_name,
+			appointments.room_id,
+			rooms.name AS room_name,
+			appointments.meeting_id
+		');
+		$this->db->from('appointments');
+		$this->db->join('rooms', 'rooms.id = appointments.room_id', 'left');
+		$this->db->join('classes', 'classes.id = appointments.classe_id', 'left');
+		$this->db->where('appointments.Etat', 1);
+		$this->db->where('appointments.school_id', $schoolID);
+		// Filtrer par nom de réunion
+		if (!empty($meeting_name)) {
+		  $this->db->like('appointments.title', $meeting_name);
+		}
+	
+		if (!empty($date_range)) {
+			$dates = explode(' to ', $date_range);
+			if (count($dates) === 2) {
+				$this->db->where('appointments.start_date >=', $dates[0] . ' 00:00:00');
+				$this->db->where('appointments.start_date <=', $dates[1] . ' 23:59:59');
+			}
+		}
+
+		$appointments = $this->db->get()->result_array();
+		
+
+		// Préparer le fichier CSV
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment;filename="recordings.csv"');
+
+
+
+		$output = fopen('php://output', 'w');
+		fputcsv($output, ['Name', 'Room', 'Class', 'Section', 'Creation Date', 'Duration', 'Recording']);
+
+		foreach ($appointments as &$appointment_reco) {
+		  $meetingId = $appointment_reco['meeting_id'] ?? null;
+		  $appointment_reco['recordings'] = [];
+	 
+		  if ($meetingId) {
+			  // Générer l’URL avec meetingID spécifique
+			  // $query = http_build_query(['meetingID' => $meetingId]);
+			  // $checksum = sha1('getRecordings' . $query . $bbbSecret);
+			  // $url = $bbbUrl . 'api/getRecordings?' . $query . '&checksum=' . $checksum;
+			  $params = ['meetingID' => $meetingId];
+			  $query = http_build_query($params);
+			  $checksum = sha1('getRecordings' . $query . $bbbSecret);
+			  $url = $bbbUrl . 'getRecordings?' . $query . '&checksum=' . $checksum;
+  
+			  // Appel de l’API
+			  $ch = curl_init();
+			  curl_setopt($ch, CURLOPT_URL, $url);
+			  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			  $response = curl_exec($ch);
+			  curl_close($ch);
+  
+			  $xml = @simplexml_load_string($response);
+	 
+			  if ($xml && $xml->returncode == 'SUCCESS') {
+				  foreach ($xml->recordings->recording as $rec) {
+					  $appointment_reco['recordings'][] = [
+						  'meetingID' => (string) $rec->meetingID,
+						  'playback_url' => (string) $rec->playback->format->url,
+						  'duration' => (string) $rec->playback->format->length,
+						  'video_download_url' => (string) $rec->playback->format->url,
+						  'endTime' => (string) $rec->endTime
+					  ];
+				  }
+			  }
+		  }
+	  }
+
+		foreach ($appointments as $appointment) {
+			$recording_url = !empty($appointment_reco['recordings']) && isset($appointment_reco['recordings'][0]['playback_url']) 
+				? $appointment_reco['recordings'][0]['playback_url'] 
+				: 'NOT RECORDED';
+
+				   // Traitement des sections
+			$section_label = '—';
+			if (!empty($appointment['section'])) {
+				$section_ids = explode(',', $appointment['section']);
+				$section_names = [];
+				foreach ($section_ids as $id) {
+					$name = $this->db->get_where('sections', ['id' => $id])->row('name');
+					if ($name) $section_names[] = $name;
+				}
+				$section_label = implode(', ', $section_names);
+			}
+		 
+
+			fputcsv($output, [
+				$appointment['title'],
+				$appointment['room_name'],
+				$appointment['class_name'],
+				$section_label,
+				date('d-m-Y H:i', strtotime($appointment['start'])),
+				!empty($appointment_reco['recordings']) && isset($appointment_reco['recordings'][0]['duration']) 
+					? $appointment_reco['recordings'][0]['duration'] 
+					: '—',
+				$recording_url
+			]);
+		}
+
+		fclose($output);
+		exit;
+	}
 
 	  // PAYMENT SETTINGS MANAGER
 	  public function payment_settings($param1 = "", $param2 = "")
@@ -720,16 +834,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->class_room_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->class_room_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -817,16 +936,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->department_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->department_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -874,16 +998,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->syllabus_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->syllabus_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'delete') {
@@ -919,17 +1048,21 @@ class Admin extends CI_Controller
 
 
 		if ($param1 == 'create') {
-			$response = $this->user_model->create_teacher();
-			// echo $response;
-			
-				// Préparer la réponse avec un nouveau jeton CSRF
-				$csrf = array(
-					'csrfName' => $this->security->get_csrf_token_name(),
-					'csrfHash' => $this->security->get_csrf_hash(),
-					);
-				
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			$modelResponse = $this->user_model->create_teacher();
+      // Préparer la réponse avec un nouveau jeton CSRF
+      $csrf = array(
+        'name' => $this->security->get_csrf_token_name(),
+        'hash' => $this->security->get_csrf_hash()
+    );
+    
+    // Fusionner la réponse du modèle avec le CSRF
+    $response = array(
+        'status' => $modelResponse['status'],
+        'notification' => $modelResponse['notification'],
+        'csrf' => $csrf
+    );
+    
+      echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -1049,16 +1182,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->user_model->accountant_create();
-			// echo $response;
+			$modelResponse = $this->user_model->accountant_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
+				'name' => $this->security->get_csrf_token_name(),
+				'hash' => $this->security->get_csrf_hash()
+			);
 			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			// Fusionner la réponse du modèle avec le CSRF
+			$response = array(
+				'status' => $modelResponse['status'],
+				'notification' => $modelResponse['notification'],
+				'csrf' => $csrf
+			);
+			
+			echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -1108,16 +1246,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->user_model->librarian_create();
-			// echo $response;
+			$modelResponse = $this->user_model->librarian_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+			echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -1165,16 +1308,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->routine_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->routine_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -1223,18 +1371,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'take_attendance') {
-			$response = $this->crud_model->take_attendance();
-			// echo $response;
-			
-			$response = $this->crud_model->take_attendance();
+			$modelResponse = $this->crud_model->take_attendance();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-					 'csrfName' => $this->security->get_csrf_token_name(),
-					  'csrfHash' => $this->security->get_csrf_hash(),
-					  );
-				  
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 
 		}
 
@@ -1292,16 +1443,21 @@ class Admin extends CI_Controller
 	{
 
 		if ($param1 == 'create') {
-			$response = $this->crud_model->event_calendar_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->event_calendar_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -1533,57 +1689,93 @@ class Admin extends CI_Controller
 
 	//START EXAM section
 	public function exam($param1 = '', $param2 = '')
-	{
+{
+    if ($param1 == 'create') {
+        $response = $this->crud_model->exam_create();
+        $response_data = json_decode($response, true);
+        
+        // Récupérer la classe sélectionnée (si disponible dans les données POST)
+        $class_id = $this->input->post('class_id') ?: '';
+        
+        // Ajouter un nouveau jeton CSRF
+        $csrf = array(
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash(),
+        );
+        
+        // Construire la réponse
+        $output = array(
+            'status' => $response_data['status'] ?? ($response ? true : false),
+            'message' => $response_data['notification'] ?? ($response ? 'Exam created successfully' : 'Failed to create exam'),
+            'class_id' => $class_id, // Inclure l'ID de la classe pour le frontend
+            'csrf' => $csrf
+        );
+        
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($output));
+    }
 
-		if ($param1 == 'create') {
-			$response = $this->crud_model->exam_create();
-			// echo $response;
-			// Préparer la réponse avec un nouveau jeton CSRF
-			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
-		}
 
-		if ($param1 == 'update') {
-			$response = $this->crud_model->exam_update($param2);
-			// echo $response;
-			// Préparer la réponse avec un nouveau jeton CSRF
-			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
-		}
+    if ($param1 == 'update') {
+        $response = $this->crud_model->exam_update($param2);
+        // Vérifier si la réponse est déjà encodée en JSON et la décoder
+        if (is_string($response) && (json_decode($response) !== null)) {
+            $response = json_decode($response, true); // Convertir en tableau
+        }
+        
+        $exam = $this->db->get_where('exams', array('id' => $param2))->row_array();
+        $class_id = $exam['class_id'] ?? ''; // Récupérer l'ID de la classe de l'examen
+        
+        if ($exam) {
+            $exam['formatted_date'] = date('D, d-M-Y H:i', $exam['starting_date']);
+            $class = $this->db->get_where('classes', array('id' => $exam['class_id']))->row_array();
+            $section = $this->db->get_where('sections', array('id' => $exam['section_id']))->row_array();
+            $exam['class_name'] = $class ? $class['name'] : 'No Class';
+            $exam['section_name'] = $section ? $section['name'] : 'No Section';
+            $output = array(
+                'status' => isset($response['status']) ? $response['status'] : $response,
+                'exam' => $exam,
+                'class_id' => $class_id, // Inclure l'ID de la classe
+                'message' => $response['notification'] ?? ($response ? 'Exam updated successfully' : 'Failed to update exam'),
+                'csrf' => array(
+                    'csrfName' => $this->security->get_csrf_token_name(),
+                    'csrfHash' => $this->security->get_csrf_hash(),
+                )
+            );
+        } else {
+            $output = array(
+                'status' => false,
+                'message' => 'Exam not found',
+                'csrf' => array(
+                    'csrfName' => $this->security->get_csrf_token_name(),
+                    'csrfHash' => $this->security->get_csrf_hash(),
+                )
+            );
+        }
+        
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($output));
+    }
 
-		if ($param1 == 'delete') {
-			$response = $this->crud_model->exam_delete($param2);
-			// echo $response;
-			// Préparer la réponse avec un nouveau jeton CSRF
-			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
-		}
+    if ($param1 == 'delete') {
+        $response = $this->crud_model->exam_delete($param2);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($response);
+    }
 
-		if ($param1 == 'list') {
-			$this->load->view('backend/admin/exam/list');
-		}
+    if ($param1 == 'list') {
+        $this->load->view('backend/admin/exam/list');
+    }
 
-		if (empty($param1)) {
-			$page_data['folder_name'] = 'exam';
-			$page_data['page_title'] = 'exam';
-			$this->load->view('backend/index', $page_data);
-		}
-	}
+    if (empty($param1)) {
+        $page_data['folder_name'] = 'exam';
+        $page_data['page_title'] = 'exam and exam';
+        $this->load->view('backend/index', $page_data);
+    }
+}
 	//END EXAM section
 
 		//HUMHUB DASHBOARD
@@ -1858,16 +2050,21 @@ class Admin extends CI_Controller
 
 		// store data on database
 		if ($param1 == 'create') {
-			$response = $this->crud_model->grade_create();
-			// echo $response;
+			$modelResponse = $this->crud_model->grade_create();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		// update data on database
@@ -1966,30 +2163,40 @@ class Admin extends CI_Controller
 	{
 		// For creating new invoice
 		if ($param1 == 'single') {
-			$response = $this->crud_model->create_single_invoice();
-			// echo $response;
+			$modelResponse = $this->crud_model->create_single_invoice();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		// For creating new mass invoice
 		if ($param1 == 'mass') {
-			$response = $this->crud_model->create_mass_invoice();
-			// echo $response;
+			$modelResponse = $this->crud_model->create_mass_invoice();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		// For editing invoice
@@ -2194,16 +2401,21 @@ class Admin extends CI_Controller
 	public function expense_category($param1 = "", $param2 = "")
 	{
 		if ($param1 == 'create') {
-			$response = $this->crud_model->create_expense_category();
-			// echo $response;
+			$modelResponse = $this->crud_model->create_expense_category();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+			echo json_encode($response);
 		}
 
 		if ($param1 == 'update') {
@@ -2249,16 +2461,21 @@ class Admin extends CI_Controller
 
 		// adding expense
 		if ($param1 == 'create') {
-			$response = $this->crud_model->create_expense();
-			// echo $response;
+			$modelResponse = $this->crud_model->create_expense();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
+				'name' => $this->security->get_csrf_token_name(),
+				'hash' => $this->security->get_csrf_hash()
+			);
 			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			// Fusionner la réponse du modèle avec le CSRF
+			$response = array(
+				'status' => $modelResponse['status'],
+				'notification' => $modelResponse['notification'],
+				'csrf' => $csrf
+			);
+			
+			echo json_encode($response);
 		}
 
 		// update expense
@@ -2314,16 +2531,21 @@ class Admin extends CI_Controller
 	{
 		// adding book
 		if ($param1 == 'create') {
-			$response = $this->crud_model->create_book();
-			// echo $response;
-			// Préparer la réponse avec un nouveau jeton CSRF
-			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			$modelResponse = $this->crud_model->create_book();
+          // Préparer la réponse avec un nouveau jeton CSRF
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
 		}
 
 		// update book
@@ -2371,16 +2593,21 @@ class Admin extends CI_Controller
 	{
 		// adding book
 		if ($param1 == 'create') {
-			$response = $this->crud_model->create_book_issue();
-			// echo $response;
+			$modelResponse = $this->crud_model->create_book_issue();
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+		  echo json_encode($response);
 		}
 
 		// update book
@@ -2447,30 +2674,40 @@ class Admin extends CI_Controller
 	{
 		// adding notice
 		if ($param1 == 'create') {
-			$response = $this->crud_model->create_notice();
-			// echo $response;
-			// Préparer la réponse avec un nouveau jeton CSRF
-			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			$modelResponse = $this->crud_model->create_notice();
+          // Préparer la réponse avec un nouveau jeton CSRF
+          $csrf = array(
+            'name' => $this->security->get_csrf_token_name(),
+            'hash' => $this->security->get_csrf_hash()
+        );
+        
+        // Fusionner la réponse du modèle avec le CSRF
+        $response = array(
+            'status' => $modelResponse['status'],
+            'notification' => $modelResponse['notification'],
+            'csrf' => $csrf
+        );
+        
+        echo json_encode($response);
 		}
 
 		// update notice
 		if ($param1 == 'update') {
-			$response = $this->crud_model->update_notice($param2);
-			// echo $response;
+			$modelResponse = $this->crud_model->update_notice($param2);
 			// Préparer la réponse avec un nouveau jeton CSRF
 			$csrf = array(
-				'csrfName' => $this->security->get_csrf_token_name(),
-				'csrfHash' => $this->security->get_csrf_hash(),
-				);
-			
-			// Renvoyer la réponse avec un nouveau jeton CSRF
-			echo json_encode(array('status' => $response, 'csrf' => $csrf));
+			  'name' => $this->security->get_csrf_token_name(),
+			  'hash' => $this->security->get_csrf_hash()
+		  );
+		  
+		  // Fusionner la réponse du modèle avec le CSRF
+		  $response = array(
+			  'status' => $modelResponse['status'],
+			  'notification' => $modelResponse['notification'],
+			  'csrf' => $csrf
+		  );
+		  
+			echo json_encode($response);
 		}
 
 		// deleting notice
@@ -2749,4 +2986,136 @@ class Admin extends CI_Controller
 		}
 		echo '</select>';
 	}
+	public function exam_results($exam_id = "", $student_id = "") {
+		try {
+			// Vérifier si l'utilisateur est connecté en tant qu'admin
+			if (!$this->session->userdata('admin_login') || $this->session->userdata('user_type') != 'admin') {
+				redirect(site_url('login'), 'refresh');
+			}
+	
+			// Récupérer la session active
+			$session_id = active_session();
+	
+			// Récupérer l'ID de l'école de l'admin
+			$school_id = $this->session->userdata('school_id');
+			if (!$school_id) {
+				redirect(site_url('admin/exam'), 'refresh');
+			}
+	
+			// Récupérer les détails de l'examen
+			$this->db->select('exams.*, classes.name as class_name, sections.name as section_name, schools.name as school_name');
+			$this->db->from('exams');
+			$this->db->join('classes', 'exams.class_id = classes.id', 'left');
+			$this->db->join('sections', 'exams.section_id = sections.id', 'left');
+			$this->db->join('schools', 'exams.school_id = schools.id', 'left');
+			$this->db->where('exams.id', $exam_id);
+			$this->db->where('exams.school_id', $school_id);
+	
+			$exam = $this->db->get()->row_array();
+	
+			// Vérifier si l'examen existe
+			if (!$exam) {
+				redirect(site_url('admin/exam'), 'refresh');
+			}
+	
+			// Vérifier l'existence de l'étudiant et son association avec l'école
+			$student_data = $this->db->get_where('students', ['id' => $student_id, 'school_id' => $school_id])->row_array();
+			if (!$student_data) {
+				redirect(site_url('admin/exam'), 'refresh');
+			}
+	
+			// Récupérer les réponses soumises par l'étudiant
+			$this->db->select('er.*, eq.title as question_title');
+			$this->db->from('exam_responses er');
+			$this->db->join('exam_questions eq', 'er.exam_question_id = eq.id', 'left');
+			$this->db->where('er.exam_id', $exam_id);
+			$this->db->where('er.user_id', $student_data['user_id']);
+			$submitted_answers = $this->db->get()->result_array();
+	
+			// Préparer les données pour la vue
+			$page_data['exam_details'] = $exam;
+			$page_data['submitted_answers'] = $submitted_answers;
+			$page_data['page_title'] = $exam['name'] . ' - ' . get_phrase('results');
+	
+			// Charger la vue partielle pour le modal
+			$this->load->view('backend/student/mark/exam_results_modal', $page_data);
+		} catch (Exception $e) {
+			redirect(site_url('admin/exam'), 'refresh');
+		}
+	}
+
+	public function filter_exams()
+{
+    if ($this->session->userdata('admin_login') != 1) {
+        echo json_encode(['error' => 'Unauthorized']);
+        return;
+    }
+
+    $school_id = school_id();
+    $session = active_session();
+
+    $class_id = $this->input->post('class_id');
+    $section_id = $this->input->post('section_id');
+    $date_range = $this->input->post('date_range');
+    $date_from = '';
+    $date_to = '';
+
+    if (!empty($date_range)) {
+        $dates = explode(' - ', $date_range);
+        $date_from = strtotime(trim($dates[0]) . ' 00:00:00');
+        $date_to = strtotime(trim($dates[1]) . ' 23:59:59');
+    }
+
+    $this->db->select('exams.*, classes.name as class_name, sections.name as section_name');
+    $this->db->from('exams');
+    $this->db->join('classes', 'exams.class_id = classes.id', 'left');
+    $this->db->join('sections', 'exams.section_id = sections.id', 'left');
+    $this->db->where('exams.school_id', $school_id);
+    $this->db->where('exams.session', $session);
+    if (!empty($class_id)) {
+        $this->db->where('exams.class_id', $class_id);
+    }
+    if (!empty($section_id)) {
+        $this->db->where('exams.section_id', $section_id);
+    }
+    if (!empty($date_range)) {
+        $this->db->where('exams.starting_date >=', $date_from);
+        $this->db->where('exams.starting_date <=', $date_to);
+    }
+    $exams = $this->db->get()->result_array();
+
+    $exam_data = [];
+    foreach ($exams as $exam) {
+        $exam_data[] = [
+            'id' => $exam['id'],
+            'name' => $exam['name'] ?: 'Unnamed Exam',
+            'formatted_date' => $exam['starting_date'] ? date('D, d-M-Y H:i', $exam['starting_date']) : 'No Date',
+            'class_name' => $exam['class_name'] ?: 'No Class',
+            'section_name' => $exam['section_name'] ?: 'No Section'
+        ];
+    }
+
+    $exam_calendar = [];
+    foreach ($exams as $exam) {
+        if ($exam['starting_date']) {
+            $exam_calendar[] = [
+                'title' => $exam['name'] ?: 'Unnamed Exam',
+                'start' => date('Y-m-d H:i:s', $exam['starting_date'])
+            ];
+        }
+    }
+
+    echo json_encode([
+        'exams' => $exam_data,
+        'calendar' => $exam_calendar,
+        'debug' => [
+            'class_id' => $class_id,
+            'section_id' => $section_id,
+            'date_range' => $date_range,
+            'exam_count' => count($exams)
+        ]
+    ]);
+}
+
+	
 }

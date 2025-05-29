@@ -481,6 +481,22 @@ $config['csrf_exclude_uris'] = array(
      'BigBlueButton/get_active_meetings',
      'BigBlueButton/join_meeting',
      'superadmin/delete_room',
+    'superadmin/exam/delete.*',
+    'superadmin/exam/create',
+    'superadmin/exam/update.*',
+    'superadmin/get_sections_by_class',
+    'superadmin/exam/list',
+    'superadmin/filter_exams',
+    'admin/filter_exams',
+    'admin/exam/delete.*',
+    'admin/exam/create',
+    'admin/exam/update.*',
+    'admin/get_sections_by_class',
+    'admin/exam/list',
+    'addons/courses/exam_questions/.*',
+    'addons/courses/manage_exam_multiple_choices_options',
+    'addons/courses/manage_multiple_choices_options',
+    'addons/courses/ajax_sort_question',
      'admin/delete_room',
      'teacher/delete_room',
     'BigBlueButton/*',
@@ -493,6 +509,7 @@ $config['csrf_exclude_uris'] = array(
     'teacher/filter_recordings',
     'teacher/get_recordings',
     'teacher/get_recordings_by_meeting_id',
+
    // 'admin/central',
     'admin/people',
     'admin/spaces',
@@ -510,6 +527,10 @@ $config['csrf_exclude_uris'] = array(
     'student/spaces',
     'student/chat',
     
+
+    'student/filter_recordings',
+
+
 
 );
  

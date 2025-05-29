@@ -1,7 +1,8 @@
+<link rel="stylesheet" href="<?php echo base_url();?>assets/backend/css/edit-design-button.css">
 <?php $school_id = school_id(); ?>
 <div class="row" style="margin-bottom: 10px; width: 100%;">
-    <div class="col-6"><a href="javascript:" class="btn btn-sm btn-secondary" onclick="present_all()"><?php echo get_phrase('present_all'); ?></a></div>
-    <div class="col-6"><a href="javascript:" class="btn btn-sm btn-secondary float-end" onclick="absent_all()"><?php echo get_phrase('absent_all'); ?></a></div>
+    <div class="col-6"><a href="javascript:" class="btn btn-primary btn-l px-4" id="update-btn" onclick="present_all()"><i class="mdi mdi-check-circle-outline"></i><?php echo get_phrase('present_all'); ?></a></div>
+    <div class="col-6"><a href="javascript:" class="btn btn-primary btn-l px-4" id="update-btn" onclick="absent_all()"><i class="mdi mdi-alert-circle-outline"></i><?php echo get_phrase('absent_all'); ?></a></div>
 </div>
 
 <div class="table-responsive-sm row col-md-12" style="padding-right: 0px;">

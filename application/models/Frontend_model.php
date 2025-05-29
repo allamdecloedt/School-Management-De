@@ -557,95 +557,150 @@ class Frontend_model extends CI_Model
 
 
   function online_admission_school()
-  {
+{
+    $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
 
-
-    $duplication_status = ($this->user_model->check_duplication_school('on_create', $this->input->post('school_name')) && $this->user_model->check_duplication('on_create', $this->input->post('email')));
-
-    if ($duplication_status) {
-      $school_data['name'] = htmlspecialchars($this->input->post('school_name'));
-      $school_data['address'] = htmlspecialchars($this->input->post('school_adress'));
-      $school_data['phone'] = htmlspecialchars($this->input->post('school_phone'));
-      $school_data['status'] = 0;
-      $school_data['description'] = htmlspecialchars($this->input->post('school_description'));
-      $school_data['access'] = htmlspecialchars($this->input->post('visibility'));
-      $school_data['category'] = $this->input->post('category');
-
-
-      $this->db->insert('schools', $school_data);
-      $school_id = $this->db->insert_id();
-
-    // Data to be inserted
-		$data = array(
-      array(
-        
-        'key' => 'stripe_settings',
-        'value' => '[{\"stripe_active\":\"yes\",\"stripe_mode\":\"on\",\"stripe_test_secret_key\":\"1234\",\"stripe_test_public_key\":\"1234\",\"stripe_live_secret_key\":\"1234\",\"stripe_live_public_key\":\"1234\",\"stripe_currency\":\"USD\"}]',
-        'school_id' => $school_id
-      ),
-      array(
-        
-        'key' => 'paypal_settings',
-        'value' => '[{\"paypal_active\":\"yes\",\"paypal_mode\":\"sandbox\",\"paypal_client_id_sandbox\":\"1234\",\"paypal_client_id_production\":\"1234\",\"paypal_currency\":\"USD\"}]',
-        'school_id' => $school_id
-      )
-    );
-
-    // Insert data into the `payment_settings` table
-    $this->db->insert_batch('payment_settings', $data);
-
-    // Data to be inserted
-    $data = array(
-					
-          'school_id' => $school_id,
-          'system_currency' => 'USD',
-          'currency_position' => 'left',
-          'language' => 'english',
-        
-          );
-            
-    // Insert data into the `settings_school` table
-   $this->db->insert('settings_school', $data);
-
-
-      $admin_data['name'] = htmlspecialchars($this->input->post('name'));
-      $admin_data['email'] = htmlspecialchars($this->input->post('email'));
-      $admin_data['gender'] = htmlspecialchars($this->input->post('gender'));
-      $admin_data['phone'] = htmlspecialchars($this->input->post('phone'));
-      $admin_data['password'] = sha1($this->input->post('password'));
-      $admin_data['role'] = 'admin';
-      $admin_data['school_id'] = $school_id;
-      $admin_data['status'] = 3;
-      $admin_data['watch_history'] = '[]';
-
-
-      $this->db->insert('users', $admin_data);
-      $user_id = $this->db->insert_id();
-
-   
-
-        if (isset($_FILES['school_image']) && $_FILES['school_image']['error'] == UPLOAD_ERR_OK) {
-		
-          $upload_path = 'uploads/schools/' . $school_id . '.jpg';
-          move_uploaded_file($_FILES['school_image']['tmp_name'], $upload_path);
-      }
-
-        $this->email_model->School_online_admission($admin_data['email'],$school_data['name'],$admin_data['name']);
-        $this->email_model->School_online_admission_superadmin($admin_data['email'],$school_data['name'],$admin_data['name']);
-
-        $this->session->set_flashdata('success', get_phrase('successfully_has_been_recoded_your_request') . '. ' . get_phrase('you_will_be_notified_by_email_address_about_this_request'));
-    } else {
-
-      if (!$this->user_model->check_duplication_school('on_create', $this->input->post('school_name')))
-          $this->session->set_flashdata('error', get_phrase('this_school_name_already_exist'));
-      else if (!$this->user_model->check_duplication('on_create', $this->input->post('email')))
-          $this->session->set_flashdata('error', get_phrase('this_email_already_exist'));
+    // Validate required fields
+    if (
+        $this->input->post('email') == '' ||
+        !preg_match($emailPattern, $this->input->post('email')) ||
+        $this->input->post('password') == '' ||
+        $this->input->post('name') == '' ||
+        $this->input->post('school_name') == '' ||
+        $this->input->post('repeat-password') == ''
+    ) {
+        return json_encode([
+            'status' => false,
+            'message' => get_phrase('validation_error'),
+            'csrf' => [
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash()
+            ]
+        ]);
     }
 
-    if (isset($_SERVER['HTTP_REFERER'])) {
-      redirect($_SERVER['HTTP_REFERER'], 'refresh');
+    // Check for duplicate school name and email
+    $school_duplication = $this->user_model->check_duplication_school('on_create', $this->input->post('school_name'));
+    $email_duplication = $this->user_model->check_duplication('on_create', $this->input->post('email'));
+
+    if (!$school_duplication && !$email_duplication) {
+    return json_encode([
+        'status' => false,
+        'message' => get_phrase('this_school_name_and_email_already_exist'),
+        'csrf' => [
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        ]
+    ]);
+}
+
+    if (!$school_duplication) {
+        return json_encode([
+            'status' => false,
+            'message' => get_phrase('this_school_name_already_exist'),
+            'csrf' => [
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash()
+            ]
+        ]);
     }
-  }
+
+    if (!$email_duplication) {
+        return json_encode([
+            'status' => false,
+            'message' => get_phrase('this_email_already_exist'),
+            'csrf' => [
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash()
+            ]
+        ]);
+    }
+
+    // Prepare school data
+    $school_data = [
+        'name' => htmlspecialchars($this->input->post('school_name')),
+        'address' => htmlspecialchars($this->input->post('school_adress')),
+        'phone' => htmlspecialchars($this->input->post('school_phone')),
+        'status' => 0, // School pending approval
+        'description' => htmlspecialchars($this->input->post('school_description')),
+        'access' => htmlspecialchars($this->input->post('visibility')),
+        'category' => htmlspecialchars($this->input->post('category'))
+    ];
+
+    // Insert school
+    $this->db->insert('schools', $school_data);
+    $school_id = $this->db->insert_id();
+
+    // Insert payment settings
+    $payment_settings = [
+        [
+            'key' => 'stripe_settings',
+            'value' => '[{\"stripe_active\":\"yes\",\"stripe_mode\":\"on\",\"stripe_test_secret_key\":\"1234\",\"stripe_test_public_key\":\"1234\",\"stripe_live_secret_key\":\"1234\",\"stripe_live_public_key\":\"1234\",\"stripe_currency\":\"USD\"}]',
+            'school_id' => $school_id
+        ],
+        [
+            'key' => 'paypal_settings',
+            'value' => '[{\"paypal_active\":\"yes\",\"paypal_mode\":\"sandbox\",\"paypal_client_id_sandbox\":\"1234\",\"paypal_client_id_production\":\"1234\",\"paypal_currency\":\"USD\"}]',
+            'school_id' => $school_id
+        ]
+    ];
+    $this->db->insert_batch('payment_settings', $payment_settings);
+
+    // Insert school settings
+    $settings_school = [
+        'school_id' => $school_id,
+        'system_currency' => 'USD',
+        'currency_position' => 'left',
+        'language' => 'english'
+    ];
+    $this->db->insert('settings_school', $settings_school);
+
+    // Prepare user (admin/mentor) data
+    $admin_data = [
+        'name' => htmlspecialchars($this->input->post('name')),
+        'email' => htmlspecialchars($this->input->post('email')),
+        'gender' => htmlspecialchars($this->input->post('gender')),
+        'phone' => htmlspecialchars($this->input->post('phone')),
+        'password' => sha1($this->input->post('password')),
+        'role' => 'admin',
+        'school_id' => $school_id,
+        'status' => 3, // Pending status
+        'watch_history' => '[]'
+    ];
+
+    // Insert user
+    $this->db->insert('users', $admin_data);
+    $user_id = $this->db->insert_id();
+
+    // Handle school image upload
+    if (isset($_FILES['school_image']) && $_FILES['school_image']['error'] == UPLOAD_ERR_OK) {
+        $upload_path = 'Uploads/schools/' . $school_id . '.jpg';
+        if (!move_uploaded_file($_FILES['school_image']['tmp_name'], $upload_path)) {
+            return json_encode([
+                'status' => false,
+                'message' => get_phrase('image_upload_failed'),
+                'csrf' => [
+                    'csrfName' => $this->security->get_csrf_token_name(),
+                    'csrfHash' => $this->security->get_csrf_hash()
+                ]
+            ]);
+        }
+    }
+
+    // Send confirmation emails
+    $this->email_model->School_online_admission($admin_data['email'], $school_data['name'], $admin_data['name']);
+    $this->email_model->School_online_admission_superadmin($admin_data['email'], $school_data['name'], $admin_data['name']);
+
+    // Success response
+    return json_encode([
+        'status' => true,
+        'message' => get_phrase('Votre inscription a été effectuée avec succès.'),
+        'csrf' => [
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash()
+        ]
+    ]);
+}
 
 
 

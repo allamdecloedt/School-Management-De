@@ -1,63 +1,7 @@
 <?php if(isset($class_id) && isset($section_id)): ?>
     <table class="table table-striped table-bordered table-centered mb-0">
         <tbody>
-            <tr>
-                <td style="font-weight: bold; width : 100px;"><?php echo get_phrase('saturday'); ?></td>
-                <td class="m-1">
 
-                        <?php
-                            $satureday_routines = $this->db->get_where('routines', array('class_id' => $class_id, 'section_id' => $section_id, 'session_id' => active_session(), 'day' => 'saturday'))->result_array();
-                        	foreach($satureday_routines as $satureday_routine){
-                        ?>
-                            <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
-                                	<?php echo $this->db->get_where('subjects', array('id' => $satureday_routine['subject_id']))->row('name'); ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-clock"></i>
-                                	<?php echo $satureday_routine['starting_hour'].':'.$satureday_routine['starting_minute'].' - '.$satureday_routine['ending_hour'].':'.$satureday_routine['ending_minute']; ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-account"></i>
-                                	<?php echo $this->user_model->get_user_details($this->db->get_where('teachers', array('id' => $satureday_routine['teacher_id']))->row('user_id'), 'name'); ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-home-automation"></i>
-                                	<?php echo $this->db->get_where('class_rooms', array('id' => $satureday_routine['room_id']))->row('name'); ?>
-                                </p>
-                                <span class="caret"></span>
-                                </button>
-                            </div>
-                        <?php } ?>
-                </td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold; width : 100px;"><?php echo get_phrase('sunday'); ?></td>
-                <td class="m-1">
-
-                        <?php
-                        	$sunday_routines = $this->db->get_where('routines', array('class_id' => $class_id, 'section_id' => $section_id, 'session_id' => active_session(), 'day' => 'sunday'))->result_array();
-                        	foreach($sunday_routines as $sunday_routine){
-                        ?>
-                            <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
-                                	<?php echo $this->db->get_where('subjects', array('id' => $sunday_routine['subject_id']))->row('name'); ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-clock"></i>
-                                	<?php echo $sunday_routine['starting_hour'].':'.$sunday_routine['starting_minute'].' - '.$sunday_routine['ending_hour'].':'.$sunday_routine['ending_minute']; ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-account"></i>
-                                	<?php echo $this->user_model->get_user_details($this->db->get_where('teachers', array('id' => $sunday_routine['teacher_id']))->row('user_id'), 'name'); ?>
-                                </p>
-                                <p style="margin-bottom: 0px;"><i class="mdi mdi-home-automation"></i>
-                                	<?php echo $this->db->get_where('class_rooms', array('id' => $sunday_routine['room_id']))->row('name'); ?>
-                                </p>
-                                <span class="caret"></span>
-                                </button>
-                            </div>
-                        <?php } ?>
-
-                </td>
-            </tr>
             <tr>
                 <td style="font-weight: bold; width : 100px;"><?php echo get_phrase('monday'); ?></td>
                 <td class="m-1">
@@ -195,6 +139,63 @@
                                 </p>
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-home-automation"></i>
                                 	<?php echo $this->db->get_where('class_rooms', array('id' => $friday_routine['room_id']))->row('name'); ?>
+                                </p>
+                                <span class="caret"></span>
+                                </button>
+                            </div>
+                        <?php } ?>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; width : 100px;"><?php echo get_phrase('saturday'); ?></td>
+                <td class="m-1">
+
+                        <?php
+                            $satureday_routines = $this->db->get_where('routines', array('class_id' => $class_id, 'section_id' => $section_id, 'session_id' => active_session(), 'day' => 'saturday'))->result_array();
+                        	foreach($satureday_routines as $satureday_routine){
+                        ?>
+                            <div class="btn-group text-start">
+                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
+                                	<?php echo $this->db->get_where('subjects', array('id' => $satureday_routine['subject_id']))->row('name'); ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-clock"></i>
+                                	<?php echo $satureday_routine['starting_hour'].':'.$satureday_routine['starting_minute'].' - '.$satureday_routine['ending_hour'].':'.$satureday_routine['ending_minute']; ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-account"></i>
+                                	<?php echo $this->user_model->get_user_details($this->db->get_where('teachers', array('id' => $satureday_routine['teacher_id']))->row('user_id'), 'name'); ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-home-automation"></i>
+                                	<?php echo $this->db->get_where('class_rooms', array('id' => $satureday_routine['room_id']))->row('name'); ?>
+                                </p>
+                                <span class="caret"></span>
+                                </button>
+                            </div>
+                        <?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; width : 100px;"><?php echo get_phrase('sunday'); ?></td>
+                <td class="m-1">
+
+                        <?php
+                        	$sunday_routines = $this->db->get_where('routines', array('class_id' => $class_id, 'section_id' => $section_id, 'session_id' => active_session(), 'day' => 'sunday'))->result_array();
+                        	foreach($sunday_routines as $sunday_routine){
+                        ?>
+                            <div class="btn-group text-start">
+                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
+                                	<?php echo $this->db->get_where('subjects', array('id' => $sunday_routine['subject_id']))->row('name'); ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-clock"></i>
+                                	<?php echo $sunday_routine['starting_hour'].':'.$sunday_routine['starting_minute'].' - '.$sunday_routine['ending_hour'].':'.$sunday_routine['ending_minute']; ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-account"></i>
+                                	<?php echo $this->user_model->get_user_details($this->db->get_where('teachers', array('id' => $sunday_routine['teacher_id']))->row('user_id'), 'name'); ?>
+                                </p>
+                                <p style="margin-bottom: 0px;"><i class="mdi mdi-home-automation"></i>
+                                	<?php echo $this->db->get_where('class_rooms', array('id' => $sunday_routine['room_id']))->row('name'); ?>
                                 </p>
                                 <span class="caret"></span>
                                 </button>

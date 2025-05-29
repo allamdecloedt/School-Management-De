@@ -13,7 +13,8 @@
 <link href="<?php echo base_url(); ?>assets/backend/css/vendor/select.bootstrap5.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url(); ?>assets/backend/css/vendor/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url(); ?>assets/backend/css/vendor/summernote-bs4.css" rel="stylesheet" type="text/css" />
-
+<!-- Toastr CSS -->
+<link href="<?php echo base_url(); ?>assets/backend/css/toastr.min.css" rel="stylesheet" type="text/css" />
 
 <!-- third party css end -->
 

@@ -7,9 +7,9 @@
         <!-- Champ caché pour le jeton CSRF -->
     <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" />
     
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="class_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('class'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <select name="class_id" id="class_id_on_routine_creation" class="form-control" required onchange="classWiseSectionForRoutineCreate(this.value)">
                     <option value=""><?php echo get_phrase('select_a_class'); ?></option>
                     <?php $classes = $this->db->get_where('classes', array('school_id' => $school_id))->result_array(); ?>
@@ -20,37 +20,51 @@
             </div>
         </div>
 
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="section_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('section'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
-                <select name="section_id" id = "section_id_on_routine_creation" class="form-control" required>
-                    <option value=""><?php echo get_phrase('select_a_section'); ?></option>
-                    <?php $sections = $this->db->get_where('sections', array('class_id' => $routine['class_id']))->result_array(); ?>
-                    <?php foreach($sections as $section): ?>
-                        <option value="<?php echo $section['id']; ?>" <?php if($routine['section_id'] == $section['id']) echo 'selected'; ?>><?php echo $section['name']; ?></option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="col-md-8">
+                 <select name="section_id[]" id="section_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2" multiple required>
+                     <option value=""><?php echo get_phrase('select_a_section'); ?></option>
+                     <?php 
+                      $sections = $this->db->get_where('sections', array('class_id' => $routine['class_id']))->result_array();
+                     // Récupérer les sections associées à cette routine
+                       $routine_sections = $this->db->get_where('routines', array('class_id' => $routine['class_id'], 'day' => $routine['day'], 'starting_hour' => $routine['starting_hour'], 'starting_minute' => $routine['starting_minute'], 'ending_hour' => $routine['ending_hour'], 'ending_minute' => $routine['ending_minute'], 'teacher_id' => $routine['teacher_id'], 'room_id' => $routine['room_id']))->result_array();
+                       $selected_section_ids = array_column($routine_sections, 'section_id');
+                       ?>
+                       <?php foreach($sections as $section): ?>
+                         <option value="<?php echo $section['id']; ?>" <?php if(in_array($section['id'], $selected_section_ids)) echo 'selected'; ?>><?php echo $section['name']; ?></option>
+                       <?php endforeach; ?>
+                 </select>
             </div>
         </div>
 
+        <div class="form-group row mb-2 gap-3">
+    <label for="teacher_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
+    <div class="col-md-8">
+        <select name="teacher_id" id="teacher_on_routine_creation" class="form-control select2" data-bs-toggle="select2" required>
+            <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
+            <?php
+            // S'assurer que l'admin est dans la table teachers
+            $this->crud_model->check_admins_in_teachers($school_id);
 
+            // Récupérer les enseignants (y compris l'admin)
+            $teachers = $this->db->select('t.id, u.name, u.role')
+                                ->from('teachers t')
+                                ->join('users u', 'u.id = t.user_id', 'left')
+                                ->where('t.school_id', $school_id)
+                                ->get()->result_array();
+            foreach ($teachers as $teacher): ?>
+                <option value="<?php echo $teacher['id']; ?>" <?php if ($routine['teacher_id'] == $teacher['id']) echo 'selected'; ?>>
+                    <?php echo $teacher['name'] . ($teacher['role'] == 'superadmin' ? ' (SuperAdmin)' : ' (Teacher)'); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>
 
-        <div class="form-group row mb-2">
-            <label for="teacher_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('teacher'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
-                <select name="teacher_id" id = "teacher_on_routine_creation" class="form-control" required>
-                    <option value=""><?php echo get_phrase('assign_a_teacher'); ?></option>
-                    <?php $teachers = $this->db->get_where('teachers', array('school_id' => $school_id))->result_array(); ?>
-                    <?php foreach($teachers as $teacher): ?>
-                        <option value="<?php echo $teacher['id']; ?>" <?php if($routine['teacher_id'] == $teacher['id']) echo 'selected'; ?>><?php echo $this->user_model->get_user_details($teacher['user_id'], 'name'); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="class_room_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('class_room'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <select name="class_room_id" id = "class_room_id_on_routine_creation" class="form-control" required>
                     <option value=""><?php echo get_phrase('select_a_class_room'); ?></option>
                     <?php $class_rooms = $this->db->get_where('class_rooms', array('school_id' => $school_id))->result_array(); ?>
@@ -61,25 +75,26 @@
             </div>
         </div>
 
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="day_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('day'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <select name="day" id = "day_on_routine_creation" class="form-control" required>
                     <option value=""><?php echo get_phrase('select_a_day'); ?></option>
-                    <option value="saturday" <?php if($routine['day'] == 'saturday') echo 'selected'; ?>><?php echo get_phrase('saturday'); ?></option>
-                    <option value="sunday" <?php if($routine['day'] == 'sunday') echo 'selected'; ?>><?php echo get_phrase('sunday'); ?></option>
                     <option value="monday" <?php if($routine['day'] == 'monday') echo 'selected'; ?>><?php echo get_phrase('monday'); ?></option>
                     <option value="tuesday" <?php if($routine['day'] == 'tuesday') echo 'selected'; ?>><?php echo get_phrase('tuesday'); ?></option>
                     <option value="wednesday" <?php if($routine['day'] == 'wednesday') echo 'selected'; ?>><?php echo get_phrase('wednesday'); ?></option>
                     <option value="thursday" <?php if($routine['day'] == 'thursday') echo 'selected'; ?>><?php echo get_phrase('thursday'); ?></option>
                     <option value="friday" <?php if($routine['day'] == 'friday') echo 'selected'; ?>><?php echo get_phrase('friday'); ?></option>
+                    <option value="saturday" <?php if($routine['day'] == 'saturday') echo 'selected'; ?>><?php echo get_phrase('saturday'); ?></option>
+                    <option value="sunday" <?php if($routine['day'] == 'sunday') echo 'selected'; ?>><?php echo get_phrase('sunday'); ?></option>             
+                
                 </select>
             </div>
         </div>
 
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="starting_hour_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('starting'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
+            <div class="col-md-8">
             <input type="time" value="<?php echo $routine['starting_hour']; ?>" name="starting_hour" id = "starting_minute_on_routine_creation"  class="form-control select2" data-bs-toggle="select2" required />
 
             </div>
@@ -87,9 +102,9 @@
 
         </div>
 
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 gap-3">
             <label for="ending_hour_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('ending'); ?><span class="required"> * </span></label>
-            <div class="col-md-9">
+            <div class="col-md-8">
             <input type="time" value="<?php echo $routine['ending_hour']; ?>" name="ending_hour" id = "ending_hour_on_routine_creation"  class="form-control select2" data-bs-toggle="select2" required />
 
          
@@ -97,12 +112,24 @@
         </div>
 
 
-        <div class="form-group  col-md-12">
+        <div class="form-group  col-md-12 d-flex justify-content-center mt-4">
             <button class="btn btn-primary btn-l px-4" id="update-btn" type="submit"><i class="mdi mdi-account-check"></i><?php echo get_phrase('update_class_routine'); ?></button>
         </div>
     </form>
 <?php endforeach; ?>
 
+<style>
+    .required {
+    display: inline;
+    vertical-align: middle;
+    color: red;
+    }
+
+    .col-form-label {
+    white-space: nowrap;
+    }
+
+</style>
 
 <script>
 $(document).ready(function () {

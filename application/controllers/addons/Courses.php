@@ -270,44 +270,49 @@ class Courses extends CI_Controller {
   }
 
 public function ajax_sort_question() {
-  $question_json = $this->input->post('itemJSON');
-  $exam_id = $this->input->post('exam_id'); // Paramètre pour identifier si c'est un examen
+    $question_json = $this->input->post('itemJSON');
+    $exam_id = $this->input->post('exam_id');
 
-  if ($exam_id) {
-      $this->lms_model->sort_exam_question($question_json);
-  } else {
-      $this->lms_model->sort_question($question_json);
-  }
+    if ($exam_id) {
+        $this->lms_model->sort_exam_question($question_json);
+    } else {
+        $this->lms_model->sort_question($question_json);
+    }
 
-  // Préparer le nouveau jeton CSRF
-  $csrf = array(
-      'csrfName' => $this->security->get_csrf_token_name(),
-      'csrfHash' => $this->security->get_csrf_hash(),
-  );
+    $csrf = array(
+        'csrfName' => $this->security->get_csrf_token_name(),
+        'csrfHash' => $this->security->get_csrf_hash(),
+    );
 
-  // Renvoyer la réponse JSON avec le nouveau jeton CSRF
-  echo json_encode(array('status' => true, 'csrf' => $csrf));
+    echo json_encode(array('status' => true, 'csrf' => $csrf));
 }
 
   // this function is responsible for managing multiple choice question
-  public function manage_multiple_choices_options() {
-    $page_data['number_of_options'] = $this->input->post('number_of_options');
-    // $this->load->view('backend/academy/manage_multiple_choices_options', $page_data);
+public function manage_multiple_choices_options() {
+    $number_of_options = $this->input->post('number_of_options');
+    $html = '';
+    for ($i = 0; $i < $number_of_options; $i++) {
+        $html .= '<div class="form-group mb-2 options">';
+        $html .= '<label>' . get_phrase('option') . ' ' . ($i + 1) . '</label>';
+        $html .= '<div class="input-group">';
+        $html .= '<input type="text" class="form-control" name="options[]" id="option_' . $i . '" placeholder="' . get_phrase('option_') . ($i + 1) . '" required>';
+        $html .= '<div class="input-group-append">';
+        $html .= '<span class="input-group-text d-block">';
+        $html .= '<input type="checkbox" name="correct_answers[]" value="' . ($i + 1) . '">';
+        $html .= '</span>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+    }
 
-          // Charger la vue mise à jour
-          $response_html = $this->load->view('backend/academy/manage_multiple_choices_options', $page_data, TRUE);
+    $csrf = array(
+        'csrfName' => $this->security->get_csrf_token_name(),
+        'csrfHash' => $this->security->get_csrf_hash(),
+    );
 
-          // Préparer le nouveau jeton CSRF
-          $csrf = array(
-              'csrfName' => $this->security->get_csrf_token_name(),
-              'csrfHash' => $this->security->get_csrf_hash(),
-          );
-    
-          // Renvoyer la réponse JSON avec le HTML mis à jour et le nouveau jeton CSRF
-          echo json_encode(array('html' => $response_html, 'csrf' => $csrf));
-  }
+    echo json_encode(array('html' => $html, 'csrf' => $csrf));
+}
   // Manage Quize Questions
-  // Dans controllers/Courses.php
 
   public function quiz_questions($quiz_id = "", $action = "", $question_id = "") {
     // Check if the user is authenticated based on role
@@ -331,7 +336,6 @@ public function ajax_sort_question() {
 
     // Additional check for student access
     if ($student_login == 1 && in_array($action, ['add', 'edit', 'delete'])) {
-        log_message('error', 'Student attempted restricted action: ' . $action);
         echo json_encode([
             'status' => false,
             'message' => 'Students are not authorized to perform this action',
@@ -346,7 +350,6 @@ public function ajax_sort_question() {
     $response = [];
     try {
         if ($action == 'add') {
-            log_message('debug', 'Adding quiz question for quiz_id: ' . $quiz_id . ', POST data: ' . print_r($this->input->post(), true));
             $result = $this->lms_model->add_quiz_questions($quiz_id);
             $response = [
                 'html' => $result ? 1 : 0,
@@ -357,7 +360,6 @@ public function ajax_sort_question() {
                 ]
             ];
         } elseif ($action == 'edit') {
-            log_message('debug', 'Editing quiz question for question_id: ' . $question_id . ', quiz_id: ' . $quiz_id . ', POST data: ' . print_r($this->input->post(), true));
             $result = $this->lms_model->update_quiz_questions($question_id);
             $response = [
                 'html' => $result ? 1 : 0,
@@ -368,7 +370,6 @@ public function ajax_sort_question() {
                 ]
             ];
         } elseif ($action == 'delete') {
-            log_message('debug', 'Deleting quiz question for question_id: ' . $question_id . ', quiz_id: ' . $quiz_id);
             $result = json_decode($this->lms_model->delete_quiz_question($question_id), true); // Decode JSON string
             $response = [
                 'status' => isset($result['status']) ? $result['status'] : false,
@@ -386,7 +387,6 @@ public function ajax_sort_question() {
             return;
         }
     } catch (Exception $e) {
-        log_message('error', 'Exception in quiz_questions: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
         $response = [
             'status' => false,
             'message' => 'An error occurred: ' . $e->getMessage(),
@@ -445,58 +445,47 @@ public function ajax_sort_question() {
 
     if ($action == 'add') {
         $response = $this->lms_model->add_exam_questions($exam_id);
-        $csrf = array(
-            'csrfName' => $this->security->get_csrf_token_name(),
-            'csrfHash' => $this->security->get_csrf_hash(),
-        );
-        echo json_encode(array('html' => $response, 'csrf' => $csrf));
-    }
-    elseif ($action == 'edit') {
+        echo json_encode(array('html' => $response)); // Supprimez 'csrf'
+    } elseif ($action == 'edit') {
         $response = $this->lms_model->update_exam_questions($question_id);
-        $csrf = array(
-            'csrfName' => $this->security->get_csrf_token_name(),
-            'csrfHash' => $this->security->get_csrf_hash(),
+        echo json_encode(array('html' => $response)); // Supprimez 'csrf'
+    } elseif ($action == 'delete') {
+        $success = $this->lms_model->delete_exam_question($question_id);
+        $response = array(
+            'status' => $success ? true : false
         );
-        echo json_encode(array('html' => $response, 'csrf' => $csrf));
-    }
-    elseif ($action == 'delete') {
-      $success = $this->lms_model->delete_exam_question($question_id);
-      $csrf = array(
-          'csrfName' => $this->security->get_csrf_token_name(),
-          'csrfHash' => $this->security->get_csrf_hash(),
-      );
-      $response = array(
-          'status' => $success ? true : false,
-          'csrf' => $csrf
-      );
-      log_message('debug', 'Réponse de suppression : ' . json_encode($response));
-      echo json_encode($response);
+        echo json_encode($response); // Supprimez 'csrf'
     }
 }
 
 public function manage_exam_multiple_choices_options() {
-  $number_of_options = $this->input->post('number_of_options');
-  $html = '';
-  for ($i = 0; $i < $number_of_options; $i++) {
-      $html .= '<div class="form-group mb-2 options">';
-      $html .= '<label>' . get_phrase('option') . ' ' . ($i + 1) . '</label>';
-      $html .= '<div class="input-group">';
-      $html .= '<input type="text" class="form-control" name="options[]" id="option_' . $i . '" placeholder="' . get_phrase('option_') . ($i + 1) . '" required>';
-      $html .= '<div class="input-group-append">';
-      $html .= '<span class="input-group-text d-block">';
-      $html .= '<input type="checkbox" name="correct_answers[]" value="' . ($i + 1) . '">';
-      $html .= '</span>';
-      $html .= '</div>';
-      $html .= '</div>';
-      $html .= '</div>';
-  }
+    $number_of_options = $this->input->post('number_of_options');
+    $html = '';
+    for ($i = 0; $i < $number_of_options; $i++) {
+        $option_label = html_escape(get_phrase('option') . ' ' . ($i + 1));
+        $placeholder = html_escape(get_phrase('option_') . ($i + 1));
+        $html .= '<div class="form-group mb-2 options">';
+        $html .= '<label>' . $option_label . '</label>';
+        $html .= '<div class="input-group">';
+        $html .= '<input type="text" class="form-control" name="options[]" id="option_' . $i . '" placeholder="' . $placeholder . '" required>';
+        $html .= '<div class="input-group-append">';
+        $html .= '<span class="input-group-text d-block">';
+        $html .= '<input type="checkbox" name="correct_answers[]" value="' . ($i + 1) . '">';
+        $html .= '</span>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+    }
 
-  $csrf = array(
-      'csrfName' => $this->security->get_csrf_token_name(),
-      'csrfHash' => $this->security->get_csrf_hash(),
-  );
 
-  echo json_encode(array('html' => $html, 'csrf' => $csrf));
+    $csrf = array(
+        'csrfName' => $this->security->get_csrf_token_name(),
+        'csrfHash' => $this->security->get_csrf_hash(),
+    );
+
+    $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array('html' => $html, 'csrf' => $csrf)));
 }
 
 public function get_csrf_token() {

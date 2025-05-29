@@ -76,58 +76,62 @@ class Lessons extends CI_Controller {
     }
 
     public function submit_quiz($from = "") {
-        $submitted_quiz_info = array();
-        $container = array();
-        $quiz_id = $this->input->post('lesson_id');
-        $quiz_questions = $this->lms_model->get_quiz_questions($quiz_id)->result_array();
-        $total_correct_answers = 0;
-        foreach ($quiz_questions as $quiz_question) {
-            $submitted_answer_status = 0;
-            $correct_answers = json_decode($quiz_question['correct_answers']);
-            $submitted_answers = array();
-            foreach ($this->input->post($quiz_question['id']) as $each_submission) {
-                if (isset($each_submission)) {
-                    array_push($submitted_answers, $each_submission);
-                }
-            }
-            sort($correct_answers);
-            sort($submitted_answers);
-            if ($correct_answers == $submitted_answers) {
-                $submitted_answer_status = 1;
-                $total_correct_answers++;
-            }
-            $container = array(
-                "question_id" => $quiz_question['id'],
-                'submitted_answer_status' => $submitted_answer_status,
-                "submitted_answers" => json_encode($submitted_answers),
-                "correct_answers"  => json_encode($correct_answers),
-            );
-            array_push($submitted_quiz_info, $container);
-            $user_id = $this->session->userdata('user_id');
-            $this->db->where('quiz_id', $quiz_id);
-            $this->db->where('question_id', $quiz_question['id']);
-            $this->db->where('user_id', $user_id);
-            $query = $this->db->get('quiz_responses');
-            if ($query->num_rows() == 0) {  // Si aucune entrée n'existe, insérer la nouvelle réponse
+    $submitted_quiz_info = array();
+    $container = array();
+    $quiz_id = $this->input->post('lesson_id');
+    $user_id = $this->session->userdata('user_id');
+    $overwrite_results = $this->input->post('overwrite_results') == '1';
 
-             // Insérer la réponse dans la table 'quiz_responses'
-                $response_data = array(
-                    'user_id' => $user_id,
-                    'quiz_id' => $quiz_id,
-                    'question_id' => $quiz_question['id'],
-                    'submitted_answers' => json_encode($submitted_answers),
-                    'correct_answers' => json_encode($correct_answers),
-                    'submitted_answer_status' => $submitted_answer_status
-                );
+    // If overwrite_results is true, delete existing responses for this user and quiz
+    if ($overwrite_results) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('quiz_id', $quiz_id);
+        $this->db->delete('quiz_responses');
+    }
 
-                $this->db->insert('quiz_responses', $response_data);
+    $quiz_questions = $this->lms_model->get_quiz_questions($quiz_id)->result_array();
+    $total_correct_answers = 0;
+
+    foreach ($quiz_questions as $quiz_question) {
+        $submitted_answer_status = 0;
+        $correct_answers = json_decode($quiz_question['correct_answers']);
+        $submitted_answers = array();
+        foreach ($this->input->post($quiz_question['id']) as $each_submission) {
+            if (isset($each_submission)) {
+                array_push($submitted_answers, $each_submission);
             }
         }
-        $page_data['submitted_quiz_info']   = $submitted_quiz_info;
-        $page_data['total_correct_answers'] = $total_correct_answers;
-        $page_data['total_questions'] = count($quiz_questions);
-        $this->load->view('lessons/quiz_result', $page_data);
+        sort($correct_answers);
+        sort($submitted_answers);
+        if ($correct_answers == $submitted_answers) {
+            $submitted_answer_status = 1;
+            $total_correct_answers++;
+        }
+        $container = array(
+            "question_id" => $quiz_question['id'],
+            'submitted_answer_status' => $submitted_answer_status,
+            "submitted_answers" => json_encode($submitted_answers),
+            "correct_answers"  => json_encode($correct_answers),
+        );
+        array_push($submitted_quiz_info, $container);
+
+        // Insert the new response
+        $response_data = array(
+            'user_id' => $user_id,
+            'quiz_id' => $quiz_id,
+            'question_id' => $quiz_question['id'],
+            'submitted_answers' => json_encode($submitted_answers),
+            'correct_answers' => json_encode($correct_answers),
+            'submitted_answer_status' => $submitted_answer_status
+        );
+        $this->db->insert('quiz_responses', $response_data);
     }
+
+    $page_data['submitted_quiz_info']   = $submitted_quiz_info;
+    $page_data['total_correct_answers'] = $total_correct_answers;
+    $page_data['total_questions'] = count($quiz_questions);
+    $this->load->view('lessons/quiz_result', $page_data);
+}
     public function check_result() {
         $submitted_quiz_info = array();
                 $container = array();

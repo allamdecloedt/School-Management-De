@@ -1,5 +1,5 @@
 <?php
-$logo_light = base_url('uploads/images/decloedt/logo/white-logo.png');
+$logo_light =  $this->settings_model->get_logo_light(); 
 $system_name = get_frontend_settings('website_title');
 ?>
 <!-- ========== HEADER ========== -->
@@ -8,7 +8,7 @@ $system_name = get_frontend_settings('website_title');
     <div class="container-fluid">
       <!-- Logo -->
       <a class="navbar-brand" href="<?php echo site_url('home'); ?>">
-        <img src="<?php echo $logo_light; ?>" alt="Logo" style="width: 65px;">
+        <img src="<?php echo $logo_light; ?>" alt="Logo" style="width: 127px;">
       </a>
       <!-- End Logo -->
 

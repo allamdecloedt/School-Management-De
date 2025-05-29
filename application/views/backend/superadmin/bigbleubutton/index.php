@@ -70,7 +70,7 @@
                 fetch("<?php  echo base_url('bigbluebutton/get_active_meetings'); ?>")
                     .then(response => response.json())
                     .then(data => {
-                        console.log("Données reçues :", data);
+                        // console.log("Données reçues :", data);
                         
                         if (!data.active_meetings || !Array.isArray(data.active_meetings)) {
                             console.error("Format de données incorrect :", data);
@@ -97,8 +97,8 @@
                             if (startButton) {
                                 startButton.innerText = isRunning ? "Join" : "Start";
                                 startButton.href = isRunning 
-                                    ? "<?php // echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
-                                    : "<?php // echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
+                                    ? "<?php  echo base_url('bigbluebutton/join_meeting/'); ?>" + meetingID 
+                                    : "<?php  echo base_url('bigbluebutton/start_meeting/'); ?>" + roomID;
                             }
 
                             if (participantElement) {

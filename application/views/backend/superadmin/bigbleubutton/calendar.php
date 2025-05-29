@@ -19,6 +19,13 @@
 
     </style>
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="<?= base_url('superadmin/Liveclasse'); ?>" class="btn btn-secondary">
+                <i class="mdi mdi-arrow-left"></i> <?php echo get_phrase('Back to List Room'); ?>
+            </a>
+        </div>
+    </div>
 
     <div id="calendar"></div>
 
@@ -29,7 +36,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="appointmentModalLabel">Gérer le Rendez-vous</h5>
+                <h5 class="modal-title" id="appointmentModalLabel"><?php echo get_phrase('gerer_le_rendez_vous'); ?> </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -39,19 +46,19 @@
                     <input type="hidden" id="room_id" name="room_id" value="<?= $room_id; ?>">
 
                     <div class="form-group">
-                        <label for="appointmentTitle">Titre du Rendez-vous</label>
+                        <label for="appointmentTitle"><?php echo get_phrase('titre_du_rendez_vous'); ?></label><span class="required"> * </span>
                         <input type="text" class="form-control" id="appointmentTitle" required>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDate">Date et heure</label>
+                        <label for="appointmentDate"><?php echo get_phrase('date_heure'); ?></label><span class="required"> * </span>
                         <input type="datetime-local" class="form-control" id="appointmentDate" required>
                     </div>
                     <div class="form-group">
-                        <label for="appointmentDescription">Description</label>
+                        <label for="appointmentDescription"><?php echo get_phrase('description'); ?></label>
                         <textarea class="form-control" id="appointmentDescription" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="section">Section</label>
+                        <label for="section"><?php echo get_phrase('section'); ?></label><span class="required"> * </span>
                       
                         <select class="form-control" name="section[]" id="section" multiple>
                             <?php 
@@ -123,12 +130,40 @@
             events: "<?= base_url('superadmin/get_appointments'); ?>", // Charge les rendez-vous
 
             // 👉 Ouvrir la popup quand on clique sur une date
+            // select: function (start, end, allDay) {
+            //     $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
+            //     $('#appointmentId').val(""); // Vide l'ID
+            //     $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
+            //     $('#appointmentModal').modal('show');
+            // },
+
+
             select: function (start, end, allDay) {
-                $('#appointmentForm')[0].reset(); // Réinitialiser le formulaire
-                $('#appointmentId').val(""); // Vide l'ID
-                $('#appointmentDate').val(moment(start).format('YYYY-MM-DD HH:mm'));
+                let now = moment(); // Maintenant
+                let clicked = moment(start); // Date cliquée
+
+                // Vérifier que la date n'est pas dans le passé
+                if (clicked.isBefore(now, 'day')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Date invalide',
+                        text: 'Impossible d’ajouter un rendez-vous à une date passée.',
+                        confirmButtonText: 'OK'
+                    });
+                    $('#calendar').fullCalendar('unselect');
+                    return;
+                }
+
+                // 👉 Pas de contrôle sur l'heure ici
+
+                // Ouvrir le formulaire normalement
+                $('#appointmentForm')[0].reset();
+                $('#appointmentId').val("");
+                $('#appointmentDate').val(clicked.format('YYYY-MM-DD HH:mm')); // tu proposes l'heure actuelle
                 $('#appointmentModal').modal('show');
             },
+
+
 
             eventRender: function(event, element) {
                 let time = moment(event.start).format('HH:mm'); // Extraire l'heure correctement
@@ -230,6 +265,19 @@
             var classe_id = $('#classe_id').val();
             var section = $('#section').val();
             var room_id = $('#room_id').val();
+            var now = moment();
+            var selected = moment(start);
+
+                // 📅 Bloquer si heure sélectionnée est avant maintenant
+            if (selected.isBefore(now)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Heure invalide',
+                    text: 'Impossible de programmer un rendez-vous dans le passé.',
+                    confirmButtonText: 'OK'
+                });
+                return; // Ne pas envoyer l'Ajax
+            }
               // 🔥 Corriger la gestion des sections multiples : Transformer en string séparée par ","
             if (Array.isArray(section)) {
                 sections = section.join(','); // Convertir ["1", "2", "3"] → "1,2,3"

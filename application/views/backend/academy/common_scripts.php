@@ -173,12 +173,10 @@
     }
 
     function showOptions(number_of_options, context = 'quiz') {
-        var csrfName = $('#csrf_name').val();
-        var csrfHash = $('#csrf_hash').val();
+        var baseUrl = $('#base_url').val();
 
-        if (!csrfName || !csrfHash) {
-            console.error('Champs CSRF manquants ou non initialisés');
-            alert('Erreur : Les jetons CSRF ne sont pas disponibles. Veuillez recharger la page.');
+        if (number_of_options < 0 || number_of_options > 20) {
+            alert('Number of options must be between 0 and 20.');
             return;
         }
 
@@ -190,23 +188,17 @@
         });
 
         var url = (context === 'exam') 
-            ? $('#base_url').val() + 'addons/courses/manage_exam_multiple_choices_options'
-            : $('#base_url').val() + 'addons/courses/manage_multiple_choices_options';
+            ? baseUrl + 'addons/courses/manage_exam_multiple_choices_options'
+            : baseUrl + 'addons/courses/manage_multiple_choices_options';
 
         $.ajax({
             type: "POST",
             url: url,
-            data: { number_of_options: number_of_options, [csrfName]: csrfHash },
+            data: { number_of_options: number_of_options },
             dataType: 'json',
             success: function(response) {
                 jQuery('.options').remove();
                 jQuery('#multiple_choice_question').after(response.html);
-                var newCsrfName = response.csrf.csrfName;
-                var newCsrfHash = response.csrf.csrfHash;
-                $('#csrf_name').val(newCsrfName);
-                $('#csrf_hash').val(newCsrfHash);
-                $('#csrf_token_field').attr('name', newCsrfName).val(newCsrfHash);
-                $('input[name="' + newCsrfName + '"]').val(newCsrfHash);
                 jQuery('.options').each(function(index) {
                     if (existingOptions[index]) {
                         jQuery(this).find('input[type="text"]').val(existingOptions[index].value);
