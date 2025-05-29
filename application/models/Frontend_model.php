@@ -382,14 +382,54 @@ class Frontend_model extends CI_Model
     $phone = html_escape($this->input->post('phone'));
     $address = html_escape($this->input->post('address'));
     $comment = html_escape($this->input->post('comment'));
+    $hour = date('H');
+      if ($hour < 12) {
+          $salutation = 'Good Morning';
+      } elseif ($hour < 18) {
+          $salutation = 'Good Afternoon';
+      } else {
+          $salutation = 'Good Evening';
+      }
 
     // $receiver_email = $this->db->get_where('users', array('role' => 'superadmin'))->row('email');
-    $receiver_email = get_settings('system_email'); 
-    $msg = '<p>' . nl2br($comment) . "</p>";
-    $msg .= '<p>' . $first_name . " " . $last_name . '</p>';
-    $msg .= "<p>Phone : " . $phone . '</p>';
-    $msg .= "<p>Address : " . $address . '</p>';
-
+    $receiver_email = get_settings('system_email');
+    $msg = '';
+    $msg .= "<div style='background-color:#000; padding-top: 30px; padding-bottom: 30px;'>";
+    $msg .= "<div align='center'><img src='https://wayo.academy/uploads/system/logo/logo-light.png' alt='Logo' style='max-width:150px; height:auto; display:block;'></div>";
+    $msg .= "<table width='100%' border='0' cellpadding='10' cellspacing='0' align='center'>";
+    $msg .= "<tr>";
+    $msg .= "<td>";
+    $msg .= "<table width='850' height='300' border='0' cellpadding='0' cellspacing='0' align='center'>";
+    $msg .= "<tr>";
+    $msg .= "<td height='53' align='center' valign='center' bgcolor='#D2822D' style='border-radius: 15px 15px 0 0;'><span style='font-size:25px; font-weight:bold; color:#fff; font-family:Arial,Helvetica,sans-serif; display:block; text-align:center;'>{$salutation} Support !</span></td>";
+    $msg .= "</tr>";
+    $msg .= "<tr>";
+    $msg .= "<td valign='top' style='background-color:#f0f7fa; padding:31px 25px 0px 25px;'>";
+    $msg .= "<span style='font-size:14px; color:#000; font-family:Arial,Helvetica,sans-serif; display:block; line-height:1.5;'><strong style='color:#000;'>From:</strong> {$first_name} {$last_name}</span>";
+    $msg .= "<span style='font-size:14px; color:#000; font-family:Arial,Helvetica,sans-serif; display:block; line-height:1.5; padding:20px 0px 0px 0px;'> <strong style='color:#000;'>Message: </strong>" . nl2br($comment) . "</span>";
+    $msg .= "<br>";
+    $msg .= "<span style='font-size:14px; color:#000; font-family:Arial,Helvetica,sans-serif; display:block; line-height:1.5;'><strong style='color:#000;'>Email:</strong> <a href='mailto:{$email}' style='color:#ce0d0d; text-decoration:none;'>{$email}</a></span>";
+    $msg .= "<span style='font-size:14px; color:#000; font-family:Arial,Helvetica,sans-serif; display:block; line-height:1.5;'><strong style='color:#000;'>Phone:</strong><a href='tel:{$phone}' style='color:#ce0d0d; text-decoration:none;'> {$phone}</a></span>";
+    $msg .= "<span style='font-size:14px; color:#000; font-family:Arial,Helvetica,sans-serif; display:block; line-height:1.5;'><strong style='color:#000;'>Address:</strong> {$address}</span>";
+    $msg .= "<br>";
+    $msg .= "</td>";
+    $msg .= "</tr>";
+    $msg .= "<tr>";
+    $msg .= "<td bgcolor='#D2822D' height='53' style='border-radius: 0 0 15px 15px;'>";
+    $msg .= "<table width='100%' border='0' cellpadding='0' cellspacing='0'>";
+    $msg .= "<tr>";
+    $msg .= "<td width='33%' align='left' style='font-size:14px; color:#fff; font-family:Arial,Helvetica,sans-serif; padding-left:25px;'><a href='https://wayo.academy/home/contact#map' style='color:#fff; text-decoration:none;'>R320 Umm Hurair 2 Dubai UAE</td>";
+    $msg .= "<td width='33%' align='center' style='font-size:14px; color:#fff; font-family:Arial,Helvetica,sans-serif;'>© All the rights reserved to Wayo Academy</td>";
+    $msg .= "<td width='33%' align='right' style='font-size:14px; color:#fff; font-family:Arial,Helvetica,sans-serif; padding-right:25px;'>Tel: <a href='tel:+971501548923' style='color:#fff; text-decoration:none;'>+971 50 154 8923</a></td>";
+    $msg .= "</tr>";
+    $msg .= "</table>";
+    $msg .= "</td>";
+    $msg .= "</tr>";
+    $msg .= "</table>";
+    $msg .= "</td>";
+    $msg .= "</tr>";
+    $msg .= "</table>";
+    $msg .= "</div>";
     // $this->email_model->contact_message_email($email, $receiver_email, $msg);
     // return json_encode(array('status' => 1, 'message' => get_phrase('successfully_has_been_recoded_your_request') ));
     try {
