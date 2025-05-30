@@ -11,7 +11,7 @@
                         	foreach($monday_routines as $monday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $monday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -26,6 +26,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$monday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$monday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
@@ -40,7 +44,7 @@
                         	foreach($tuesday_routines as $tuesday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $tuesday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -55,6 +59,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$tuesday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$tuesday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
@@ -69,7 +77,7 @@
                         	foreach($wednesday_routines as $wednesday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $wednesday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -84,6 +92,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$wednesday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$wednesday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
@@ -98,7 +110,7 @@
                         	foreach($thursday_routines as $thursday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $thursday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -113,6 +125,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$thursday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$thursday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
@@ -127,7 +143,7 @@
                         	foreach($friday_routines as $friday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $friday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -142,6 +158,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$friday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$friday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
@@ -156,7 +176,7 @@
                         	foreach($satureday_routines as $satureday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $satureday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -171,6 +191,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$satureday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$satureday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
                 </td>
@@ -184,7 +208,7 @@
                         	foreach($sunday_routines as $sunday_routine){
                         ?>
                             <div class="btn-group text-start">
-                                <button type="button" class="btn btn-secondary dropdown-toggle">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p style="margin-bottom: 0px;"><i class="mdi mdi-book-open-variant"></i>
                                 	<?php echo $this->db->get_where('subjects', array('id' => $sunday_routine['subject_id']))->row('name'); ?>
                                 </p>
@@ -199,6 +223,10 @@
                                 </p>
                                 <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="rightModal('<?php echo site_url('modal/popup/routine/edit/'.$sunday_routine['id'])?>', '<?php echo get_phrase('update_routine'); ?>');"><?php echo get_phrase('edit'); ?></a>
+                                    <a class="dropdown-item" onclick="confirmModal('<?php echo route('routine/delete/'.$sunday_routine['id']); ?>', getFilteredClassRoutine)"><?php echo get_phrase('delete'); ?></a>
+                                </div>
                             </div>
                         <?php } ?>
 
