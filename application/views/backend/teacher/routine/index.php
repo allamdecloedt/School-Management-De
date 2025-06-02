@@ -6,6 +6,7 @@
         <h4 class="page-title d-inline-block">
           <i class="mdi mdi-calendar-today title_icon"></i> <?php echo get_phrase('class_routine'); ?>
         </h4>
+		<button type="button" class="btn btn-outline-primary btn-rounded alignToTitle float-end mt-1" onclick="rightModal('<?php echo site_url('modal/popup/routine/create'); ?>', '<?php echo get_phrase('create_routine'); ?>')"> <i class="mdi mdi-plus"></i> <?php echo get_phrase('add_class_routine'); ?></button>
       </div> <!-- end card body-->
     </div> <!-- end card -->
   </div><!-- end col-->
