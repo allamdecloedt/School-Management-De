@@ -41,9 +41,9 @@
               <p class="font-13"><strong><?php echo get_phrase('date'); ?>: </strong> &nbsp;&nbsp;&nbsp; <?php echo date('D, d-M-Y'); ?></p>
               <p class="font-13"><strong><?php echo get_phrase('status'); ?>: </strong>
                 <?php if (strtolower($invoice_details['status']) == 'paid'): ?>
-                  <span class="badge bg-success float-end"><?php echo get_phrase('paid'); ?></span></p>
+                  <span class="badge bg-success"><?php echo get_phrase('paid'); ?></span></p>
                 <?php else: ?>
-                  <span class="badge bg-danger float-end"><?php echo get_phrase('unpaid'); ?></span></p>
+                  <span class="badge bg-danger"><?php echo get_phrase('unpaid'); ?></span></p>
                 <?php endif; ?>
             </div>
           </div><!-- end col -->
@@ -122,3 +122,49 @@
       </div> <!-- end card -->
     </div> <!-- end col-->
   </div>
+
+  <style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .card-body, .card-body * {
+            visibility: visible;
+        }
+        .card-body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+        .badge.bg-success {
+            background-color: #28a745 !important;
+            color: white;
+            padding: 5px;
+        }
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+            color: white;
+            padding: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+ 
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    }
+</style>
