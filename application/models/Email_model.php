@@ -160,68 +160,53 @@ class Email_model extends CI_Model {
 		}
 	}
 
-	function password_send_add_student($link = '' , $user_id = "")
-	{
-		$query			=	$this->db->get_where('users' , array('id' => $user_id))->row_array();
-		if(sizeof($query) > 0)
-		{
+	function password_send_add_student($link = '', $user_id = "") {
+    $query = $this->db->get_where('users', array('id' => $user_id))->row_array();
+    
+    if (!empty($query)) {
+        // Heredoc for email content
+        $email_msg = <<<HTML
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Reset</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+    <div style="max-width: 600px; margin: 20px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <h2 style="color: #333333;">Add Password</h2>
+        <p>Hello {$query['name']},</p>
+        <p>We received a request to add your password for your account. You can add your password by clicking the link below:</p>
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="{$link}" target="_blank" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff !important; background-color: #5d0ea8; text-decoration: none; border-radius: 5px;">
+                Set Password
+            </a>
+        </p>
+        <p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
+        <div style="margin-top: 30px; font-size: 12px; color: #777777; text-align: center;">
+            © 2025. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
+HTML;
 
-			/* Heredoc permet de définir des chaînes de caractères multilignes sans avoir à se soucier de la concaténation ou des guillemets. 
-			 C'est une manière pratique de travailler avec des chaînes complexes, notamment dans des documents HTML ou des messages email 
-			 comme dans ton cas.*/
-			$email_msg = <<<HTML
-			<!DOCTYPE html>
-			<html lang="fr">
-			<head>
-			<meta charset="UTF-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<title>Password Reset</title>
-			</head>
-			<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
-			<div style="max-width: 600px; margin:20px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-				<h2 style="color:#333333;">Add Password</h2>
-				<p>Hello {$query['name']},</p>
-				<p>We received a request to add your password for your account. You can add your password by clicking the link below:</p>
-				<p style="text-align: center; margin-top: 30px;">
-				<a
-					href="{$link}"
-					target="_blank"
-					style="
-					display: inline-block;
-					padding: 12px 24px;
-					font-size: 16px;
-					color: #ffffff !important;
-					background-color: #5d0ea8;
-					text-decoration: none;
-					border-radius: 5px;
-					"
-				>
-					Password
-				</a>
-				</p>
-				<p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
-				<div style="margin-top: 30px; font-size: 12px; color:#777777; text-align:center;">
-				&copy; 2024. All rights reserved.
-				</div>
-			</div>
-			</body>
-			</html>
-			HTML;
-			$email_sub	=	"Password reset request";
-			$email_to	=	$query['email'];
+        $email_sub = "Password reset request";
+        $email_to = $query['email'];
 
-			if (get_smtp('mail_sender') == 'php_mailer') {
-				$this->send_mail_using_php_mailer($email_msg , $email_sub , $email_to);
-			}else{
-				$this->send_mail_using_smtp($email_msg , $email_sub , $email_to);
-			}
-			//return true; ca il va return toujours true même si l’envoi échoue !
-		}
-		else
-		{
-			return false;
-		}
-	}
+        // Encode subject to handle special characters
+        $email_sub = mb_encode_mimeheader($email_sub, 'UTF-8', 'B');
+
+        if (get_smtp('mail_sender') == 'php_mailer') {
+            return $this->send_mail_using_php_mailer($email_msg, $email_sub, $email_to);
+        } else {
+            return $this->send_mail_using_smtp($email_msg, $email_sub, $email_to);
+        }
+    } else {
+        return false;
+    }
+}
 
 	function contact_message_email($email_from, $email_to, $email_message) {
 		$email_sub = "Message from School Website";
@@ -902,114 +887,104 @@ class Email_model extends CI_Model {
 		return true;
 	}
 	// more stable function
-	public function send_mail_using_smtp($msg=NULL, $sub=NULL, $to=NULL, $from=NULL ,$school_name =Null) {
-		//Load email library
-		$this->load->library('email');
+	public function send_mail_using_smtp($msg = NULL, $sub = NULL, $to = NULL, $from = NULL, $school_name = NULL) {
+    // Load email library
+    $this->load->library('email');
 
-		// if($from == NULL){
-		// 	$from		=	get_settings('system_email');
-		// }
-		$smtp_username = get_smtp('smtp_username');
-		$smtp_password = get_smtp('smtp_password');
-		if ($from == NULL) {
-			$from = $smtp_username; // Use SMTP username instead of system_email
-		}
-		
-		//SMTP & mail configuration llcmpoajhkmglyf ghlirqnydynumjgy
-		$config = array(
-			'protocol'  => get_smtp('smtp_protocol'),
-			'smtp_host' => get_smtp('smtp_host'),
-			'smtp_port' => get_smtp('smtp_port'),
-			'smtp_user' => $smtp_username,
-			'smtp_pass' => $smtp_password,
-			'smtp_crypto' => get_smtp('smtp_crypto'),
-			'mailtype'  => 'html',
-			'charset'   => 'utf-8',
-			'newline'   => "\r\n",
-			'smtp_timeout' => '30',
-			'mailpath' => '/usr/sbin/sendmail',
-			'wordwrap' => TRUE
-           // 'smtp_timeout' => '10', //in seconds
-			
-		);
-		//  print_r('smtp_username : '.get_smtp('smtp_username').' - smtp_username : '.get_smtp('smtp_password'));die;
-		$this->email->initialize($config);
-		$this->email->set_mailtype("html");
-		$this->email->set_newline("\r\n");
+    $smtp_username = get_smtp('smtp_username');
+    $smtp_password = get_smtp('smtp_password');
+    if ($from == NULL) {
+        $from = $smtp_username; // Use SMTP username as the default sender
+    }
 
-		$htmlContent = $msg;
-		$school_data = $this->settings_model->get_current_school_data();
-		$this->email->to($to);
-        $this->email->from($from,"Service Support"); // Remplacez 'Votre Nom' par le nom souhaité
-		$this->email->subject($sub);
-		$this->email->message($htmlContent);
+    // SMTP & mail configuration
+    $config = array(
+        'protocol'      => get_smtp('smtp_protocol'),
+        'smtp_host'     => get_smtp('smtp_host'),
+        'smtp_port'     => get_smtp('smtp_port'),
+        'smtp_user'     => $smtp_username,
+        'smtp_pass'     => $smtp_password,
+        'smtp_crypto'   => get_smtp('smtp_crypto'),
+        'mailtype'      => 'html',
+        'charset'       => 'utf-8',
+        'newline'       => "\r\n",
+        'smtp_timeout'  => '30',
+        'mailpath'      => '/usr/sbin/sendmail',
+        'wordwrap'      => TRUE,
+        'crlf'          => "\r\n",
+        'encoding'      => 'base64' // Explicitly set to base64 to avoid Quoted-Printable issues
+    );
 
-		//Send email
-		//$this->email->send();
-		        // Envoyer l'email
-				// if ($this->email->send()) {
-				// 	echo "Email envoyé avec succès.";
-				// } else {
-				// 	echo "Échec de l'envoi de l'email.";
-				// 	echo $this->email->print_debugger();
-				// }
-				// die;
+    $this->email->initialize($config);
+    $this->email->set_mailtype("html");
+    $this->email->set_newline("\r\n");
 
-		// Vérification et log si erreur
-		if (!$this->email->send()) {
-			log_message('error', 'CI Email Debugger: ' . $this->email->print_debugger(['headers']));
-			return false;
-		} else {
-			return true;
-			}
+    // Encode the message in base64
+    $htmlContent = $msg;
 
-	}
+    $this->email->to($to);
+    $this->email->from($from, $school_name ?? get_settings('system_name'));
+    $this->email->subject($sub);
+    $this->email->message($htmlContent);
 
-	public function send_mail_using_php_mailer($message=NULL, $subject=NULL, $to=NULL, $from=NULL) {
-		// Load PHPMailer library
-		$this->load->library('phpmailer_lib');
+    // Send email and handle errors
+    if (!$this->email->send()) {
+        log_message('error', 'CI Email Debugger: ' . $this->email->print_debugger(['headers', 'subject', 'body']));
+        return false;
+    }
 
-		// PHPMailer object
-		$mail = $this->phpmailer_lib->load();
+    return true;
+}
 
-		// SMTP configuration
-		$mail->isSMTP();
-		$mail->Host       = get_smtp('smtp_host');
-		$mail->SMTPAuth   = true;
-		$mail->Username   = get_smtp('smtp_username');
-		$mail->Password   = get_smtp('smtp_password');
-		$mail->SMTPSecure = get_smtp('smtp_secure');
-		$mail->Port       = get_smtp('smtp_port');
+	public function send_mail_using_php_mailer($message = NULL, $subject = NULL, $to = NULL, $from = NULL) {
+    // Load PHPMailer library
+    $this->load->library('phpmailer_lib');
 
-		$mail->setFrom(get_smtp('smtp_username'), get_smtp('smtp_set_from'));
-		$mail->addReplyTo(get_settings('system_email'), get_settings('system_name'));
+    // PHPMailer object
+    $mail = $this->phpmailer_lib->load();
 
-		// Add a recipient
-		$mail->addAddress($to);
+    // SMTP configuration
+    $mail->isSMTP();
+    $mail->Host       = get_smtp('smtp_host');
+    $mail->SMTPAuth   = true;
+    $mail->Username   = get_smtp('smtp_username');
+    $mail->Password   = get_smtp('smtp_password');
+    $mail->SMTPSecure = get_smtp('smtp_secure');
+    $mail->Port       = get_smtp('smtp_port');
 
-		// Email subject
-		$mail->Subject = $subject;
+    // Set charset and encoding
+    $mail->CharSet = 'UTF-8';
+    $mail->Encoding = 'base64'; // Use Base64 to avoid Quoted-Printable issues
 
-		// Set email format to HTML
-		$mail->isHTML(true);
+    // Set sender and reply-to
+    $from = $from ?? get_smtp('smtp_username');
+    $mail->setFrom($from, get_smtp('smtp_set_from') ?? get_settings('system_name'));
+    $mail->addReplyTo(get_settings('system_email'), get_settings('system_name'));
 
-		// Enabled debug
-		$mail->SMTPDebug = false;
+    // Add recipient
+    $mail->addAddress($to);
 
-		// Email body content
-		$mailContent = $message;
-		$mail->Body = $mailContent;
+    // Email subject
+    $mail->Subject = mb_encode_mimeheader($subject, 'UTF-8', 'B');
 
-		// Send email
-		if(!$mail->send()){
-			// echo 'Message could not be sent.';
-			// echo 'Mailer Error: ' . $mail->ErrorInfo;
-			return false;
-		}else{
-			//echo 'Message has been sent';
-			return true;
-		}
-	}
+    // Set email format to HTML
+    $mail->isHTML(true);
+
+    // Disable debug output in production
+    $mail->SMTPDebug = false;
+
+    // Email body content
+    $mail->Body = $message;
+    $mail->AltBody = strip_tags($message); // Plain text fallback for non-HTML clients
+
+    // Send email
+    if (!$mail->send()) {
+        log_message('error', 'PHPMailer Error: ' . $mail->ErrorInfo);
+        return false;
+    }
+
+    return true;
+}
 	function send_email_with_validation_code($email_message, $email_to) {
 		$email_sub = "Your Validation Code";
 		
