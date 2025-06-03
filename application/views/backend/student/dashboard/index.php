@@ -1,5 +1,11 @@
 <!-- start page title -->
 <div class="row ">
+<?php
+        $user_id = $this->session->userdata('user_id');
+        $student_data = $this->db->get_where('students', array('user_id'));
+        $user_data = $this->db->get_where('users', array('id' => $user_id))->row_array();
+        $delete_request = $user_data['delete_request'];
+    ?>
 
 <?php
         $user_id = $this->session->userdata('user_id');
@@ -16,6 +22,17 @@
 <?php
     }
 ?>
+
+     <?php if (!is_null($delete_request)): ?>
+    <div id="delete-request-countdown" class="alert alert-danger" role="alert" style="font-size: 15px;">
+        <i class="dripicons-warning me-2"></i>
+        <?php echo get_phrase('account_deletion_scheduled'); ?>
+        <strong><span id="countdown-timer"></span></strong>.
+        <a style="color: black; font-weight: bold; text-decoration: underline !important;" href="<?php echo route('profile'); ?>">
+            <?php echo get_phrase('cancel_deletion'); ?>
+        </a>
+    </div>
+    <?php endif; ?>
 
   <div class="col-xl-12">
     <div class="card">
@@ -119,5 +136,36 @@
 <script>
 $(document).ready(function() {
     initDataTable("expense-datatable");
+     <?php if (!is_null($delete_request)): ?>
+    function startCountdown() {
+        const deleteRequestTime = new Date('<?php echo $delete_request; ?>').getTime();
+        const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+        const endTime = deleteRequestTime + thirtyDaysInMs;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeRemaining = endTime - now;
+
+            if (timeRemaining <= 0) {
+                document.getElementById('countdown-timer').innerHTML = '0j 0h 0m 0s';
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown-timer').innerHTML = 
+                `${days}j ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        updateCountdown(); // Initial call
+        const countdownInterval = setInterval(updateCountdown, 1000); // Update every second
+    }
+
+    startCountdown();
+    <?php endif; ?>
 });
 </script>

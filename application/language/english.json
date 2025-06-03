@@ -1724,6 +1724,15 @@
     "your_results_have_been_submitted": "Your results have been submitted",
     "online_cours": "Online cours",
     "please_login_before_continuing": "Please login before continuing",
-    "your_quiz_results": "Your quiz results"
-
+    "your_quiz_results": "Your quiz results",
+    "undo_delete": "Undo delete",
+    "are_you_sure_to_undo_delete": "Are you sure to undo delete",
+    "are_you_sure_to_delete_account": "Are you sure to delete account",
+    "delete_request": "Delete request",
+    "delete_request_undone": "Delete request undone",
+    "delete_request_submitted": "Delete request submitted",
+    "account_deletion_scheduled": "Account deletion scheduled",
+    "days_remaining": "Days remaining",
+    "cancel_deletion": "Cancel deletion",
+    "password_add_successful": "Password add successful"
 }

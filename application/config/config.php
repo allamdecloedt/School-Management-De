@@ -510,7 +510,7 @@ $config['csrf_exclude_uris'] = array(
     'teacher/get_recordings',
     'teacher/get_recordings_by_meeting_id',
     'student/filter_recordings',
-
+    'api/Student/delete_expired_accounts'
 
 );
  

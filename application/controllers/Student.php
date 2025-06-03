@@ -770,23 +770,29 @@ class Student extends CI_Controller {
 	}
 
 	//MANAGE PROFILE STARTS
-	public function profile($param1 = "", $param2 = "") {
-		if ($param1 == 'update_profile') {
-			$response = $this->user_model->update_profile();
-			echo $response;
-		}
-		if ($param1 == 'update_password') {
-			$response = $this->user_model->update_password();
-			echo $response;
-		}
-
-		// showing the Smtp Settings file
-		if(empty($param1)){
-			$page_data['folder_name'] = 'profile';
-			$page_data['page_title']  = 'manage_profile';
-			$this->load->view('backend/index', $page_data);
-		}
-	}
+	public function profile($param1 = "") {
+        if ($param1 == 'update_profile') {
+            $response = $this->user_model->update_profile();
+            echo $response;
+        }
+        if ($param1 == 'update_password') {
+            $response = $this->user_model->update_password();
+            echo $response;
+        }
+        if ($param1 == 'delete_request') {
+            $response = $this->user_model->delete_request();
+            echo json_encode($response);
+        }
+        if ($param1 == 'undo_delete_request') {
+            $response = $this->user_model->undo_delete_request();
+            echo json_encode($response);
+        }
+        if (empty($param1)) {
+            $page_data['folder_name'] = 'profile';
+            $page_data['page_title']  = 'manage_profile';
+            $this->load->view('backend/index', $page_data);
+        }
+    }
 	//MANAGE PROFILE ENDS
 
 	public function payment($invoice_id = ""){
