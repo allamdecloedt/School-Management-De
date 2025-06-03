@@ -33,14 +33,14 @@ $teacher_id = $teacher ? $teacher['id'] : '';
         </div>
     </div>
        
-    <div class="form-group row mb-2 gap-3">
+    <!-- <div class="form-group row mb-2 gap-3">
         <label for="subject_id_on_routine_creation" class="col-md-3 col-form-label"><?php echo get_phrase('subject'); ?></label>
         <div class="col-md-8">
             <select name="subject_id" id = "subject_id_on_routine_creation" class="form-control select2" data-bs-toggle="select2"  required>
                 <option value=""><?php echo get_phrase('select_section'); ?></option>
             </select>
         </div>
-    </div>
+    </div> -->
 
    <input type="hidden" name="teacher_id" value="<?php echo htmlspecialchars($teacher_id); ?>">
 
