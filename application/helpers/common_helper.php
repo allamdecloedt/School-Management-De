@@ -14,13 +14,21 @@ if (!function_exists('school_id')) {
   function school_id()
   {
     $CI = &get_instance();
+    // Load session library if not already loaded
+    if (!isset($CI->session)) {
+      $CI->load->library('session');
+    }
+    // Load database
+    $CI->load->database();
+
+    // Check if user_type exists in session
     if ($CI->session->userdata('user_type') == 'superadmin') {
       return get_settings('school_id');
     } else {
       if ($CI->session->userdata('school_id') > 0) {
         return $CI->session->userdata('school_id');
       } else {
-        return get_settings('school_id');
+        return get_settings('school_id'); // Fallback to default school_id
       }
     }
   }
@@ -31,9 +39,13 @@ if (!function_exists('user_id')) {
   function user_id()
   {
     $CI = &get_instance();
+    $CI->load->library('session');
     $CI->load->database();
 
     $user_id = $CI->session->userdata('user_id');
+    if (!$user_id) {
+      return 0; // Return 0 if no user is logged in
+    }
     $user_details = $CI->db->where('id', $user_id)->get('users')->row_array();
     return $user_details ? $user_details['id'] : 0;
   }

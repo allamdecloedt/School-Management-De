@@ -636,3 +636,5 @@ $route['bigbluebutton/join_room/(:any)'] = 'BigBlueButtonController/join_room/$1
 
 $route['bigbluebutton/create_room'] = 'BigBlueButton/create_room';
 // $route['bigbluebutton/delete_room'] = 'BigBlueButton/delete_room';
+
+$route['api/Student/delete_expired_accounts'] = 'api/Student/delete_expired_accounts';

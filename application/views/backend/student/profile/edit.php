@@ -107,6 +107,12 @@ $profile_data = $this->user_model->get_profile_data();
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary btn-l px-4"id="update-logos-btn" onclick="changePassword()"><i class="mdi mdi-account-check"></i><?php echo get_phrase('change_password') ; ?></button>
                         </div>
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-danger btn-l px-4" id="delete-request-btn" style="border: none; border-radius: 16px; font-weight: 500; transition: all 0.3s ease;" onclick="showDeleteRequestModal()">
+                                <i class="mdi mdi-delete"></i>
+                                <?php echo $profile_data['delete_request'] ? get_phrase('undo_delete') : get_phrase('delete_request'); ?>
+                            </button>
+                        </div>
                     </div>
                 </form>
 
@@ -114,6 +120,11 @@ $profile_data = $this->user_model->get_profile_data();
         </div> <!-- end card -->
     </div>
 </div>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+    <div id="toastContainer" class="toast-container"></div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function () {
 
@@ -202,5 +213,73 @@ $(document).ready(function () {
             }
         });
     });
+
+    window.showDeleteRequestModal = function() {
+        var isUndo = $('#delete-request-btn').text().includes('<?php echo get_phrase('undo_delete'); ?>');
+        var message = isUndo ? '<?php echo get_phrase('are_you_sure_to_undo_delete'); ?>' : '<?php echo get_phrase('are_you_sure_to_delete_account'); ?>';
+        var actionUrl = isUndo ? '<?php echo route('profile/undo_delete_request'); ?>' : '<?php echo route('profile/delete_request'); ?>';
+
+        // Utiliser un modal personnalisé pour gérer le CSRF
+        jQuery('#alert-modal').modal('show', {backdrop: 'static'});
+        jQuery('#alert-modal .modal-body .text-center p').html(message);
+        
+        // Gérer la soumission du formulaire
+        jQuery('#delete_form').off('submit').on('submit', function(e) {
+            e.preventDefault();
+            var form = jQuery(this);
+            var csrf = getCsrfToken();
+            var data = form.serialize() + '&' + csrf.csrfName + '=' + csrf.csrfHash;
+
+            jQuery.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    jQuery('#alert-modal').modal('hide');
+                    if (response.status) {
+                        // Mettre à jour le token CSRF
+                        $('input[name="' + response.csrf.name + '"]').val(response.csrf.hash);
+                        // Mettre à jour le bouton
+                        var btn = $('#delete-request-btn');
+                        if (isUndo) {
+                            btn.html('<i class="mdi mdi-delete"></i> <?php echo get_phrase('delete_request'); ?>');
+                        } else {
+                            btn.html('<i class="mdi mdi-undo"></i> <?php echo get_phrase('undo_delete'); ?>');
+                        }
+                        showToast('success', response.notification);
+                    } else {
+                        showToast('error', response.notification || '<?php echo get_phrase('action_not_allowed'); ?>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erreur AJAX : ', error);
+                    console.error('Statut : ', status);
+                    console.error('Réponse : ', xhr.responseText);
+                    showToast('error', '<?php echo get_phrase('an_error_occurred_during_submission'); ?>');
+                    jQuery('#alert-modal').modal('hide');
+                }
+            });
+        });
+    };
+     function showToast(type, message) {
+        var toastId = 'toast-' + new Date().getTime();
+        var toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>`;
+        $('#toastContainer').append(toastHtml);
+        var toastElement = $('#' + toastId);
+        var toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+        toast.show();
+        toastElement.on('hidden.bs.toast', function () {
+            $(this).remove();
+        });
+    }
 });
 </script>

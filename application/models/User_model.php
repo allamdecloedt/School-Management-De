@@ -1681,4 +1681,37 @@ public function get_schools_per_category_count($category)
     return $this->db->count_all_results('schools');
 }
 
+ public function delete_request() {
+        $user_id = $this->session->userdata('user_id');
+        $data['delete_request'] = date('Y-m-d H:i:s');
+        $this->db->where('id', $user_id);
+        $this->db->update('users', $data);
+
+        $response = array(
+            'status' => true,
+            'notification' => get_phrase('delete_request_submitted'),
+            'csrf' => array(
+                'name' => $this->security->get_csrf_token_name(),
+                'hash' => $this->security->get_csrf_hash()
+            )
+        );
+        return $response;
+    }
+
+    public function undo_delete_request() {
+        $user_id = $this->session->userdata('user_id');
+        $data['delete_request'] = null;
+        $this->db->where('id', $user_id);
+        $this->db->update('users', $data);
+
+        $response = array(
+            'status' => true,
+            'notification' => get_phrase('delete_request_undone'),
+            'csrf' => array(
+                'name' => $this->security->get_csrf_token_name(),
+                'hash' => $this->security->get_csrf_hash()
+            )
+        );
+        return $response;
+    }
 }

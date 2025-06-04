@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD delete_request DATETIME DEFAULT NULL;
