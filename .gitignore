@@ -9,7 +9,7 @@ application/logs/*
 
 
 # Ignorer les fichiers temporaires et les uploads
-/uploads/*
+#/uploads/*
 tmp/*
 
 # Exclure les sous-dossiers nécessaires pour garder /uploads/images/decloedt/logo/
