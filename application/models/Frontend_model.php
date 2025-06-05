@@ -410,7 +410,7 @@ class Frontend_model extends CI_Model
     $msg .= ".body { background: #f0f7fa; padding: 20px; }";
     $msg .= ".body span { font-size: 14px; color: #000; line-height: 1.5; display: block; margin-bottom: 10px; }";
     $msg .= ".body a { color: #ce0d0d; text-decoration: none; }";
-    $msg .= ".footer { background: #D2822D; border-radius: 0 0 15px 15px; padding: 15px; color: #fff; font-size: 14px; }";
+    $msg .= ".footer { background: #D2822D; border-radius: 0 0 15px 15px; color: #fff; font-size: 14px; }";
     $msg .= ".footer table { width: 100%; }";
     $msg .= ".footer td { padding: 10px; }";
     $msg .= "@media only screen and (max-width: 600px) {";
