@@ -21,6 +21,7 @@ class Admin extends CI_Controller
 		parent::__construct();
 
 		$this->load->database();
+		
 		$this->load->library('Humhub_sso');
 		$this->load->library('session');
 		require_once APPPATH . '../vendor/autoload.php';

@@ -112,7 +112,9 @@ class Humhub_sso {
                        // 'auth_key' => $authKey
                     ],
                     'profile' => [
-                        'language' => 'fr'
+                        'language' => 'fr',
+                        // 'firstname' => $firstname,
+                        // 'lastname' => $lastname
                     ]
                 ];
                 
@@ -178,6 +180,10 @@ class Humhub_sso {
     {
         return $this->httpRequest('POST', HUMHUB_BASE_URL . "/api/v1/space/{$SpaceId}/membership/{$UserId}");
     }
+    public function removeUserFromSpace($SpaceId, $UserId)
+    {
+        return $this->httpRequest('DELETE', HUMHUB_BASE_URL . "/api/v1/space/{$SpaceId}/membership/{$UserId}");
+    }
     /**
      * Insère le mot de passe haché dans la table user_password
      * @param int $userId ID de l'utilisateur dans HumHub
@@ -220,7 +226,58 @@ class Humhub_sso {
     public function createUser(array $data) {
         return $this->httpRequest('POST', HUMHUB_BASE_URL . '/api/v1/user', $data);
     }
-    
+
+    public function registerHumHubUser(array $userData) {
+    $imagePath = FCPATH . 'uploads/users/' . $userData['image'];
+
+    if (!file_exists($imagePath)) {
+        log_message('error', '❌ Image not found: ' . $imagePath);
+        return false;
+    }
+
+    $imageData = file_get_contents($imagePath);
+    $imageBase64 = base64_encode($imageData);
+    $mimeType = mime_content_type($imagePath);
+    $imageDataUri = "data:$mimeType;base64,$imageBase64";
+
+    $payload = [
+        'account' => [
+            'email' => $userData['email'],
+            'username' => $userData['username'],
+            'newPassword' => $userData['password'],
+            'newPasswordConfirm' => $userData['password'],
+        ],
+        'profile' => [
+            'language' => 'fr',
+            'firstname' => $userData['firstname'],
+            'lastname' => $userData['lastname'],
+            'title' => $userData['role'],
+            'image' => $imageDataUri
+        ]
+    ];
+
+    $response = $this->createUser($payload);
+
+    if ($response) {
+        log_message('debug', '✅ Utilisateur HumHub créé avec succès');
+        return $response;
+    } else {
+        log_message('error', '❌ Échec de la création de l’utilisateur HumHub');
+        return false;
+    }
+}
+
+    public function updateProfileImage($userId, $base64Data) {
+        $endpoint = HUMHUB_BASE_URL . "/api/v1/user/{$userId}";
+        
+        $payload = [
+            'profile' => [
+                'image' => $base64Data // Raw base64 string
+            ]
+        ];
+        
+        return $this->httpRequest('PATCH', $endpoint, $payload);
+    }
     /**
      * Mise à jour d'un utilisateur HumHub via API
      * @param int   $id   ID HumHub
@@ -240,7 +297,38 @@ class Humhub_sso {
         $res = $this->httpRequest('DELETE', HUMHUB_BASE_URL . '/api/v1/user/' . intval($id));
         return $res !== null;
     }
+    /**
+     * Upload l'avatar d'un utilisateur HumHub
+     * @param string $guid GUID de l'utilisateur (ex: 'b3d34b9a-...')
+     * @param string $imagePath Chemin absolu vers l'image
+     * @return array|null Réponse API ou null en cas d'erreur
+     */
+    public function uploadUserAvatar($guid, $imagePath)
+    {
+        return $this->httpRequest('POST', HUMHUB_BASE_URL . '/api/v1/user/account/image', [
+            'userGuid' => $guid,
+            'image' => new CURLFile($imagePath, mime_content_type($imagePath), basename($imagePath))
+        ]);
+    }
 
+    /**
+     * Ajoute un utilisateur HumHub à un groupe existant, en passant son ID numérique.
+     *
+     * @param int $humhubUserId  L'ID numérique (colonne `user.id`) de l’utilisateur HumHub.
+     * @param int $groupId       L'ID du groupe HumHub (par exemple 5 pour "Admin").
+     * @return array             La réponse décodée JSON (succès ou erreur).
+     */
+    public function addUserToGroup($humhubUserId, $groupId)
+    {
+        // 1) Construire l'URL avec les paramètres de requête
+        $url = HUMHUB_BASE_URL . '/api/v1/user/group/' . intval($groupId) . '/member?userId=' . intval($humhubUserId);
+        
+        // 2) Pour debug, on logue l'URL qu'on va appeler
+        log_message('debug', 'URL pour ajouter user au groupe : ' . $url);
+        
+        // 3) Appel HTTP PUT sans payload (les paramètres sont dans l'URL)
+        return $this->httpRequest('PUT', $url, null);
+    }
     /**
      * Sanitize a string to be a valid username
      */

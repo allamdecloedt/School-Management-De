@@ -92,4 +92,4 @@ defined('HUMHUB_BASE_URL') OR define('HUMHUB_BASE_URL', 'http://localhost/humhub
 defined('HUMHUB_JWT_SECRET') OR define('HUMHUB_JWT_SECRET', 'Pz-UpjQKoCU_ETNpiwcoZB_C7L7cnVLFGvMbXmk4JfrBpff3DbYZcX2rSUAihZ8f7UGyOOIBz1kA4xbRzfphp1');
 
 // Token API de HumHub (pour créer des utilisateurs par API REST)
-defined('HUMHUB_API_TOKEN') OR define('HUMHUB_API_TOKEN', 'vteV1GVnuJiEccyF6ZfiZxogtfpfKnpyQlrRGtQmXb_GPrQW0zOpYCTx2q-TPVxiHwYz9tBx9TqXu5WACgyhoW');
+defined('HUMHUB_API_TOKEN') OR define('HUMHUB_API_TOKEN', '2g6s0ZYxFLwqpATK9iNT0SYEthAc94AD0O_AbtWy7AOG1fOLLirk1MZ6LhTTIDv5KWAJFSWZakzU2g25fxCdhF');

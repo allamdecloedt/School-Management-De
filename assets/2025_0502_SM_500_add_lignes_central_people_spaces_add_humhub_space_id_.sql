@@ -3,7 +3,7 @@ INSERT INTO `menus` (`displayed_name`, `route_name`, `parent`, `icon`, `status`,
 
 
 INSERT INTO `menus` (`displayed_name`, `route_name`, `parent`, `icon`, `status`, `superadmin_access`, `admin_access`, `teacher_access`, `student_access`, `accountant_access`, `librarian_access`, `sort_order`, `is_addon`, `unique_identifier`) VALUES
-('central', 'central', 136, NULL, 1, 1, 1, 1, 1, 0, 0,  10, 0, 'central'),
+('wall', 'wall', 136, NULL, 1, 1, 1, 1, 1, 0, 0,  10, 0, 'wall'),
 ('people', 'people', 136, NULL,  1, 1, 1, 1, 1, 0, 0,  10, 0, 'people'),
 ('spaces', 'spaces', 136, NULL, 1, 1, 1, 1, 1, 0, 0,  10, 0, 'spaces');
 
@@ -14,3 +14,7 @@ INSERT INTO `menus` (`displayed_name`, `route_name`, `parent`, `icon`, `status`,
 --ajout la colonne humhub_space_id dans la table classes--
 ALTER TABLE classes
 ADD COLUMN humhub_space_id INT NULL AFTER price;
+
+--ajout la colonne humhub_id dans la table users--
+ALTER TABLE users
+ADD COLUMN humhub_id INT NULL AFTER email;

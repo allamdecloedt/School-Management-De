@@ -15,7 +15,7 @@ iframe {
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body py-2">
-                <h4 class="page-title"> <i class="mdi mdi-account-group title_icon"></i> <?php echo get_phrase('membres actifs'); ?> </h4>
+                <h4 class="page-title"> <i class="mdi mdi-account-group title_icon"></i> <?php echo get_phrase('membres'); ?> </h4>
             </div>
         </div>
     </div>

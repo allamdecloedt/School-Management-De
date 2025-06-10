@@ -88,14 +88,12 @@ class Crud_model extends CI_Model {
 
 		
 		$response = array(
-
-		return array(
-
 			'status' => true,
 			'notification' => get_phrase('class_added_successfully'),
 			'humhub_space' => $humhubResponse // Optionnel : pour retour debug
 		);
-		//return json_encode($response);
+		return $response;
+		
 	}
 		
 	public function class_update($param1 = '')
