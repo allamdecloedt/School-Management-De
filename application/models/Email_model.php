@@ -102,7 +102,7 @@ class Email_model extends CI_Model {
 						border-collapse: collapse; 
 					}
 					.header { 
-						background: #D2822D; 
+						background: #FC7B30; 
 						border-radius: 15px 15px 0 0; 
 						padding: 15px; 
 						text-align: center; 
@@ -123,7 +123,7 @@ class Email_model extends CI_Model {
 						margin: 15px 0; 
 					}
 					.body a { 
-						color: #ce0d0d; 
+						color: #0047AB; 
 						text-decoration: none; 
 					}
 					.button {
@@ -131,7 +131,7 @@ class Email_model extends CI_Model {
 						padding: 15px 25px;
 						font-size: 16px;
 						color: #fff !important;
-						background-color: #D2822D;
+						background-color: #FC7B30;
 						text-decoration: none;
 						border-radius: 5px;
 						margin: 20px 0;
@@ -145,7 +145,7 @@ class Email_model extends CI_Model {
 						text-align: center;
 					}
 					.footer { 
-						background: #D2822D; 
+						background: #FC7B30; 
 						border-radius: 0 0 15px 15px; 
 						color: #fff; 
 						font-size: 14px; 
@@ -271,7 +271,7 @@ class Email_model extends CI_Model {
 					border-collapse: collapse; 
 				}
 				.header { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 15px 15px 0 0; 
 					padding: 15px; 
 					text-align: center; 
@@ -292,7 +292,7 @@ class Email_model extends CI_Model {
 					margin: 15px 0; 
 				}
 				.body a { 
-					color: #ce0d0d; 
+					color: #0047AB; 
 					text-decoration: none; 
 				}
 				.button {
@@ -300,7 +300,7 @@ class Email_model extends CI_Model {
 					padding: 15px 25px;
 					font-size: 16px;
 					color: #fff !important;
-					background-color: #D2822D;
+					background-color: #FC7B30;
 					text-decoration: none;
 					border-radius: 5px;
 					margin: 20px 0;
@@ -314,7 +314,7 @@ class Email_model extends CI_Model {
 					text-align: center;
 				}
 				.footer { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 0 0 15px 15px; 
 					color: #fff; 
 					font-size: 14px; 
@@ -472,7 +472,7 @@ class Email_model extends CI_Model {
 					border-collapse: collapse; 
 				}
 				.header { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 15px 15px 0 0; 
 					padding: 15px; 
 					text-align: center; 
@@ -493,7 +493,7 @@ class Email_model extends CI_Model {
 					margin: 15px 0; 
 				}
 				.body a { 
-					color: #ce0d0d; 
+					color: #0047AB; 
 					text-decoration: none; 
 				}
 				.button {
@@ -501,7 +501,7 @@ class Email_model extends CI_Model {
 					padding: 15px 25px;
 					font-size: 16px;
 					color: #fff !important;
-					background-color: #D2822D;
+					background-color: #FC7B30;
 					text-decoration: none;
 					border-radius: 5px;
 					margin: 20px 0;
@@ -530,7 +530,7 @@ class Email_model extends CI_Model {
 					min-width: 300px;
 				}
 				.footer { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 0 0 15px 15px; 
 					color: #fff; 
 					font-size: 14px; 
@@ -652,7 +652,7 @@ class Email_model extends CI_Model {
 					border-collapse: collapse; 
 				}
 				.header { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 15px 15px 0 0; 
 					padding: 15px; 
 					text-align: center; 
@@ -673,7 +673,7 @@ class Email_model extends CI_Model {
 					margin: 15px 0; 
 				}
 				.body a { 
-					color: #ce0d0d; 
+					color: #0047AB; 
 					text-decoration: none; 
 				}
 				.button {
@@ -681,7 +681,7 @@ class Email_model extends CI_Model {
 					padding: 15px 25px;
 					font-size: 16px;
 					color: #fff !important;
-					background-color: #D2822D;
+					background-color: #FC7B30;
 					text-decoration: none;
 					border-radius: 5px;
 					margin: 20px 0;
@@ -709,7 +709,7 @@ class Email_model extends CI_Model {
 					min-width: 300px;
 				}
 				.footer { 
-					background: #D2822D; 
+					background: #FC7B30; 
 					border-radius: 0 0 15px 15px; 
 					color: #fff; 
 					font-size: 14px; 
@@ -761,7 +761,7 @@ class Email_model extends CI_Model {
 						<div class="info-container">
 							<div class="info-content">
 								<p>Dear <strong>{$name}</strong>,</p>
-								<p>We are delighted to confirm that your registration with <a href="https://wayo.academy/" style="color: #D2822D; text-decoration: none;">Wayo Academy</a> has been successfully processed.</p>
+								<p>We are delighted to confirm that your registration with <a href="https://wayo.academy/" style="color: #FC7B30; text-decoration: none;">Wayo Academy</a> has been successfully processed.</p>
 								<p><strong>School:</strong> {$school_name}</p>
 								<p><strong>Email:</strong> {$email}</p>
 								<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
@@ -836,7 +836,7 @@ class Email_model extends CI_Model {
 				border-collapse: collapse; 
 			}
 			.header { 
-				background: #D2822D; 
+				background: #FC7B30; 
 				border-radius: 15px 15px 0 0; 
 				padding: 15px; 
 				text-align: center; 
@@ -857,7 +857,7 @@ class Email_model extends CI_Model {
 				margin: 15px 0; 
 			}
 			.body a { 
-				color: #ce0d0d; 
+				color: #0047AB; 
 				text-decoration: none; 
 			}
 			.button {
@@ -865,7 +865,7 @@ class Email_model extends CI_Model {
 				padding: 15px 25px;
 				font-size: 16px;
 				color: #fff !important;
-				background-color: #D2822D;
+				background-color: #FC7B30;
 				text-decoration: none;
 				border-radius: 5px;
 				margin: 20px 0;
@@ -893,7 +893,7 @@ class Email_model extends CI_Model {
 				min-width: 300px;
 			}
 			.footer { 
-				background: #D2822D; 
+				background: #FC7B30; 
 				border-radius: 0 0 15px 15px; 
 				color: #fff; 
 				font-size: 14px; 
@@ -1027,7 +1027,7 @@ class Email_model extends CI_Model {
 							border-collapse: collapse; 
 						}
 						.header { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 15px 15px 0 0; 
 							padding: 15px; 
 							text-align: center; 
@@ -1048,7 +1048,7 @@ class Email_model extends CI_Model {
 							margin: 15px 0; 
 						}
 						.body a { 
-							color: #ce0d0d; 
+							color: #0047AB; 
 							text-decoration: none; 
 						}
 						.button {
@@ -1056,7 +1056,7 @@ class Email_model extends CI_Model {
 							padding: 15px 25px;
 							font-size: 16px;
 							color: #fff !important;
-							background-color: #D2822D;
+							background-color: #FC7B30;
 							text-decoration: none;
 							border-radius: 5px;
 							margin: 20px 0;
@@ -1084,7 +1084,7 @@ class Email_model extends CI_Model {
 							min-width: 300px;
 						}
 						.footer { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 0 0 15px 15px; 
 							color: #fff; 
 							font-size: 14px; 
@@ -1214,7 +1214,7 @@ class Email_model extends CI_Model {
 							border-collapse: collapse; 
 						}
 						.header { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 15px 15px 0 0; 
 							padding: 15px; 
 							text-align: center; 
@@ -1235,7 +1235,7 @@ class Email_model extends CI_Model {
 							margin: 15px 0; 
 						}
 						.body a { 
-							color: #ce0d0d; 
+							color: #0047AB; 
 							text-decoration: none; 
 						}
 						.button {
@@ -1243,7 +1243,7 @@ class Email_model extends CI_Model {
 							padding: 15px 25px;
 							font-size: 16px;
 							color: #fff !important;
-							background-color: #D2822D;
+							background-color: #FC7B30;
 							text-decoration: none;
 							border-radius: 5px;
 							margin: 20px 0;
@@ -1271,7 +1271,7 @@ class Email_model extends CI_Model {
 							min-width: 300px;
 						}
 						.footer { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 0 0 15px 15px; 
 							color: #fff; 
 							font-size: 14px; 
@@ -1398,7 +1398,7 @@ class Email_model extends CI_Model {
 							border-collapse: collapse; 
 						}
 						.header { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 15px 15px 0 0; 
 							padding: 15px; 
 							text-align: center; 
@@ -1419,7 +1419,7 @@ class Email_model extends CI_Model {
 							margin: 15px 0; 
 						}
 						.body a { 
-							color: #ce0d0d; 
+							color: #0047AB; 
 							text-decoration: none; 
 						}
 						.button {
@@ -1427,7 +1427,7 @@ class Email_model extends CI_Model {
 							padding: 15px 25px;
 							font-size: 16px;
 							color: #fff !important;
-							background-color: #D2822D;
+							background-color: #FC7B30;
 							text-decoration: none;
 							border-radius: 5px;
 							margin: 20px 0;
@@ -1455,7 +1455,7 @@ class Email_model extends CI_Model {
 							min-width: 300px;
 						}
 						.footer { 
-							background: #D2822D; 
+							background: #FC7B30; 
 							border-radius: 0 0 15px 15px; 
 							color: #fff; 
 							font-size: 14px; 
