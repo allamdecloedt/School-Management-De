@@ -611,6 +611,6 @@ $config['enable_hooks'] = TRUE;
  * ===================================================================
  */
 // Ici tu peux charger d'autres configs CI, puis ajouter :
-$config['HUMHUB_BASE_URL']   = 'http://localhost/humhub/humhub-1.17.2';
-$config['HUMHUB_JWT_SECRET'] = '3da21bef7e3de41186ec0cf0e7f6e7015fc450201f5fcb349348e3104b965f4d68330adbc0e3c323e9375b4700c4f91d8cf5d7aaac8691644530947fec37f2f8';
-$config['HUMHUB_API_TOKEN']  = '8edaaac8b5fe6bb9685b430196711778442df7969c1632ebf100a733496fccb3509a627935c975df71b28c34dd540748a16502d43117d556dc332789c2c163c4';
+$config['HUMHUB_BASE_URL']   = 'http://51.94.163.211/humhub/humhub-1.17.2';
+$config['HUMHUB_JWT_SECRET'] = 'ry4mRP6N8ZBKP_Xn6998drxRXtml_jaDv5cvR2KJuM0dzr0owm4TiKxlnHnjG7qf3RPrvJFbMDAIlbDbz71MuT';
+$config['HUMHUB_API_TOKEN']  = 'kteQ3M3rtHxiOuDPUbdgaTWN_ao_dWGk0Qrm85Zsrk-diUilMSzEqDTSqNROvkaLBF5wdXac8sFpfVVNeqrcvr';
