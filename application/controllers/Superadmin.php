@@ -20,6 +20,7 @@ class Superadmin extends CI_Controller
     parent::__construct();
 
     $this->load->database();
+    $this->load->library('Humhub_sso');
     $this->load->library('session');
     require_once APPPATH . '../vendor/autoload.php';
 
@@ -66,9 +67,39 @@ class Superadmin extends CI_Controller
   {
 
     // $this->msg91_model->clickatell();
-    $page_data['page_title'] = 'Dashboard';
-    $page_data['folder_name'] = 'dashboard';
-    $this->load->view('backend/index', $page_data);
+
+    // 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('superadmin_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+			
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'dashboard',
+				'page_title'  => 'Dashboard',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
   }
 
   //START CLASS secion
@@ -1671,7 +1702,161 @@ public function get_sections_by_class()
     }
 }
   //END EXAM section
-  
+
+     	//HUMHUB DASHBOARD
+		public function central()
+		{
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('superadmin_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+			
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Central',
+				'page_name'   => 'central',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		}
+			//HUMHUB PEOPLE
+		public function people()
+		{
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('superadmin_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+		
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'People',
+				'page_name'   => 'people',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		}
+
+		//HUMHUB SPEACES
+		public function spaces() {
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('superadmin_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Spaces',
+				'page_name'   => 'spaces',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		
+		}
+
+    //HUMHUB MESSAGING
+    public function chat() {
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('superadmin_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Messages',
+				'page_name'   => 'message',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		
+		}
+
+
+
   //START MARKS section
   public function mark($param1 = '', $param2 = '')
   {

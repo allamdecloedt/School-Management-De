@@ -15,7 +15,9 @@ class Student extends CI_Controller {
 		parent::__construct();
 
 		$this->load->database();
+		$this->load->library('Humhub_sso');
 		$this->load->library('session');
+		 require_once APPPATH . '../vendor/autoload.php';
 
 		/*LOADING ALL THE MODELS HERE*/
 		$this->load->model('Crud_model',     'crud_model');
@@ -63,8 +65,41 @@ class Student extends CI_Controller {
 
 	//DASHBOARD
 	public function dashboard(){
-		$page_data['page_title'] = 'Dashboard';
-		$page_data['folder_name'] = 'dashboard';
+		// $page_data['page_title'] = 'Dashboard';
+		// $page_data['folder_name'] = 'dashboard';
+		  // 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('student_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+			
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'dashboard',
+				'page_title'  => 'Dashboard',
+				//'page_name'   => 'central',
+				'iframe_url'  => $iframeUrl,
+			];
 		$this->load->view('backend/index', $page_data);
 	}
 	public function get_appointments() {
@@ -632,6 +667,158 @@ class Student extends CI_Controller {
 	}
 	//END EXAM section
 
+		//HUMHUB DASHBOARD
+		public function central()
+		{
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('student_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+			
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Central',
+				'page_name'   => 'central',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		}
+			//HUMHUB PEOPLE
+		public function people()
+		{
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('student_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+		
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'People',
+				'page_name'   => 'people',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		}
+
+		//HUMHUB SPEACES
+		public function spaces() {
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('student_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Spaces',
+				'page_name'   => 'spaces',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		
+		}
+
+		//HUMHUB MESSAGING
+		public function chat() {
+			// 1) Vérifier que c'est bien un admin
+			if (! $this->session->userdata('student_login')) {
+				show_error('Accès réservé aux superadmins.');
+			}
+			
+			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
+			$userId = $this->session->userdata('user_id');
+			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
+			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
+				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
+				show_error('Impossible de retrouver votre compte Wayo pour SSO.');
+			}
+			log_message('debug', 'Wayo user data: ' . print_r($wUser, true));
+
+			// 3) Stocker temporairement cet objet pour la librairie SSO
+			$this->session->set_userdata('user', $wUser);
+
+			// 4) Générer l’URL SSO
+			$iframeUrl = $this->humhub_sso->provisionAndGetIframeUrl();
+			log_message('debug', 'Generated iframe URL: ' . $iframeUrl);
+
+			if (! $iframeUrl) {
+				show_error('Impossible de générer l’URL SSO HumHub.');
+			}
+
+			// 5) Passer à la vue
+			$page_data = [
+				'folder_name' => 'humhub',
+				'page_title'  => 'Messages',
+				'page_name'   => 'message',
+				'iframe_url'  => $iframeUrl,
+			];
+			$this->load->view('backend/index', $page_data);
+		
+		}
+
 	//START MARKS section
 	public function mark($param1 = '', $param2 = ''){
 
@@ -718,6 +905,41 @@ class Student extends CI_Controller {
 		$this->load->view('backend/payment_gateway/stripe_checkout', $page_data);
 	}
 
+	private function add_student_to_class_space($student_id, $class_id)
+    {
+        // 1. Récupérer les infos de l'étudiant
+        $student = $this->user_model->get_student_details_by_id('student', $student_id);
+       
+		// 2. Récupérer la classe et son humhub_space_id
+		$class = $this->db
+					->get_where('classes', ['id' => $class_id])
+					->row_array();
+
+		if (! $class) {
+			log_message('error', "Classe #{$class_id} introuvable");
+			return;
+		}
+
+		$space_id       = $class['humhub_space_id'];
+
+		// 3. Récupérer l’ID HumHub de l’utilisateur via son email
+		$humhubUser = $this->humhub_sso->getUserByEmail($student['email']);
+		if (empty($humhubUser['id'])) {
+			log_message('error', "Utilisateur HumHub introuvable pour {$student['email']}");
+			return;
+    }
+
+		$humhub_user_id = $humhubUser['id'];  
+
+		// 4. Appel à l’API HumHub pour ajouter le membre
+		if (!empty($space_id) && !empty($humhub_user_id)) {
+			$this->humhub_sso->addUserSpace($space_id, $humhub_user_id);
+			log_message('debug', "Étudiant HumHub #{$humhub_user_id} ajouté à l’espace #{$space_id}");
+		} else {
+			log_message('error', "Impossible d’ajouter l’étudiant à l’espace (space_id ou humhub_user_id manquant)");
+		}
+    }
+	
 	public function payment_success($payment_method = "", $invoice_id = "", $amount_paid = "", $reference = "") {
 		if ($payment_method == 'stripe') {
 			$stripe = json_decode(get_payment_settings('stripe_settings'));
@@ -740,13 +962,21 @@ class Student extends CI_Controller {
 		$data['invoice_id'] = $invoice_id;
 		$data['amount_paid'] = $amount_paid;
 		
-		if($payment_status == true && $payment_method == 'stripe'){
-			$this->crud_model->payment_success($data);
-		}elseif($payment_method == 'paystack'){
-			$this->crud_model->payment_success($data);
-		}elseif($payment_method == 'paypal'){
-			$this->crud_model->payment_success($data);
-		}
+		//Pour chaque mode de paiement, si succès → marquer facture ET ajouter étudiant
+    if ($payment_method === 'stripe'  && $payment_status === true ||
+            $payment_method === 'paystack' && $payment_status === true ||
+            $payment_method === 'paypal'  && $payment_status === true) {
+
+        // Marquer la facture comme payée
+       $this->crud_model->payment_success($data);
+        // Récupérer les détails et ajouter l’étudiant à l’espace HumHub
+        $details = $this->crud_model->get_invoice_by_id($invoice_id);
+        $this->add_student_to_class_space($details['student_id'], $details['class_id']);
+
+    } else {
+        log_message('error', "Échec du paiement pour invoice #{$invoice_id} via {$payment_method}");
+    }
+
 
 		redirect(route('invoice'), 'refresh');
 	}
