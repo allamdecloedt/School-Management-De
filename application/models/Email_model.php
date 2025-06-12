@@ -71,77 +71,151 @@ class Email_model extends CI_Model {
 		{
 			$systemEmail = get_settings('system_email');
 			$email_msg = <<<HTML
-		<!DOCTYPE html>
-		<html lang="fr">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Réinitialisation de votre mot de passe</title>
-			<style>
-				body {
-					font-family: Arial, sans-serif;
-					background-color: #f4f4f4;
-					color: #333;
-					line-height: 1.6;
-					margin: 0;
-					padding: 0;
-				}
-				.container {
-					max-width: 600px;
-					margin: 20px auto;
-					background: #fff;
-					padding: 20px;
-					border-radius: 10px;
-					box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-				}
-				h2 {
-					color: #5d0ea8;
-				}
-				p {
-					margin: 10px 0;
-					color: #555;
-				}
-				.button {
-					display: inline-block;
-					padding: 15px 25px;
-					font-size: 16px;
-					color: #fff !important;
-					background-color: #5d0ea8;
-					text-decoration: none;
-					border-radius: 5px;
-					margin-top: 20px;
-					transition: background-color 0.3s ease;
-				}
-				.button:hover {
-					background-color: #4c0e8f;
-				}
-				.footer {
-					margin-top: 30px;
-					font-size: 12px;
-					color: #777;
-					text-align: center;
-				}
-				.footer p {
-					margin: 0;
-				}
-			</style>
-		</head>
-		<body>
-			<div class="container">
-				<h2>Réinitialisation de votre mot de passe</h2>
-				<p>Bonjour {$query['name']},</p>
-				<p>Vous avez fait une demande de réinitialisation de votre mot de passe. Si vous êtes à l'origine de cette demande, veuillez cliquer sur le lien ci-dessous pour créer un nouveau mot de passe :</p>
-				<a href="{$link}" class="button">Réinitialiser mon mot de passe</a>
-				<p>Ce lien est valide pendant 24 heures.</p>
-				<p>Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet e-mail. Votre mot de passe actuel restera inchangé et votre compte demeure sécurisé.</p>
-				<p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe support à l’adresse suivante : <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
-				<div class="footer">
-					<p>&copy; 2024. Tous droits réservés.</p>
+			<!DOCTYPE html>
+			<html lang="fr">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Reset your password</title>
+				<style>
+					body { 
+						margin: 0; 
+						padding: 0; 
+						font-family: Arial, Helvetica, sans-serif; 
+					}
+					.container { 
+						background: #ECECEC; 
+						padding: 30px 15px; 
+					}
+					.logo { 
+						text-align: center; 
+						margin-bottom: 20px; 
+					}
+					.logo img { 
+						max-width: 150px; 
+						height: auto; 
+					}
+					.content-table { 
+						max-width: 700px; 
+						width: 100%; 
+						margin: 0 auto; 
+						border-collapse: collapse; 
+					}
+					.header { 
+						background: #D2822D; 
+						border-radius: 15px 15px 0 0; 
+						padding: 15px; 
+						text-align: center; 
+					}
+					.header span { 
+						font-size: 20px; 
+						font-weight: bold; 
+						color: #fff; 
+					}
+					.body { 
+						background: #f0f7fa; 
+						padding: 20px; 
+					}
+					.body p { 
+						font-size: 14px; 
+						color: #000; 
+						line-height: 1.5; 
+						margin: 15px 0; 
+					}
+					.body a { 
+						color: #ce0d0d; 
+						text-decoration: none; 
+					}
+					.button {
+						display: inline-block;
+						padding: 15px 25px;
+						font-size: 16px;
+						color: #fff !important;
+						background-color: #D2822D;
+						text-decoration: none;
+						border-radius: 5px;
+						margin: 20px 0;
+						transition: background-color 0.3s ease;
+						font-weight: bold;
+					}
+					.button:hover {
+						background-color: #B8701F;
+					}
+					.button-container {
+						text-align: center;
+					}
+					.footer { 
+						background: #D2822D; 
+						border-radius: 0 0 15px 15px; 
+						color: #fff; 
+						font-size: 14px; 
+					}
+					.footer table { 
+						width: 100%; 
+					}
+					.footer td { 
+						padding: 10px; 
+					}
+					@media only screen and (max-width: 600px) {
+						.content-table { 
+							width: 100% !important; 
+						}
+						.header span { 
+							font-size: 18px; 
+						}
+						.footer td { 
+							display: block; 
+							text-align: center !important; 
+							width: 100% !important; 
+						}
+					}
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="logo">
+						<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+					</div>
+					<table class="content-table">
+						<tr>
+							<td class="header">
+								<span>Password Reset</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="body">
+								<p><strong>Hello {$query['name']},</strong></p>
+								<p>You have requested a password reset. If you initiated this request, please click the link below to create a new password:</p>
+								<div class="button-container">
+									<a href="{$link}" class="button">Reset My Password</a>
+								</div>
+								<p><strong>This link is valid for 24 hours.</strong></p>
+								<p>If you did not request this password reset, please ignore this email. Your current password will remain unchanged and your account remains secure.</p>
+								<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="footer">
+								<table>
+									<tr>
+										<td style="text-align: left; width: 33%;">
+											<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2 Dubai UAE</a>
+										</td>
+										<td style="text-align: center; width: 34%;">
+											© 2025 Wayo Academy. All rights reserved.
+										</td>
+										<td style="text-align: right; width: 33%;">
+											Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
 				</div>
-			</div>
-		</body>
-		</html>
-		HTML;
+			</body>
+			</html>
+			HTML;
 
 
 			$email_sub	=	"Password reset request";
@@ -164,33 +238,153 @@ class Email_model extends CI_Model {
     $query = $this->db->get_where('users', array('id' => $user_id))->row_array();
     
     if (!empty($query)) {
-        // Heredoc for email content
+        $systemEmail = get_settings('system_email');
         $email_msg = <<<HTML
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Password Reset</title>
-</head>
-<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
-    <div style="max-width: 600px; margin: 20px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <h2 style="color: #333333;">Add Password</h2>
-        <p>Hello {$query['name']},</p>
-        <p>We received a request to add your password for your account. You can add your password by clicking the link below:</p>
-        <p style="text-align: center; margin-top: 30px;">
-            <a href="{$link}" target="_blank" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff !important; background-color: #5d0ea8; text-decoration: none; border-radius: 5px;">
-                Set Password
-            </a>
-        </p>
-        <p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
-        <div style="margin-top: 30px; font-size: 12px; color: #777777; text-align: center;">
-            © 2025. All rights reserved.
-        </div>
-    </div>
-</body>
-</html>
-HTML;
+		<!DOCTYPE html>
+		<html lang="fr">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Add Password</title>
+			<style>
+				body { 
+					margin: 0; 
+					padding: 0; 
+					font-family: Arial, Helvetica, sans-serif; 
+				}
+				.container { 
+					background: #ECECEC; 
+					padding: 30px 15px; 
+				}
+				.logo { 
+					text-align: center; 
+					margin-bottom: 20px; 
+				}
+				.logo img { 
+					max-width: 150px; 
+					height: auto; 
+				}
+				.content-table { 
+					max-width: 700px; 
+					width: 100%; 
+					margin: 0 auto; 
+					border-collapse: collapse; 
+				}
+				.header { 
+					background: #D2822D; 
+					border-radius: 15px 15px 0 0; 
+					padding: 15px; 
+					text-align: center; 
+				}
+				.header span { 
+					font-size: 20px; 
+					font-weight: bold; 
+					color: #fff; 
+				}
+				.body { 
+					background: #f0f7fa; 
+					padding: 20px; 
+				}
+				.body p { 
+					font-size: 14px; 
+					color: #000; 
+					line-height: 1.5; 
+					margin: 15px 0; 
+				}
+				.body a { 
+					color: #ce0d0d; 
+					text-decoration: none; 
+				}
+				.button {
+					display: inline-block;
+					padding: 15px 25px;
+					font-size: 16px;
+					color: #fff !important;
+					background-color: #D2822D;
+					text-decoration: none;
+					border-radius: 5px;
+					margin: 20px 0;
+					transition: background-color 0.3s ease;
+					font-weight: bold;
+				}
+				.button:hover {
+					background-color: #B8701F;
+				}
+				.button-container {
+					text-align: center;
+				}
+				.footer { 
+					background: #D2822D; 
+					border-radius: 0 0 15px 15px; 
+					color: #fff; 
+					font-size: 14px; 
+				}
+				.footer table { 
+					width: 100%; 
+				}
+				.footer td { 
+					padding: 10px; 
+				}
+				@media only screen and (max-width: 600px) {
+					.content-table { 
+						width: 100% !important; 
+					}
+					.header span { 
+						font-size: 18px; 
+					}
+					.footer td { 
+						display: block; 
+						text-align: center !important; 
+						width: 100% !important; 
+					}
+				}
+			</style>
+		</head>
+		<body>
+			<div class="container">
+				<div class="logo">
+					<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+				</div>
+				<table class="content-table">
+					<tr>
+						<td class="header">
+							<span>Add Password</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="body">
+							<p><strong>Hello {$query['name']},</strong></p>
+							<p>We received a request to add your password for your account. You can add your password by clicking the link below:</p>
+							<div class="button-container">
+								<a href="{$link}" class="button">Set Password</a>
+							</div>
+							<p><strong>This link is valid for 24 hours.</strong></p>
+							<p>If you did not request a password reset, please ignore this email. Your current password will remain unchanged and your account remains secure.</p>
+							<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
+						</td>
+					</tr>
+					<tr>
+						<td class="footer">
+							<table>
+								<tr>
+									<td style="text-align: left; width: 33%;">
+										<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2 Dubai UAE</a>
+									</td>
+									<td style="text-align: center; width: 34%;">
+										© 2025 Wayo Academy. All rights reserved.
+									</td>
+									<td style="text-align: right; width: 33%;">
+										Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</body>
+		</html>
+		HTML;
 
         $email_sub = "Password reset request";
         $email_to = $query['email'];
@@ -245,92 +439,178 @@ HTML;
 
 		$school_data = $this->settings_model->get_current_school_data();
 		$image_url = "http://51.92.7.185/uploads/schools/".$school_data['id'].".jpg"; // URL de l'image à côté des informations
-
-		$email_message =  '
-		<html>
+		$systemEmail = get_settings('system_email');
+		$email_message = <<<HTML
+		<!DOCTYPE html>
+		<html lang="fr">
 		<head>
-		  <style>
-			body {
-			  font-family: Arial, sans-serif;
-			  background-color: #f6f6f6;
-			  margin: 0;
-			  padding: 0;
-			}
-			.email-container {
-			  max-width: 600px;
-			  margin: 20px auto;
-			  background-color: #ffffff;
-			  border-radius: 8px;
-			  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			  overflow: hidden;
-			}
-			.email-header {
-			  background-color: #27272d;
-			  color: #ffffff;
-			  padding: 20px;
-			  text-align: center;
-			  font-size: 24px;
-			  font-weight: bold;
-			}
-			.email-body {
-			  padding: 30px 20px;
-			  color: #333333;
-			}
-			.email-body p {
-			  line-height: 1.6;
-			  margin: 10px 0;
-			}
-			.email-body .btn {
-			  display: inline-block;
-			  padding: 10px 20px;
-			  margin: 20px 0;
-			  background-color: #be02e8;
-			  color: #ffffff;
-			  text-decoration: none;
-			  border-radius: 4px;
-			}
-			.email-footer {
-			  background-color: #f1f1f1;
-			  color: #777777;
-			  padding: 10px;
-			  text-align: center;
-			  font-size: 12px;
-			}
-			.info-image {
-				width: 100%;
-				max-width: 200px;
-				margin-right: 38px;
-			  }
-			  .info-container {
-				display: flex;
-				align-items: center;
-			  }
-		  </style>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Registration Student</title>
+			<style>
+				body { 
+					margin: 0; 
+					padding: 0; 
+					font-family: Arial, Helvetica, sans-serif; 
+				}
+				.container { 
+					background: #ECECEC; 
+					padding: 30px 15px; 
+				}
+				.logo { 
+					text-align: center; 
+					margin-bottom: 20px; 
+				}
+				.logo img { 
+					max-width: 150px; 
+					height: auto; 
+				}
+				.content-table { 
+					max-width: 700px; 
+					width: 100%; 
+					margin: 0 auto; 
+					border-collapse: collapse; 
+				}
+				.header { 
+					background: #D2822D; 
+					border-radius: 15px 15px 0 0; 
+					padding: 15px; 
+					text-align: center; 
+				}
+				.header span { 
+					font-size: 20px; 
+					font-weight: bold; 
+					color: #fff; 
+				}
+				.body { 
+					background: #f0f7fa; 
+					padding: 20px; 
+				}
+				.body p { 
+					font-size: 14px; 
+					color: #000; 
+					line-height: 1.5; 
+					margin: 15px 0; 
+				}
+				.body a { 
+					color: #ce0d0d; 
+					text-decoration: none; 
+				}
+				.button {
+					display: inline-block;
+					padding: 15px 25px;
+					font-size: 16px;
+					color: #fff !important;
+					background-color: #D2822D;
+					text-decoration: none;
+					border-radius: 5px;
+					margin: 20px 0;
+					transition: background-color 0.3s ease;
+					font-weight: bold;
+				}
+				.button:hover {
+					background-color: #B8701F;
+				}
+				.button-container {
+					text-align: center;
+				}
+				.info-container {
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
+				}
+				.info-image {
+					width: 100%;
+					max-width: 200px;
+					margin-right: 38px;
+					margin-bottom: 20px;
+				}
+				.info-content {
+					flex: 1;
+					min-width: 300px;
+				}
+				.footer { 
+					background: #D2822D; 
+					border-radius: 0 0 15px 15px; 
+					color: #fff; 
+					font-size: 14px; 
+				}
+				.footer table { 
+					width: 100%; 
+				}
+				.footer td { 
+					padding: 10px; 
+				}
+				@media only screen and (max-width: 600px) {
+					.content-table { 
+						width: 100% !important; 
+					}
+					.header span { 
+						font-size: 18px; 
+					}
+					.footer td { 
+						display: block; 
+						text-align: center !important; 
+						width: 100% !important; 
+					}
+					.info-container {
+						flex-direction: column;
+					}
+					.info-image {
+						margin-right: 0;
+						text-align: center;
+					}
+				}
+			</style>
 		</head>
 		<body>
-		  <div class="email-container">
-			<div class="email-header">
-				Registration Student
+			<div class="container">
+				<div class="logo">
+					<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+				</div>
+				<table class="content-table">
+					<tr>
+						<td class="header">
+							<span>Registration Student</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="body">
+							<div class="info-container">
+								<div class="info-content">
+									<p>Your registration has been made.</p>
+									<p><strong>Name:</strong> {$name}</p>
+									<p><strong>Email:</strong> {$email}</p>
+									<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
+									<a href="http://51.92.7.185/home/courses" class="button">Login to Your Account</a>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="footer">
+							<table>
+								<tr>
+									<td style="text-align: left; width: 33%;">
+										<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2 Dubai UAE</a>
+									</td>
+									<td style="text-align: center; width: 34%;">
+										© 2025 Wayo Academy. All rights reserved.
+									</td>
+									<td style="text-align: right; width: 33%;">
+										Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<div class="email-body">
-			<div class="info-container">
-			<div>
-			  <p>Your registration has been made.</p>
-			  <p><strong>Name:</strong> '.$name.'</p>
-			  <p><strong>Email:</strong> '.$email.'</p>
-			  <p><a href="http://51.92.7.185/home/courses" class="btn">Login to Your Account</a></p>
-			</div>
-		  </div>
-			</div>
-			<div class="email-footer">
-			  <p>&copy; '.date("Y").'  . All rights reserved.</p>
-			</div>
-		  </div>
 		</body>
 		</html>
-		';
+		HTML;
 
-		$email_sub		= 'Registration ';
+		$email_sub		= 'Mentor Registration ';
 		$email_to = $email;
 		
 
@@ -339,115 +619,182 @@ HTML;
 	}
 	function School_online_admission($email = "", $school_name = "", $name = "") {
 		$image_url = base_url('uploads/images/decloedt/logo/logo_mail.png');
-	
-		$email_message = '
-		<html>
+		$systemEmail = get_settings('system_email');	
+		$email_message = <<<HTML
+		<!DOCTYPE html>
+		<html lang="fr">
 		<head>
-		  <style>
-			body {
-			  font-family: Arial, sans-serif;
-			  background-color: #f6f6f6;
-			  margin: 0;
-			  padding: 0;
-			}
-			.email-container {
-			  max-width: 600px;
-			  margin: 20px auto;
-			  background-color: #ffffff;
-			  border-radius: 8px;
-			  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			  overflow: hidden;
-			}
-			.email-header {
-			  background-color: #4CAF50;
-			  color: #ffffff;
-			  padding: 20px;
-			  text-align: center;
-			  font-size: 24px;
-			  font-weight: bold;
-			}
-			.email-body {
-			  padding: 30px 20px;
-			  color: #333333;
-			}
-			.email-body p {
-			  line-height: 1.6;
-			  margin: 10px 0;
-			}
-			.email-body .btn {
-			  display: inline-block;
-			  padding: 10px 20px;
-			  margin: 20px 0;
-			  background-color: #4CAF50;
-			  color: #ffffff;
-			  text-decoration: none;
-			  border-radius: 4px;
-			  text-align: center;
-			}
-			.email-footer {
-			  background-color: #f1f1f1;
-			  color: #777777;
-			  padding: 10px;
-			  text-align: center;
-			  font-size: 12px;
-			}
-			.info-image {
-			  width: 100%;
-			  max-width: 150px;
-			  margin-right: 20px;
-			}
-			.info-container {
-			  display: flex;
-			  align-items: center;
-			  flex-wrap: wrap;
-			  text-align: left;
-			}
-			@media only screen and (max-width: 600px) {
-			  .email-container {
-				width: 90%;
-				margin: auto;
-			  }
-			  .email-header {
-				font-size: 20px;
-				padding: 15px;
-			  }
-			  .email-body {
-				padding: 20px 10px;
-			  }
-			  .info-container {
-				flex-direction: column;
-				text-align: center;
-			  }
-			  .info-image {
-				margin: 0 auto 15px;
-			  }
-			}
-		  </style>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Registration School</title>
+			<style>
+				body { 
+					margin: 0; 
+					padding: 0; 
+					font-family: Arial, Helvetica, sans-serif; 
+				}
+				.container { 
+					background: #ECECEC; 
+					padding: 30px 15px; 
+				}
+				.logo { 
+					text-align: center; 
+					margin-bottom: 20px; 
+				}
+				.logo img { 
+					max-width: 150px; 
+					height: auto; 
+				}
+				.content-table { 
+					max-width: 700px; 
+					width: 100%; 
+					margin: 0 auto; 
+					border-collapse: collapse; 
+				}
+				.header { 
+					background: #D2822D; 
+					border-radius: 15px 15px 0 0; 
+					padding: 15px; 
+					text-align: center; 
+				}
+				.header span { 
+					font-size: 20px; 
+					font-weight: bold; 
+					color: #fff; 
+				}
+				.body { 
+					background: #f0f7fa; 
+					padding: 20px; 
+				}
+				.body p { 
+					font-size: 14px; 
+					color: #000; 
+					line-height: 1.5; 
+					margin: 15px 0; 
+				}
+				.body a { 
+					color: #ce0d0d; 
+					text-decoration: none; 
+				}
+				.button {
+					display: inline-block;
+					padding: 15px 25px;
+					font-size: 16px;
+					color: #fff !important;
+					background-color: #D2822D;
+					text-decoration: none;
+					border-radius: 5px;
+					margin: 20px 0;
+					transition: background-color 0.3s ease;
+					font-weight: bold;
+				}
+				.button:hover {
+					background-color: #B8701F;
+				}
+				.info-container {
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
+					text-align: left;
+				}
+				.info-image {
+					width: 100%;
+					max-width: 150px;
+					margin-right: 20px;
+					margin-bottom: 15px;
+					border-radius: 8px;
+				}
+				.info-content {
+					flex: 1;
+					min-width: 300px;
+				}
+				.footer { 
+					background: #D2822D; 
+					border-radius: 0 0 15px 15px; 
+					color: #fff; 
+					font-size: 14px; 
+				}
+				.footer table { 
+					width: 100%; 
+				}
+				.footer td { 
+					padding: 10px; 
+				}
+				@media only screen and (max-width: 600px) {
+					.content-table { 
+						width: 100% !important; 
+					}
+					.header span { 
+						font-size: 18px; 
+					}
+					.footer td { 
+						display: block; 
+						text-align: center !important; 
+						width: 100% !important; 
+					}
+					.info-container {
+						flex-direction: column;
+						text-align: center;
+					}
+					.info-image {
+						margin: 0 auto 15px;
+					}
+					.info-content {
+						min-width: auto;
+					}
+				}
+			</style>
 		</head>
 		<body>
-		  <div class="email-container">
-			<div class="email-header">
-			  Registration School
+			<div class="container">
+			<div class="logo">
+				<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
 			</div>
-			<div class="email-body">
-			  <div class="info-container">
-				<img src="'.$image_url.'" alt="Image" class="info-image">
-				<div>
-				  <p>Your registration has been made.</p>
-				  <p>Hello '.$name.',</p>
-				  <p><strong>Name school:</strong> '.$school_name.'</p>
-				  <p><strong>Email:</strong> '.$email.'</p>
-				  <p><a href="https://wayo.academy/login" class="btn">Login to Your Account</a></p>
-				</div>
-			  </div>
-			</div>
-			<div class="email-footer">
-			  <p>&copy; '.date("Y").' Wayo Academy. All rights reserved.</p>
-			</div>
-		  </div>
+			<table class="content-table">
+				<tr>
+					<td class="header">
+						<span>School Registration Confirmation</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="body">
+						<div class="info-container">
+							<div class="info-content">
+								<p>Dear <strong>{$name}</strong>,</p>
+								<p>We are delighted to confirm that your registration with <a href="https://wayo.academy/" style="color: #D2822D; text-decoration: none;">Wayo Academy</a> has been successfully processed.</p>
+								<p><strong>School:</strong> {$school_name}</p>
+								<p><strong>Email:</strong> {$email}</p>
+								<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:{$systemEmail}">{$systemEmail}</a>.</p>
+								<p>Please click the button below to access your account and explore our services.</p>
+								<div>
+									<a href="https://wayo.academy/login" class="button">Login to Your Account</a>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="footer">
+						<table>
+							<tr>
+								<td style="text-align: left; width: 33%;">
+									<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2, Dubai, UAE</a>
+								</td>
+								<td style="text-align: center; width: 34%;">
+									© 2025 Wayo Academy. All rights reserved.
+								</td>
+								<td style="text-align: right; width: 33%;">
+									Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
 		</body>
 		</html>
-		';
+		HTML;
 	
 		$email_sub = 'Registration';
 		$email_to = $email;
@@ -459,115 +806,181 @@ HTML;
 		$image_url = base_url('uploads/images/decloedt/logo/logo_mail.png');
 	
 		$email_message = '
-		<html>
-		<head>
-		  <style>
-			body {
-			  font-family: Arial, sans-serif;
-			  background-color: #f6f6f6;
-			  margin: 0;
-			  padding: 0;
+			<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>New School Creation Notification</title>
+		<style>
+			body { 
+				margin: 0; 
+				padding: 0; 
+				font-family: Arial, Helvetica, sans-serif; 
 			}
-			.email-container {
-			  max-width: 600px;
-			  margin: 20px auto;
-			  background-color: #ffffff;
-			  border-radius: 8px;
-			  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			  overflow: hidden;
+			.container { 
+				background: #ECECEC; 
+				padding: 30px 15px; 
 			}
-			.email-header {
-			  background-color: #4CAF50;
-			  color: #ffffff;
-			  padding: 20px;
-			  text-align: center;
-			  font-size: 24px;
-			  font-weight: bold;
+			.logo { 
+				text-align: center; 
+				margin-bottom: 20px; 
 			}
-			.email-body {
-			  padding: 30px 20px;
-			  color: #333333;
+			.logo img { 
+				max-width: 150px; 
+				height: auto; 
 			}
-			.email-body p {
-			  line-height: 1.6;
-			  margin: 10px 0;
+			.content-table { 
+				max-width: 700px; 
+				width: 100%; 
+				margin: 0 auto; 
+				border-collapse: collapse; 
 			}
-			.email-body .btn {
-			  display: inline-block;
-			  padding: 10px 20px;
-			  margin: 20px 0;
-			  background-color: #4CAF50;
-			  color: #ffffff;
-			  text-decoration: none;
-			  border-radius: 4px;
-			  text-align: center;
+			.header { 
+				background: #D2822D; 
+				border-radius: 15px 15px 0 0; 
+				padding: 15px; 
+				text-align: center; 
 			}
-			.email-footer {
-			  background-color: #f1f1f1;
-			  color: #777777;
-			  padding: 10px;
-			  text-align: center;
-			  font-size: 12px;
+			.header span { 
+				font-size: 20px; 
+				font-weight: bold; 
+				color: #fff; 
 			}
-			.info-image {
-			  width: 100%;
-			  max-width: 150px;
-			  margin-right: 20px;
+			.body { 
+				background: #f0f7fa; 
+				padding: 20px; 
+			}
+			.body p { 
+				font-size: 14px; 
+				color: #000; 
+				line-height: 1.5; 
+				margin: 15px 0; 
+			}
+			.body a { 
+				color: #ce0d0d; 
+				text-decoration: none; 
+			}
+			.button {
+				display: inline-block;
+				padding: 15px 25px;
+				font-size: 16px;
+				color: #fff !important;
+				background-color: #D2822D;
+				text-decoration: none;
+				border-radius: 5px;
+				margin: 20px 0;
+				transition: background-color 0.3s ease;
+				font-weight: bold;
+			}
+			.button:hover {
+				background-color: #B8701F;
 			}
 			.info-container {
-			  display: flex;
-			  align-items: center;
-			  flex-wrap: wrap;
-			  text-align: left;
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				text-align: left;
+			}
+			.info-image {
+				width: 100%;
+				max-width: 150px;
+				margin-right: 20px;
+				margin-bottom: 15px;
+				border-radius: 8px;
+			}
+			.info-content {
+				flex: 1;
+				min-width: 300px;
+			}
+			.footer { 
+				background: #D2822D; 
+				border-radius: 0 0 15px 15px; 
+				color: #fff; 
+				font-size: 14px; 
+			}
+			.footer table { 
+				width: 100%; 
+			}
+			.footer td { 
+				padding: 10px; 
 			}
 			@media only screen and (max-width: 600px) {
-			  .email-container {
-				width: 90%;
-				margin: auto;
-			  }
-			  .email-header {
-				font-size: 20px;
-				padding: 15px;
-			  }
-			  .email-body {
-				padding: 20px 10px;
-			  }
-			  .info-container {
-				flex-direction: column;
-				text-align: center;
-			  }
-			  .info-image {
-				margin: 0 auto 15px;
-			  }
+				.content-table { 
+					width: 100% !important; 
+				}
+				.header span { 
+					font-size: 18px; 
+				}
+				.footer td { 
+					display: block; 
+					text-align: center !important; 
+					width: 100% !important; 
+				}
+				.info-container {
+					flex-direction: column;
+					text-align: center;
+				}
+				.info-image {
+					margin: 0 auto 15px;
+				}
+				.info-content {
+					min-width: auto;
+				}
 			}
-		  </style>
-		</head>
-		<body>
-		  <div class="email-container">
-			<div class="email-header">
-			 Application for admission School
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="logo">
+				<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
 			</div>
-			<div class="email-body">
-			  <div class="info-container">
-				<img src="'.$image_url.'" alt="Image" class="info-image">
-				<div>
-				  <p>Application for admission</p>
-				  <p>Hello '.$name.',</p>
-				  <p><strong>Name school:</strong> '.$school_name.'</p>
-				  <p><strong>Email:</strong> '.$email.'</p>
-				  <p><a href="https://wayo.academy/login" class="btn">Login to Your Account</a></p>
-				</div>
-			  </div>
-			</div>
-			<div class="email-footer">
-			  <p>&copy; '.date("Y").' Wayo Academy. All rights reserved.</p>
-			</div>
-		  </div>
-		</body>
-		</html>
-		';
+			<table class="content-table">
+				<tr>
+					<td class="header">
+						<span>New School Creation Notification</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="body">
+						<div class="info-container">
+							<div class="info-content">
+								<p><strong>New School Registration</strong></p>
+								<p>Dear Superadmin,</p>
+								<p>We are pleased to inform you that a new school has been successfully registered on the Wayo Academy platform. Below are the details of the new school and its administrator:</p>
+								<p><strong>School Name:</strong> '.$school_name.'</p>
+								<p><strong>Administrator Name:</strong> '.$name.'</p>
+								<p><strong>Administrator Email:</strong> '.$email.'</p>
+								<p>Please review the details and take any necessary actions to ensure the onboarding process is completed smoothly.</p>
+								<div>
+									<a href="https://wayo.academy/login" class="button">Login to Your Account</a>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="footer">
+						<table>
+							<tr>
+								<td style="text-align: left; width: 33%;">
+									<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2, Dubai, UAE</a>
+								</td>
+								<td style="text-align: center; width: 34%;">
+									© '.date("Y").' Wayo Academy. All rights reserved.
+								</td>
+								<td style="text-align: right; width: 33%;">
+									Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+	</html>';
 	
-		$email_sub = 'application for admission';
+		$email_sub = 'Application for School Admission';
 		$email_to = $email;
 		$school_name = "Wayo Academy";
 	
@@ -582,91 +995,181 @@ HTML;
 				$student_name = $student_details['name'];
 				$student_code = $student_details['code'];
 				$image_url = "http://51.92.7.185/uploads/schools/".$school_data['id'].".jpg"; // URL de l'image à côté des informations
-
-				$email_message =  '
-				<html>
+				$systemEmail = get_settings('system_email');
+				$email_message = '
+				<html lang="fr">
 				<head>
-				<style>
-					body {
-					font-family: Arial, sans-serif;
-					background-color: #f6f6f6;
-					margin: 0;
-					padding: 0;
-					}
-					.email-container {
-					max-width: 600px;
-					margin: 20px auto;
-					background-color: #ffffff;
-					border-radius: 8px;
-					box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-					overflow: hidden;
-					}
-					.email-header {
-					background-color: #4CAF50;
-					color: #ffffff;
-					padding: 20px;
-					text-align: center;
-					font-size: 24px;
-					font-weight: bold;
-					}
-					.email-body {
-					padding: 30px 20px;
-					color: #333333;
-					}
-					.email-body p {
-					line-height: 1.6;
-					margin: 10px 0;
-					}
-					.email-body .btn {
-					display: inline-block;
-					padding: 10px 20px;
-					margin: 20px 0;
-					background-color: #4CAF50;
-					color: #ffffff;
-					text-decoration: none;
-					border-radius: 4px;
-					}
-					.email-footer {
-					background-color: #f1f1f1;
-					color: #777777;
-					padding: 10px;
-					text-align: center;
-					font-size: 12px;
-					}
-					.info-image {
-						width: 100%;
-						max-width: 200px;
-						margin-right: 38px;
-					}
-					.info-container {
-						display: flex;
-						align-items: center;
-					}
-				</style>
+					<meta charset="UTF-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<title>Admission Approved</title>
+					<style>
+						body { 
+							margin: 0; 
+							padding: 0; 
+							font-family: Arial, Helvetica, sans-serif; 
+						}
+						.container { 
+							background: #ECECEC; 
+							padding: 30px 15px; 
+						}
+						.logo { 
+							text-align: center; 
+							margin-bottom: 20px; 
+						}
+						.logo img { 
+							max-width: 150px; 
+							height: auto; 
+						}
+						.content-table { 
+							max-width: 700px; 
+							width: 100%; 
+							margin: 0 auto; 
+							border-collapse: collapse; 
+						}
+						.header { 
+							background: #D2822D; 
+							border-radius: 15px 15px 0 0; 
+							padding: 15px; 
+							text-align: center; 
+						}
+						.header span { 
+							font-size: 20px; 
+							font-weight: bold; 
+							color: #fff; 
+						}
+						.body { 
+							background: #f0f7fa; 
+							padding: 20px; 
+						}
+						.body p { 
+							font-size: 14px; 
+							color: #000; 
+							line-height: 1.5; 
+							margin: 15px 0; 
+						}
+						.body a { 
+							color: #ce0d0d; 
+							text-decoration: none; 
+						}
+						.button {
+							display: inline-block;
+							padding: 15px 25px;
+							font-size: 16px;
+							color: #fff !important;
+							background-color: #D2822D;
+							text-decoration: none;
+							border-radius: 5px;
+							margin: 20px 0;
+							transition: background-color 0.3s ease;
+							font-weight: bold;
+						}
+						.button:hover {
+							background-color: #B8701F;
+						}
+						.info-container {
+							display: flex;
+							align-items: center;
+							flex-wrap: wrap;
+							text-align: left;
+						}
+						.info-image {
+							width: 100%;
+							max-width: 150px;
+							margin-right: 20px;
+							margin-bottom: 15px;
+							border-radius: 8px;
+						}
+						.info-content {
+							flex: 1;
+							min-width: 300px;
+						}
+						.footer { 
+							background: #D2822D; 
+							border-radius: 0 0 15px 15px; 
+							color: #fff; 
+							font-size: 14px; 
+						}
+						.footer table { 
+							width: 100%; 
+						}
+						.footer td { 
+							padding: 10px; 
+						}
+						@media only screen and (max-width: 600px) {
+							.content-table { 
+								width: 100% !important; 
+							}
+							.header span { 
+								font-size: 18px; 
+							}
+							.footer td { 
+								display: block; 
+								text-align: center !important; 
+								width: 100% !important; 
+							}
+							.info-container {
+								flex-direction: column;
+								text-align: center;
+							}
+							.info-image {
+								margin: 0 auto 15px;
+							}
+							.info-content {
+								min-width: auto;
+							}
+						}
+					</style>
 				</head>
 				<body>
-				<div class="email-container">
-					<div class="email-header">
-					Admission Approved
+					<div class="container">
+						<div class="logo">
+							<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+						</div>
+						<table class="content-table">
+							<tr>
+								<td class="header">
+									<span>Admission Approved</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="body">
+									<div class="info-container">
+										<div class="info-content">
+											<p><strong>Confirmation of Admission</strong></p>
+											<p>Dear Student,</p>
+											<p>We are pleased to inform you that your admission request to ' . $school_data['name'] . ' has been successfully approved. Below are the details of your admission:</p>
+											<p><strong>Student Code:</strong> ' . $student_code . '</p>
+											<p><strong>Email:</strong> ' . $student_email . '</p>
+											<p>Please log in to your account to access course details and complete any additional onboarding steps required.</p>
+											<div>
+												<a href="http://51.92.7.185/home/course_details/' . $school_data['id'] . '" class="button">Login to Your Account</a>
+											</div>
+											<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:' . $systemEmail . '">' . $systemEmail . '</a></p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="footer">
+									<table>
+										<tr>
+											<td style="text-align: left; width: 33%;">
+												<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2, Dubai, UAE</a>
+											</td>
+											<td style="text-align: center; width: 34%;">
+											© '.date("Y").' Wayo Academy. All rights reserved.
+											</td>
+											<td style="text-align: right; width: 33%;">
+												Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
 					</div>
-					<div class="email-body">
-					<div class="info-container">
-					<img src="'.$image_url.'" alt="Image" class="info-image">
-					<div>
-					<p>Your admission request has been accepted.</p>
-					<p><strong>Student Code:</strong> '.$student_code.'</p>
-					<p><strong>Email:</strong> '.$student_email.'</p>
-					<p><a href="http://51.92.7.185/home/course_details/'.$school_data['id'].'" class="btn">Login to Your Account</a></p>
-					</div>
-				</div>
-					</div>
-					<div class="email-footer">
-					<p>&copy; '.date("Y").' '.$school_data['name'].' . All rights reserved.</p>
-					</div>
-				</div>
 				</body>
-				</html>
-				';
+				</html>';
 				// $email_message  = '<html><body><p> Your admission request has been accepted.'.'</p><br><p>Student Code : '.$student_code.'</p><p>Email : '.$student_email.'</p><p>Password : '.$password.'</p></body></html>';
 				$email_sub		= 'Admission approval';
 				$email_to = $student_email;
@@ -679,91 +1182,181 @@ HTML;
 	function join_student_email($email_student = "", $user_name ,$code_student = "", $name_school = "",$school_id ="")
 	{
 				$image_url = "http://51.92.7.185/uploads/schools/".$school_id.".jpg"; // URL de l'image à côté des informations
-
-				$email_message =  '
-				<html>
+				$systemEmail = get_settings('system_email');
+				$email_message = '
+				<html lang="fr">
 				<head>
-				<style>
-					body {
-					font-family: Arial, sans-serif;
-					background-color: #f6f6f6;
-					margin: 0;
-					padding: 0;
-					}
-					.email-container {
-					max-width: 600px;
-					margin: 20px auto;
-					background-color: #ffffff;
-					border-radius: 8px;
-					box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-					overflow: hidden;
-					}
-					.email-header {
-					background-color: #27272d;
-					color: #ffffff;
-					padding: 20px;
-					text-align: center;
-					font-size: 24px;
-					font-weight: bold;
-					}
-					.email-body {
-					padding: 30px 20px;
-					color: #333333;
-					}
-					.email-body p {
-					line-height: 1.6;
-					margin: 10px 0;
-					}
-					.email-body .btn {
-					display: inline-block;
-					padding: 10px 20px;
-					margin: 20px 0;
-					background-color: #be02e8;
-					color: #ffffff;
-					text-decoration: none;
-					border-radius: 4px;
-					}
-					.email-footer {
-					background-color: #f1f1f1;
-					color: #777777;
-					padding: 10px;
-					text-align: center;
-					font-size: 12px;
-					}
-					.info-image {
-						width: 100%;
-						max-width: 200px;
-						margin-right: 38px;
-					}
-					.info-container {
-						display: flex;
-						align-items: center;
-					}
-				</style>
+					<meta charset="UTF-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<title>Join Request Confirmation</title>
+					<style>
+						body { 
+							margin: 0; 
+							padding: 0; 
+							font-family: Arial, Helvetica, sans-serif; 
+						}
+						.container { 
+							background: #ECECEC; 
+							padding: 30px 15px; 
+						}
+						.logo { 
+							text-align: center; 
+							margin-bottom: 20px; 
+						}
+						.logo img { 
+							max-width: 150px; 
+							height: auto; 
+						}
+						.content-table { 
+							max-width: 700px; 
+							width: 100%; 
+							margin: 0 auto; 
+							border-collapse: collapse; 
+						}
+						.header { 
+							background: #D2822D; 
+							border-radius: 15px 15px 0 0; 
+							padding: 15px; 
+							text-align: center; 
+						}
+						.header span { 
+							font-size: 20px; 
+							font-weight: bold; 
+							color: #fff; 
+						}
+						.body { 
+							background: #f0f7fa; 
+							padding: 20px; 
+						}
+						.body p { 
+							font-size: 14px; 
+							color: #000; 
+							line-height: 1.5; 
+							margin: 15px 0; 
+						}
+						.body a { 
+							color: #ce0d0d; 
+							text-decoration: none; 
+						}
+						.button {
+							display: inline-block;
+							padding: 15px 25px;
+							font-size: 16px;
+							color: #fff !important;
+							background-color: #D2822D;
+							text-decoration: none;
+							border-radius: 5px;
+							margin: 20px 0;
+							transition: background-color 0.3s ease;
+							font-weight: bold;
+						}
+						.button:hover {
+							background-color: #B8701F;
+						}
+						.info-container {
+							display: flex;
+							align-items: center;
+							flex-wrap: wrap;
+							text-align: left;
+						}
+						.info-image {
+							width: 100%;
+							max-width: 150px;
+							margin-right: 20px;
+							margin-bottom: 15px;
+							border-radius: 8px;
+						}
+						.info-content {
+							flex: 1;
+							min-width: 300px;
+						}
+						.footer { 
+							background: #D2822D; 
+							border-radius: 0 0 15px 15px; 
+							color: #fff; 
+							font-size: 14px; 
+						}
+						.footer table { 
+							width: 100%; 
+						}
+						.footer td { 
+							padding: 10px; 
+						}
+						@media only screen and (max-width: 600px) {
+							.content-table { 
+								width: 100% !important; 
+							}
+							.header span { 
+								font-size: 18px; 
+							}
+							.footer td { 
+								display: block; 
+								text-align: center !important; 
+								width: 100% !important; 
+							}
+							.info-container {
+								flex-direction: column;
+								text-align: center;
+							}
+							.info-image {
+								margin: 0 auto 15px;
+							}
+							.info-content {
+								min-width: auto;
+							}
+						}
+					</style>
 				</head>
 				<body>
-				<div class="email-container">
-					<div class="email-header">
-					Join in '.$name_school.'
+					<div class="container">
+						<div class="logo">
+							<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+						</div>
+						<table class="content-table">
+							<tr>
+								<td class="header">
+									<span>Join Request Confirmation</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="body">
+									<div class="info-container">
+										<div class="info-content">
+											<p><strong>Join Request Confirmation</strong></p>
+											<p>Dear ' . $user_name . ',</p>
+											<p>Thank you for submitting your request to join ' . $name_school . '. Your application has been successfully received and is currently under review. Below are the details of your request:</p>
+											<p><strong>Student Code:</strong> ' . $code_student . '</p>
+											<p><strong>Email:</strong> ' . $email_student . '</p>
+											<p>You will be notified once your request has been reviewed and approved. In the meantime, you may log in to your account to check the status of your application or access additional information.</p>
+											<div>
+												<a href="http://51.92.7.185/home/course_details/' . $school_id . '" class="button">Login to Your Account</a>
+											</div>
+											<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:' . $systemEmail . '">' . $systemEmail . '</a></p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="footer">
+									<table>
+										<tr>
+											<td style="text-align: left; width: 33%;">
+												<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2, Dubai, UAE</a>
+											</td>
+											<td style="text-align: center; width: 34%;">
+												© '.date("Y").' Wayo Academy. All rights reserved.
+											</td>
+											<td style="text-align: right; width: 33%;">
+												Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
 					</div>
-					<div class="email-body">
-					<div class="info-container">
-					<img src="'.$image_url.'" alt="Image" class="info-image">
-					<div>
-					<p>Hello <strong> '.$user_name.'</strong>, Your join request has been made.</p>
-					<p><strong>Student Code:</strong> '.$code_student.'</p>
-					<p><strong>Email:</strong> '.$email_student.'</p>
-					<p><a href="http://51.92.7.185/home/course_details/'.$school_id.'" class="btn">Login to Your Account</a></p>
-					</div>
-				</div>
-					</div>
-					<div class="email-footer">
-					<p>&copy; '.date("Y").' '.$name_school.' . All rights reserved.</p>
-					</div>
-				</div>
 				</body>
-				</html>
-				';
+				</html>';
 				$email_sub		= 'Admission approval';
 				$email_to = $email_student;
 				
@@ -773,91 +1366,182 @@ HTML;
 	function join_student_email_for_admin($email_student = "", $user_name ,$code_student = "", $name_school = "",$school_id ="")
 	{
 				$image_url = "http://51.92.7.185/uploads/schools/".$school_id.".jpg"; // URL de l'image à côté des informations
-
-				$email_message =  '
-				<html>
+				$systemEmail = get_settings('system_email');
+				$email_message = '
+				<html lang="fr">
 				<head>
-				<style>
-					body {
-					font-family: Arial, sans-serif;
-					background-color: #f6f6f6;
-					margin: 0;
-					padding: 0;
-					}
-					.email-container {
-					max-width: 600px;
-					margin: 20px auto;
-					background-color: #ffffff;
-					border-radius: 8px;
-					box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-					overflow: hidden;
-					}
-					.email-header {
-					background-color: #27272d;
-					color: #ffffff;
-					padding: 20px;
-					text-align: center;
-					font-size: 24px;
-					font-weight: bold;
-					}
-					.email-body {
-					padding: 30px 20px;
-					color: #333333;
-					}
-					.email-body p {
-					line-height: 1.6;
-					margin: 10px 0;
-					}
-					.email-body .btn {
-					display: inline-block;
-					padding: 10px 20px;
-					margin: 20px 0;
-					background-color: #be02e8;
-					color: #ffffff;
-					text-decoration: none;
-					border-radius: 4px;
-					}
-					.email-footer {
-					background-color: #f1f1f1;
-					color: #777777;
-					padding: 10px;
-					text-align: center;
-					font-size: 12px;
-					}
-					.info-image {
-						width: 100%;
-						max-width: 200px;
-						margin-right: 38px;
-					}
-					.info-container {
-						display: flex;
-						align-items: center;
-					}
-				</style>
+					<meta charset="UTF-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<title>New Registration Notification</title>
+					<style>
+						body { 
+							margin: 0; 
+							padding: 0; 
+							font-family: Arial, Helvetica, sans-serif; 
+						}
+						.container { 
+							background: #ECECEC; 
+							padding: 30px 15px; 
+						}
+						.logo { 
+							text-align: center; 
+							margin-bottom: 20px; 
+						}
+						.logo img { 
+							max-width: 150px; 
+							height: auto; 
+						}
+						.content-table { 
+							max-width: 700px; 
+							width: 100%; 
+							margin: 0 auto; 
+							border-collapse: collapse; 
+						}
+						.header { 
+							background: #D2822D; 
+							border-radius: 15px 15px 0 0; 
+							padding: 15px; 
+							text-align: center; 
+						}
+						.header span { 
+							font-size: 20px; 
+							font-weight: bold; 
+							color: #fff; 
+						}
+						.body { 
+							background: #f0f7fa; 
+							padding: 20px; 
+						}
+						.body p { 
+							font-size: 14px; 
+							color: #000; 
+							line-height: 1.5; 
+							margin: 15px 0; 
+						}
+						.body a { 
+							color: #ce0d0d; 
+							text-decoration: none; 
+						}
+						.button {
+							display: inline-block;
+							padding: 15px 25px;
+							font-size: 16px;
+							color: #fff !important;
+							background-color: #D2822D;
+							text-decoration: none;
+							border-radius: 5px;
+							margin: 20px 0;
+							transition: background-color 0.3s ease;
+							font-weight: bold;
+						}
+						.button:hover {
+							background-color: #B8701F;
+						}
+						.info-container {
+							display: flex;
+							align-items: center;
+							flex-wrap: wrap;
+							text-align: left;
+						}
+						.info-image {
+							width: 100%;
+							max-width: 150px;
+							margin-right: 20px;
+							margin-bottom: 15px;
+							border-radius: 8px;
+						}
+						.info-content {
+							flex: 1;
+							min-width: 300px;
+						}
+						.footer { 
+							background: #D2822D; 
+							border-radius: 0 0 15px 15px; 
+							color: #fff; 
+							font-size: 14px; 
+						}
+						.footer table { 
+							width: 100%; 
+						}
+						.footer td { 
+							padding: 10px; 
+						}
+						@media only screen and (max-width: 600px) {
+							.content-table { 
+								width: 100% !important; 
+							}
+							.header span { 
+								font-size: 18px; 
+							}
+							.footer td { 
+								display: block; 
+								text-align: center !important; 
+								width: 100% !important; 
+							}
+							.info-container {
+								flex-direction: column;
+								text-align: center;
+							}
+							.info-image {
+								margin: 0 auto 15px;
+							}
+							.info-content {
+								min-width: auto;
+							}
+						}
+					</style>
 				</head>
 				<body>
-				<div class="email-container">
-					<div class="email-header">
-					You have a new registration in '.$name_school.'
+					<div class="container">
+						<div class="logo">
+							<img src="https://wayo.academy/uploads/system/logo/logo-light.png" alt="Wayo Academy Logo">
+						</div>
+						<table class="content-table">
+							<tr>
+								<td class="header">
+									<span>New Registration Notification</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="body">
+									<div class="info-container">
+										<div class="info-content">
+											<p><strong>New Registration Notification</strong></p>
+											<p>Dear Administrator,</p>
+											<p>We are pleased to inform you that a new registration has been submitted for ' . $name_school . '. Below are the details of the registrant:</p>
+											<p><strong>Name:</strong> ' . $user_name . '</p>
+											<p><strong>Student Code:</strong> ' . $code_student . '</p>
+											<p><strong>Email:</strong> ' . $email_student . '</p>
+											<p>Please log in to your account to review the registration details and take any necessary actions to process the request.</p>
+											<div>
+												<a href="https://wayo.academy/login" class="button">Access Your Account</a>
+											</div>
+											<p>If you have any questions or need assistance, please feel free to contact our support team at: <a href="mailto:' . $systemEmail . '">' . $systemEmail . '</a></p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="footer">
+									<table>
+										<tr>
+											<td style="text-align: left; width: 33%;">
+												<a href="https://wayo.academy/home/contact#map" style="color: #fff; text-decoration: none;">R320 Umm Hurair 2, Dubai, UAE</a>
+											</td>
+											<td style="text-align: center; width: 34%;">
+												© ' . date("Y") . ' ' . $name_school . '. All rights reserved.
+											</td>
+											<td style="text-align: right; width: 33%;">
+												Tel: <a href="tel:+971501548923" style="color: #fff; text-decoration: none;">+971 50 154 8923</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
 					</div>
-					<div class="email-body">
-					<div class="info-container">
-					<img src="'.$image_url.'" alt="Image" class="info-image">
-					<div>
-					<p> <strong>Name : </strong>'.$user_name.'</p>
-					<p><strong>Student Code : </strong> '.$code_student.'</p>
-					<p><strong>Email : </strong> '.$email_student.'</p>
-					<p><a href="https://wayo.academy/login" class="btn">Login to Your Account</a></p>
-					</div>
-				</div>
-					</div>
-					<div class="email-footer">
-					<p>&copy; '.date("Y").' '.$name_school.' . All rights reserved.</p>
-					</div>
-				</div>
 				</body>
-				</html>
-				';
+				</html>';
 				$email_sub		= 'Admission approval';
 				$email_to = $email_student;
 				
