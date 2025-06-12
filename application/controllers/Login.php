@@ -18,6 +18,7 @@ class Login extends CI_Controller
 		parent::__construct();
 
 		$this->load->database();
+		$this->load->library('Humhub_sso');
 		$this->load->library('session');
 
 		/*LOADING ALL THE MODELS HERE*/
@@ -69,10 +70,17 @@ class Login extends CI_Controller
 		$password = $this->input->post('password');
 		$credential = array('email' => $email, 'password' => sha1($password));
 
+		
 		// Checking login credential for admin
 		$query = $this->db->get_where('users', $credential);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
+
+				// On stocke l’objet complet pour la SSO
+				$this->session->set_userdata('user', $row);
+				$this->session->set_userdata('password', $password);
+			
+
 			$this->session->set_userdata('user_login_type', true);
 			if ($row->role == 'superadmin') {
 				$this->session->set_userdata('superadmin_login', true);
@@ -80,6 +88,7 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'superadmin');
+				
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				redirect(site_url('superadmin/dashboard'), 'refresh');
 			} elseif ($row->role == 'admin') {
@@ -88,6 +97,7 @@ class Login extends CI_Controller
 				$this->session->set_userdata('school_id', $row->school_id);
 				$this->session->set_userdata('user_name', $row->name);
 				$this->session->set_userdata('user_type', 'admin');
+
 				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
 				redirect(site_url('admin/dashboard'), 'refresh');
 			} elseif ($row->role == 'teacher') {
@@ -142,130 +152,117 @@ class Login extends CI_Controller
 	}
 
 	public function validate_login_frontend()
-{
-    $email = htmlspecialchars($this->input->post('login_email'));
-    $password = $this->input->post('login_password');
-    $credential = array('email' => $email, 'password' => sha1($password));
+	{
+		$email = htmlspecialchars($this->input->post('login_email'));
+		$password = $this->input->post('login_password');
+		$credential = array('email' => $email, 'password' => sha1($password));
 
-    $query = $this->db->get_where('users', $credential);
-    if ($query->num_rows() > 0) {
-        $row = $query->row();
-        $this->session->set_userdata('user', $row);
-        $this->session->set_userdata('user_login_type', true);
-        if ($row->role == 'superadmin') {
-            $this->session->set_userdata('superadmin_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'superadmin');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'admin') {
-            $this->session->set_userdata('admin_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'admin');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'teacher') {
-            $this->session->set_userdata('teacher_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'teacher');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'student') {
-            if ($row->status != 1) {
-                $this->session->set_flashdata('error_message', get_phrase('your_account_has_been_disabled'));
-                if (isset($_SERVER['HTTP_REFERER'])) {
-                    redirect($_SERVER['HTTP_REFERER'], 'refresh');
-                } else {
-                    redirect(site_url('login'), 'refresh');
-                }
-            }
-            $this->session->set_userdata('student_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'student');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'parent') {
-            $this->session->set_userdata('parent_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'parent');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'librarian') {
-            $this->session->set_userdata('librarian_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'librarian');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'accountant') {
-            $this->session->set_userdata('accountant_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'accountant');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        } elseif ($row->role == 'driver') {
-            $this->session->set_userdata('driver_login', true);
-            $this->session->set_userdata('user_id', $row->id);
-            $this->session->set_userdata('school_id', $row->school_id);
-            $this->session->set_userdata('user_name', $row->name);
-            $this->session->set_userdata('user_type', 'driver');
-            $this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
-            } else {
-                redirect(site_url('home'), 'refresh');
-            }
-        }
-    } else {
-        $this->session->set_flashdata('error_message', get_phrase('invalid_your_email_or_password'));
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            redirect($_SERVER['HTTP_REFERER'], 'refresh');
-        } else {
-            redirect(site_url('login'), 'refresh');
-        }
-    }
-}
+		// Checking login credential 
+		$query = $this->db->get_where('users', $credential);
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			// On stocke l’objet complet pour la SSO
+				$this->session->set_userdata('user', $row);
+				$this->session->set_userdata('password', $password);
+			
+
+			$this->session->set_userdata('user_login_type', true);
+			if ($row->role == 'superadmin') {
+				$this->session->set_userdata('superadmin_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'superadmin');
+			
+				
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'admin') {
+				$this->session->set_userdata('admin_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'admin');
+
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'teacher') {
+				$this->session->set_userdata('teacher_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'teacher');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+				redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'student') {
+				if ($row->status != 1) {
+					$this->session->set_flashdata('error_message', get_phrase('your_account_has_been_disabled'));
+					if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+				}
+				$this->session->set_userdata('student_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'student');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'parent') {
+				$this->session->set_userdata('parent_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'parent');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'librarian') {
+				$this->session->set_userdata('librarian_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'librarian');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'accountant') {
+				$this->session->set_userdata('accountant_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'accountant');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			} elseif ($row->role == 'driver') {
+				$this->session->set_userdata('driver_login', true);
+				$this->session->set_userdata('user_id', $row->id);
+				$this->session->set_userdata('school_id', $row->school_id);
+				$this->session->set_userdata('user_name', $row->name);
+				$this->session->set_userdata('user_type', 'driver');
+				$this->session->set_flashdata('flash_message', get_phrase('welcome_back'));
+				if (isset($_SERVER['HTTP_REFERER'])) {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			}
+		} else {
+			$this->session->set_flashdata('error_message', get_phrase('invalid_your_email_or_password'));
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
+		}
+	}
+
 
 	public function logout()
 	{

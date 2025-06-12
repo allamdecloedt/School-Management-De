@@ -1704,6 +1704,14 @@
     "calendar_failed_to_load": "Calendar failed to load",
     "failed_to_load_exams": "Failed to load exams",
     "an_error_occurred_please_try_again": "An error occurred please try again",
+    "central": "Wall",
+    "membres": "Membres",
+    "people": "Members",
+    "espaces": "Spaces",
+    "social": "Social",
+    "chat": "Chat",
+    "messages": "Messages",
+    "spaces": "Spaces",
     "session_has_been_deleted_successfully": "Session has been deleted successfully",
     "deleting": "Deleting",
     "export_csv": "Export csv",
@@ -1724,6 +1732,7 @@
     "your_results_have_been_submitted": "Your results have been submitted",
     "online_cours": "Online cours",
     "please_login_before_continuing": "Please login before continuing",
-    "your_quiz_results": "Your quiz results"
-
+    "your_quiz_results": "Your quiz results",
+    "teacher_permission_updated": "Teacher permission updated",
+    "membres_actifs": "Membres actifs"
 }
