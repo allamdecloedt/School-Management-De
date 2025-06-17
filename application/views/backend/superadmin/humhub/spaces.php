@@ -23,6 +23,6 @@ iframe {
     </div>
 </div>
 <div class="iframe-container">
-    <iframe src="http://localhost/humhub/humhub-1.17.2/index.php/spaces"></iframe>
+    <iframe src="https://humhub.wayo.site/index.php/spaces"></iframe>
 </div>
 

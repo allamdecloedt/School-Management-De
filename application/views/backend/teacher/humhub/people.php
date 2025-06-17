@@ -22,7 +22,7 @@ iframe {
 </div>
 
 <div class="iframe-container">
-    <iframe src="http://localhost/humhub/humhub-1.17.2/people"></iframe>
+    <iframe src="https://humhub.wayo.site/people"></iframe>
 </div>
 
 
