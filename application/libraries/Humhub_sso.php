@@ -29,6 +29,7 @@ class Humhub_sso {
             'Authorization: Bearer ' . HUMHUB_API_TOKEN,
             'Content-Type: application/json'
         ];
+        
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST  => strtoupper($method),
@@ -88,7 +89,11 @@ class Humhub_sso {
             // 1. Rechercher l'utilisateur HumHub
             // $existing = $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
             $existing = $this->getUserByEmail($email);
+            log_message('debug', 'email : ' . $email);
+            log_message('debug', 'existing (raw) : ' . print_r($existing, true));
 
+            log_message('debug', 'HUMHUB_BASE_URL : ' . HUMHUB_BASE_URL);
+            log_message('debug', 'HUMHUB_API_TOKEN : ' . HUMHUB_API_TOKEN);
             if ($existing && isset($existing['id']) && isset($existing['account']['email']) && $existing['account']['email'] === $email) {
                 $humhubId = $existing['id'];
                 log_message('debug', 'HumHub user exists  with ID: ' . $humhubId);
