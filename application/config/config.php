@@ -499,7 +499,7 @@ $config['csrf_exclude_uris'] = array(
     'addons/courses/ajax_sort_question',
      'admin/delete_room',
      'teacher/delete_room',
-    'BigBlueButton/*',
+    'BigBlueButton/',
     'superadmin/filter_recordings',
     'superadmin/get_recordings',
     'superadmin/get_recordings_by_meeting_id',
@@ -611,6 +611,8 @@ $config['enable_hooks'] = TRUE;
  * ===================================================================
  */
 // Ici tu peux charger d'autres configs CI, puis ajouter :
-$config['HUMHUB_BASE_URL']   = 'http://51.94.163.211';
-$config['HUMHUB_JWT_SECRET'] = 'ry4mRP6N8ZBKP_Xn6998drxRXtml_jaDv5cvR2KJuM0dzr0owm4TiKxlnHnjG7qf3RPrvJFbMDAIlbDbz71MuT';
-$config['HUMHUB_API_TOKEN']  = 'qzwVd1QwkPW-COoHTK7XnK3owCRCxZfPrbuvyinLWHQI4VrMCVGIuNEm-JyNBOh4--b7ruqW3VxfxlgQqfIApx';
+
+// $config['HUMHUB_BASE_URL']   = 'http://51.94.163.211';
+// $config['HUMHUB_JWT_SECRET'] = 'ry4mRP6N8ZBKP_Xn6998drxRXtml_jaDv5cvR2KJuM0dzr0owm4TiKxlnHnjG7qf3RPrvJFbMDAIlbDbz71MuT';
+// $config['HUMHUB_API_TOKEN']  = 'kteQ3M3rtHxiOuDPUbdgaTWN_ao_dWGk0Qrm85Zsrk-diUilMSzEqDTSqNROvkaLBF5wdXac8sFpfVVNeqrcvr';
+
