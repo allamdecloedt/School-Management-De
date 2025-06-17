@@ -86,11 +86,15 @@ class Humhub_sso {
     
         try {
             // 1. Rechercher l'utilisateur HumHub
+		log_message('debug', ' email 1  : ' .$email );
             // $existing = $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
             $existing = $this->getUserByEmail($email);
-
+	//	log_message('debug', ' link : ' .$existing );
+		log_message('debug', ' existing id : ' .$existing['id'] );
+		log_message('debug', ' email : ' .$existing['account']['email'] );
             if ($existing && isset($existing['id']) && isset($existing['account']['email']) && $existing['account']['email'] === $email) {
-                $humhubId = $existing['id'];
+          	
+		 $humhubId = $existing['id'];
                 log_message('debug', 'HumHub user exists  with ID: ' . $humhubId);
             } else {
                  // Récupérez le mot de passe en clair depuis la session
@@ -158,7 +162,7 @@ class Humhub_sso {
         }
     }
     public function getUserByEmail($email) {
-        return $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
+        return  $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
     }
     public function getSpace($spaceId)
     {
