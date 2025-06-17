@@ -77,10 +77,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'   => '',
-    'hostname' => 'formation-db-public.cfaq06em20sk.eu-south-2.rds.amazonaws.com',
-    'username' => 'admin',
-    'password' => '5SmU[vd0oJfq4RwFU82N#}wa$Ntn',
-    'database' => 'formation_db',
+    'hostname' => '51.94.163.211',
+    'username' => 'root',
+    'password' => '123456789',
+    'database' => 'formation_preprod',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,

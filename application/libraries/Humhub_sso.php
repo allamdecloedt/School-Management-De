@@ -90,17 +90,13 @@ class Humhub_sso {
 		log_message('debug', ' email 1  : ' .$email );
             // $existing = $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
             $existing = $this->getUserByEmail($email);
-<<<<<<< HEAD
-	//	log_message('debug', ' link : ' .$existing );
-		log_message('debug', ' existing id : ' .$existing['id'] );
-		log_message('debug', ' email : ' .$existing['account']['email'] );
-=======
+
             log_message('debug', 'email : ' . $email);
             log_message('debug', 'existing (raw) : ' . print_r($existing, true));
 
             log_message('debug', 'HUMHUB_BASE_URL : ' . HUMHUB_BASE_URL);
             log_message('debug', 'HUMHUB_API_TOKEN : ' . HUMHUB_API_TOKEN);
->>>>>>> 9d02d88aaa4ff4ec239c92be8564e09d2c8d2f20
+
             if ($existing && isset($existing['id']) && isset($existing['account']['email']) && $existing['account']['email'] === $email) {
           	
 		 $humhubId = $existing['id'];
