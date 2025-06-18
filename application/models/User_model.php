@@ -510,7 +510,7 @@ class User_model extends CI_Model
 								}
 								if (!$humhubResponse || isset($humhubResponse['code'])) {
 									$reason = isset($humhubResponse['message']) ? $humhubResponse['message'] : 'Erreur inconnue';
-									log_message('error', 'Échec HumHub dans update_profile pour user_id=' . $user_id . ' : ' . $reason);
+									// log_message('error', 'Échec HumHub dans update_profile pour user_id=' . $user_id . ' : ' . $reason);
 
 								}
 			}
@@ -1801,10 +1801,10 @@ public function get_unread_messages_count($wayo_user_id) {
 
     // 2. Faire la requête avec le bon user_id (celui de HumHub)
  	$this->db->select('COUNT(DISTINCT m.id) AS count');
-    $this->db->from('humhub_local.message m');
-    $this->db->join('humhub_local.message_entry me', 'me.message_id = m.id', 'inner');
+    $this->db->from('humhub.message m');
+    $this->db->join('humhub.message_entry me', 'me.message_id = m.id', 'inner');
     $this->db->where('me.user_id', $humhub_id);
-    $this->db->where('me.updated_at < (SELECT MAX(created_at) FROM humhub_local.message_entry WHERE message_id = m.id)', NULL, FALSE);
+    $this->db->where('me.updated_at < (SELECT MAX(created_at) FROM humhub.message_entry WHERE message_id = m.id)', NULL, FALSE);
     $this->db->or_where('me.updated_at IS NULL', NULL, FALSE);
 	
     $result = $this->db->get();
@@ -1820,14 +1820,14 @@ public function get_unread_messages_count($wayo_user_id) {
 		$humhub_id = $query->row()->humhub_id;
 
 		$sql = "
-			UPDATE humhub_local.message_entry me
+			UPDATE humhub.message_entry me
 			SET me.updated_at = NOW()
 			WHERE me.user_id = ?
 			AND (
 				me.updated_at IS NULL
 				OR me.updated_at < (
 				SELECT MAX(created_at)
-				FROM humhub_local.message_entry
+				FROM humhub.message_entry
 				WHERE message_id = me.message_id
 				)
 			)
