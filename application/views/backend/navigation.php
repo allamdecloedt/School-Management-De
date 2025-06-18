@@ -19,6 +19,11 @@ $this->db->where('enrols.session', $session);
 $this->db->where('exams.id NOT IN (SELECT exam_id FROM exam_responses WHERE user_id = ' . $this->db->escape($user_id) . ')', NULL, FALSE);
 $total_exams = $this->db->count_all_results();
 log_message('debug', 'Total exams not yet taken calculated: ' . $total_exams);
+
+
+
+$unread_messages = $this->user_model->get_unread_messages_count($this->session->userdata('user_id'));
+
 ?>
 
 <!-- ========== Left Sidebar Start ========== -->
@@ -142,6 +147,11 @@ log_message('debug', 'Total exams not yet taken calculated: ' . $total_exams);
                         <?php if ($main_menu['unique_identifier'] == 'exam' && $total_exams > 0) : ?>
                             <span class="badge bg-primary float-end"><?php echo $total_exams; ?></span>
                         <?php endif; ?>
+<?php if ($main_menu['unique_identifier'] == 'chat') : ?>
+    <span class="badge bg-danger float-end" id="chat-badge">
+        <?= $unread_messages > 0 ? $unread_messages : '0' ?>
+    </span>
+<?php endif; ?>
                     </a>
                 <?php } ?>
             </li>
@@ -153,3 +163,29 @@ log_message('debug', 'Total exams not yet taken calculated: ' . $total_exams);
     <!-- Sidebar -left -->
 </div>
 <!-- Left Sidebar End -->
+ 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatBadge = document.getElementById('chat-badge');
+    
+    function updateChatBadge() {
+        fetch('<?= site_url('user/get_unread_count'); ?>')
+            .then(response => response.json())
+            .then(data => {
+                chatBadge.textContent = data.count;
+                chatBadge.classList.toggle('bg-danger', data.count > 0);
+                chatBadge.classList.toggle('bg-secondary', data.count == 0);
+            });
+    }
+
+    // Écoutez les messages de HumHub
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'MESSAGE_READ') {
+            updateChatBadge();
+        }
+    });
+
+    // Actualiser périodiquement
+    setInterval(updateChatBadge, 30000);
+});
+</script>

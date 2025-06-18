@@ -1727,5 +1727,19 @@
     "total_number_of_school": "Total number of school",
     "total_number_of_class": "Total number of class",
     "failed_to_delete_exam": "Failed to delete exam",
-    "ok": "Ok"
+    "ok": "Ok",
+    "create_&_join_session": "Create & join session",
+    "quiz_result": "Quiz result",
+    "central": "Muur",
+    "membres": "Leden",
+    "people": "Leden",
+    "espaces": "Ruimtes",
+    "social": "Sociaal",
+    "chat": "Chat",
+    "messages": "Berichten",
+    "spaces": "Ruimtes",
+    "demo_request": "Demo request",
+    "visit_dashboard": "Visit dashboard",
+    "upcoming_events": "Upcoming events",
+    "cursussen": "Cursussen"
 }

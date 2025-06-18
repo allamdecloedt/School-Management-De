@@ -509,7 +509,27 @@ $config['csrf_exclude_uris'] = array(
     'teacher/filter_recordings',
     'teacher/get_recordings',
     'teacher/get_recordings_by_meeting_id',
+
+    'admin/wall',
+    'admin/people',
+    'admin/spaces',
+    'admin/chat',
+    'superadmin/wall',
+    'superadmin/people',
+    'superadmin/spaces',
+    'superadmin/chat',
+    'teacher/wall',
+    'teacher/people',
+    'teacher/spaces',
+    'teacher/chat',
+    'student/wall',
+    'student/people',
+    'student/spaces',
+    'student/chat',
+    
+
     'student/filter_recordings',
+
 
 
 );
@@ -580,3 +600,18 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:        array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+$config['enable_hooks'] = TRUE;
+
+/*
+|--------------------------------------------------------------------------
+/**
+ * ===================================================================
+ * TOKENS
+ * ===================================================================
+ */
+
+// Ici tu peux charger d'autres configs CI, puis ajouter :
+$config['HUMHUB_BASE_URL']   = 'http://51.94.163.211/humhub/humhub-1.17.2';
+$config['HUMHUB_JWT_SECRET'] = 'ry4mRP6N8ZBKP_Xn6998drxRXtml_jaDv5cvR2KJuM0dzr0owm4TiKxlnHnjG7qf3RPrvJFbMDAIlbDbz71MuT';
+$config['HUMHUB_API_TOKEN']  = 'kteQ3M3rtHxiOuDPUbdgaTWN_ao_dWGk0Qrm85Zsrk-diUilMSzEqDTSqNROvkaLBF5wdXac8sFpfVVNeqrcvr';
