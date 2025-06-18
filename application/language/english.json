@@ -1735,5 +1735,7 @@
     "your_quiz_results": "Your quiz results",
     "teacher_permission_updated": "Teacher permission updated",
     "membres_actifs": "Membres actifs",
+    "error_deleting_humhub_user": "Error deleting humhub user",
+    "password_add_successful": "Password add successful",
     "wall": "Wall"
 }

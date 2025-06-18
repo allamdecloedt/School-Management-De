@@ -510,19 +510,19 @@ $config['csrf_exclude_uris'] = array(
     'teacher/get_recordings',
     'teacher/get_recordings_by_meeting_id',
 
-   // 'admin/central',
+    'admin/wall',
     'admin/people',
     'admin/spaces',
     'admin/chat',
-    //'superadmin/central',
+    'superadmin/wall',
     'superadmin/people',
     'superadmin/spaces',
     'superadmin/chat',
-    //'teacher/central',
+    'teacher/wall',
     'teacher/people',
     'teacher/spaces',
     'teacher/chat',
-   // 'student/central',
+    'student/wall',
     'student/people',
     'student/spaces',
     'student/chat',
@@ -610,6 +610,7 @@ $config['enable_hooks'] = TRUE;
  * TOKENS
  * ===================================================================
  */
+
 // Ici tu peux charger d'autres configs CI, puis ajouter :
 
 // $config['HUMHUB_BASE_URL']   = 'http://51.94.163.211';
