@@ -24,5 +24,5 @@ iframe {
 </div>
 
 <div class="iframe-container">
-    <iframe src="http://localhost/humhub/humhub-1.17.2/mail/mail/index"></iframe>
+    <iframe src="https://humhub.wayo.site/mail/mail/index"></iframe>
 </div>

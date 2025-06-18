@@ -85,11 +85,10 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 
-// URL de base de HumHub (à adapter à ton chemin local)
-defined('HUMHUB_BASE_URL') OR define('HUMHUB_BASE_URL', 'http://localhost/humhub/humhub-1.17.2');
-
+defined('HUMHUB_BASE_URL') OR define('HUMHUB_BASE_URL', 'https://humhub.wayo.site');
+ 
 // Clé secrète pour signer les tokens JWT
-defined('HUMHUB_JWT_SECRET') OR define('HUMHUB_JWT_SECRET', 'Pz-UpjQKoCU_ETNpiwcoZB_C7L7cnVLFGvMbXmk4JfrBpff3DbYZcX2rSUAihZ8f7UGyOOIBz1kA4xbRzfphp1');
-
+defined('HUMHUB_JWT_SECRET') OR define('HUMHUB_JWT_SECRET', 'ry4mRP6N8ZBKP_Xn6998drxRXtml_jaDv5cvR2KJuM0dzr0owm4TiKxlnHnjG7qf3RPrvJFbMDAIlbDbz71MuT');
+ 
 // Token API de HumHub (pour créer des utilisateurs par API REST)
-defined('HUMHUB_API_TOKEN') OR define('HUMHUB_API_TOKEN', '2g6s0ZYxFLwqpATK9iNT0SYEthAc94AD0O_AbtWy7AOG1fOLLirk1MZ6LhTTIDv5KWAJFSWZakzU2g25fxCdhF');
+defined('HUMHUB_API_TOKEN') OR define('HUMHUB_API_TOKEN', 'qzwVd1QwkPW-COoHTK7XnK3owCRCxZfPrbuvyinLWHQI4VrMCVGIuNEm-JyNBOh4--b7ruqW3VxfxlgQqfIApx');

@@ -1263,7 +1263,7 @@ class Teacher extends CI_Controller {
 	//END EXAM section
 
 		//HUMHUB DASHBOARD
-		public function central()
+		public function wall()
 		{
 			// 1) Vérifier que c'est bien un admin
 			if (! $this->session->userdata('teacher_login')) {
@@ -1293,8 +1293,8 @@ class Teacher extends CI_Controller {
 			// 5) Passer à la vue
 			$page_data = [
 				'folder_name' => 'humhub',
-				'page_title'  => 'Central',
-				'page_name'   => 'central',
+				'page_title'  => 'wall',
+				'page_name'   => 'wall',
 				'iframe_url'  => $iframeUrl,
 			];
 			$this->load->view('backend/index', $page_data);
@@ -1380,11 +1380,14 @@ class Teacher extends CI_Controller {
 		public function chat() {
 			// 1) Vérifier que c'est bien un admin
 			if (! $this->session->userdata('teacher_login')) {
-				show_error('Accès réservé aux superadmins.');
+				show_error('Accès réservé aux enseignants.');
 			}
 			
 			// 2) Récupérer les infos du user (ici : depuis la table Wayo)
 			$userId = $this->session->userdata('user_id');
+			// Marquer tous les messages comme lus
+     		 $this->user_model->mark_all_messages_read($userId);
+
 			$wUser  = $this->db->get_where('users', ['id' => $userId])->row();
 			if (empty($wUser) || ! filter_var($wUser->email, FILTER_VALIDATE_EMAIL)) {
 				log_message('error', 'Invalid Wayo user data: ' . print_r($wUser, true));
@@ -1402,17 +1405,27 @@ class Teacher extends CI_Controller {
 			if (! $iframeUrl) {
 				show_error('Impossible de générer l’URL SSO HumHub.');
 			}
-
+			// Ajoute ça pour le badge :
+     	  $unread_messages = $this->user_model->get_unread_messages_count($userId);
 			// 5) Passer à la vue
 			$page_data = [
 				'folder_name' => 'humhub',
 				'page_title'  => 'Messages',
 				'page_name'   => 'message',
 				'iframe_url'  => $iframeUrl,
+				'unread_messages'=>$unread_messages,
 			];
 			$this->load->view('backend/index', $page_data);
 		
 		}
+	public function update_chat_badge() {
+		$user_id = $this->session->userdata('user_id');
+		$unread_count = $this->user_model->get_unread_messages_count($user_id);
+		
+		header('Content-Type: application/json');
+		echo json_encode(['unread_count' => $unread_count]);
+		exit;
+	}
 
 	//START MARKS section
 	public function mark($param1 = '', $param2 = ''){

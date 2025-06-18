@@ -160,6 +160,9 @@ class Humhub_sso {
     public function getUserByEmail($email) {
         return $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/get-by-email?email=' . urlencode($email));
     }
+    public function getUserById($userId) {
+        return $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/user/' . intval($userId));
+    }
     public function getSpace($spaceId)
     {
         return $this->httpRequest('GET', HUMHUB_BASE_URL . '/api/v1/space/' . intval($spaceId));
@@ -227,57 +230,8 @@ class Humhub_sso {
         return $this->httpRequest('POST', HUMHUB_BASE_URL . '/api/v1/user', $data);
     }
 
-    public function registerHumHubUser(array $userData) {
-    $imagePath = FCPATH . 'uploads/users/' . $userData['image'];
-
-    if (!file_exists($imagePath)) {
-        log_message('error', '❌ Image not found: ' . $imagePath);
-        return false;
-    }
-
-    $imageData = file_get_contents($imagePath);
-    $imageBase64 = base64_encode($imageData);
-    $mimeType = mime_content_type($imagePath);
-    $imageDataUri = "data:$mimeType;base64,$imageBase64";
-
-    $payload = [
-        'account' => [
-            'email' => $userData['email'],
-            'username' => $userData['username'],
-            'newPassword' => $userData['password'],
-            'newPasswordConfirm' => $userData['password'],
-        ],
-        'profile' => [
-            'language' => 'fr',
-            'firstname' => $userData['firstname'],
-            'lastname' => $userData['lastname'],
-            'title' => $userData['role'],
-            'image' => $imageDataUri
-        ]
-    ];
-
-    $response = $this->createUser($payload);
-
-    if ($response) {
-        log_message('debug', '✅ Utilisateur HumHub créé avec succès');
-        return $response;
-    } else {
-        log_message('error', '❌ Échec de la création de l’utilisateur HumHub');
-        return false;
-    }
-}
-
-    public function updateProfileImage($userId, $base64Data) {
-        $endpoint = HUMHUB_BASE_URL . "/api/v1/user/{$userId}";
-        
-        $payload = [
-            'profile' => [
-                'image' => $base64Data // Raw base64 string
-            ]
-        ];
-        
-        return $this->httpRequest('PATCH', $endpoint, $payload);
-    }
+   
+   
     /**
      * Mise à jour d'un utilisateur HumHub via API
      * @param int   $id   ID HumHub
@@ -294,7 +248,7 @@ class Humhub_sso {
      * @return bool Succès ou échec
      */
     public function deleteUser($id) {
-        $res = $this->httpRequest('DELETE', HUMHUB_BASE_URL . '/api/v1/user/' . intval($id));
+        $res = $this->httpRequest('DELETE', HUMHUB_BASE_URL . '/api/v1/user/full/' . intval($id));
         return $res !== null;
     }
     /**
