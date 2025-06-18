@@ -825,14 +825,6 @@ class Student extends CI_Controller {
 			$this->load->view('backend/index', $page_data);
 		
 		}
-	public function update_chat_badge() {
-		$user_id = $this->session->userdata('user_id');
-		$unread_count = $this->user_model->get_unread_messages_count($user_id);
-		
-		header('Content-Type: application/json');
-		echo json_encode(['unread_count' => $unread_count]);
-		exit;
-	}
 
 	//START MARKS section
 	public function mark($param1 = '', $param2 = ''){

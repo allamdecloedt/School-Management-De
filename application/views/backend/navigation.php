@@ -168,15 +168,6 @@ $unread_messages = $this->user_model->get_unread_messages_count($this->session->
 document.addEventListener('DOMContentLoaded', function() {
     const chatBadge = document.getElementById('chat-badge');
     
-    function updateChatBadge() {
-        fetch('<?= site_url('user/get_unread_count'); ?>')
-            .then(response => response.json())
-            .then(data => {
-                chatBadge.textContent = data.count;
-                chatBadge.classList.toggle('bg-danger', data.count > 0);
-                chatBadge.classList.toggle('bg-secondary', data.count == 0);
-            });
-    }
 
     // Écoutez les messages de HumHub
     window.addEventListener('message', (event) => {

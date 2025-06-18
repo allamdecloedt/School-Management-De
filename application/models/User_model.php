@@ -1813,27 +1813,35 @@ public function get_unread_messages_count($wayo_user_id) {
 	
 	public function mark_all_messages_read(int $wayo_user_id): void {
 		$query = $this->db->get_where('users', ['id' => $wayo_user_id]);
-		if ($query->num_rows() == 0 || empty($query->row()->humhub_id)) {
+
+		if ($query->num_rows() === 0 || empty($query->row()->humhub_id)) {
 			log_message('error', 'HumHub ID introuvable pour user Wayo ID (mark read): ' . $wayo_user_id);
 			return;
 		}
+
 		$humhub_id = $query->row()->humhub_id;
 
+		// Requête avec contournement via une table dérivée
 		$sql = "
 			UPDATE humhub.message_entry me
+			JOIN (
+				SELECT message_id, MAX(created_at) AS max_created_at
+				FROM humhub.message_entry
+				GROUP BY message_id
+			) latest ON latest.message_id = me.message_id
 			SET me.updated_at = NOW()
 			WHERE me.user_id = ?
-			AND (
-				me.updated_at IS NULL
-				OR me.updated_at < (
-				SELECT MAX(created_at)
-				FROM humhub.message_entry
-				WHERE message_id = me.message_id
-				)
-			)
+			AND (me.updated_at IS NULL OR me.updated_at < latest.max_created_at)
 		";
+
 		$this->db->query($sql, [$humhub_id]);
+
+		// Log optionnel
+		$affected = $this->db->affected_rows();
+		log_message('info', "Messages mis à jour pour HumHub ID $humhub_id : $affected");
 	}
+
+
 	
 
 
